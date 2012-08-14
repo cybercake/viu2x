@@ -3,9 +3,9 @@
 
 namespace viu2x {
 
-    class ViuFS {
+    class FileSystem {
         public:
-            ViuFS();
+            FileSystem();
     };
 
 }
