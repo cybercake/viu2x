@@ -6,19 +6,19 @@
 
 QT       -= core gui
 
-TARGET = viufs
+TARGET = libviu2x
 TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    source/FileSystem.cpp \
-    source/Path.cpp
+    viufs/source/FileSystem.cpp \
+    viufs/source/Path.cpp
 
 HEADERS += \
-    include/FileSystem.h \
-    include/Path.h
+    viufs/include/FileSystem.h \
+    viufs/include/Path.h
 
-INCLUDEPATH += include
+INCLUDEPATH += viufs/include
 
 unix:!symbian {
     maemo5 {
