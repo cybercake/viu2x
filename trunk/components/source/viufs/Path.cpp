@@ -11,6 +11,16 @@ namespace viu2x {
     const wstring Path::UserDelimiter = L"@";
     const wstring Path::PasswordDelimiter = L":";
 
+    enum PathDelimiter
+    {
+        FolderDelimiter,
+        EntityDelimiter,
+        ProtocolDelimiter,
+        HostDelimiter,
+        UserDelimiter,
+        PasswordDelimiter
+    };
+
     /**
      *
      */
