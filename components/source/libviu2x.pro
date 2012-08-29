@@ -12,12 +12,12 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    viufs/FileSystem.cpp \
-    viufs/Path.cpp
+    viuIO/FileSystem.cpp \
+    viuIO/Path.cpp
 
 HEADERS += \
-    viufs/Path.h \
-    viufs/FileSystem.h
+    viuIO/Path.h \
+    viuIO/FileSystem.h
 
 INCLUDEPATH += viufs
 
