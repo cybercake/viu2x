@@ -12,14 +12,12 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    viuIO/FileSystem.cpp \
     viuIO/Path.cpp
 
 HEADERS += \
-    viuIO/Path.h \
-    viuIO/FileSystem.h
+    viuIO/Path.h
 
-INCLUDEPATH += viufs
+INCLUDEPATH += viuIO
 
 unix:!symbian {
     maemo5 {
