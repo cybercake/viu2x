@@ -7,19 +7,79 @@ namespace viu2x {
     const wstring Path::EntityDelimiter = L">";
     const wstring Path::ProtocolDelimiter = L":";
     const wstring Path::HostDelimiter = L"//";
-    const wstring Path::FolderDelimiter = L"/";
-    const wstring Path::UserDelimiter = L"@";
     const wstring Path::PasswordDelimiter = L":";
+    const wstring Path::UserDelimiter = L"@";
+    const wstring Path::FolderDelimiter = L"/";
 
     enum PathDelimiter
     {
+        None,
         FolderDelimiter,
-        EntityDelimiter,
-        ProtocolDelimiter,
         HostDelimiter,
+        PasswordDelimiter,
         UserDelimiter,
-        PasswordDelimiter
+        ProtocolDelimiter,
+        EntityDelimiter
     };
+
+    enum PathScanningState
+    {
+        Initial,
+        ProtocolEnd,
+        HostStart,
+        UserEnd,
+        PasswordEnd,
+        Folder,
+        EntityEnd
+    };
+
+    bool isDelimiter(const wstring & s, const size_t & pos, const wstring & delimiter)
+    {
+        return s.compare(pos, delimiter.length(), delimiter) == 0;
+    }
+
+    PathDelimiter scanDelimiter(const wstring & s, size_t & pos, PathScanningState & state)
+    {
+        PathDelimiter result = None;
+
+        for (size_t i = 0; i < s.length(); ++i)
+        {
+            if (isDelimiter(s, pos, Path::ProtocolDelimiter))
+            {
+                switch(state)
+                {
+                    case Initial:
+                    case EntityEnd:
+                        pos = i;
+                        state = ProtocolEnd;
+                        return ProtocolDelimiter;
+                    default: break;
+                }
+            }
+
+            if (isDelimiter(s, pos, Path::HostDelimiter))
+            {
+            }
+
+            if (isDelimiter(s, pos, Path::PasswordDelimiter))
+            {
+            }
+
+            if (isDelimiter(s, pos, Path::UserDelimiter))
+            {
+            }
+
+            if (isDelimiter(s, pos, Path::FolderDelimiter))
+            {
+            }
+
+            if (isDelimiter(s, pos, Path::EntityDelimiter))
+            {
+            }
+        }
+
+        return result;
+    }
 
     /**
      *
