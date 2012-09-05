@@ -11,72 +11,189 @@ namespace viu2x {
     const wstring Path::UserDelimiter = L"@";
     const wstring Path::FolderDelimiter = L"/";
 
+    const wstring ProtocolAndHost = Path::ProtocolDelimiter + Path::HostDelimiter;
+
     enum PathDelimiter
     {
-        None,
-        FolderDelimiter,
-        HostDelimiter,
-        PasswordDelimiter,
-        UserDelimiter,
-        ProtocolDelimiter,
-        EntityDelimiter
+        PathDelimiter_None,
+        PathDelimiter_Folder,
+        PathDelimiter_Host,
+        PathDelimiter_Password,
+        PathDelimiter_User,
+        PathDelimiter_Protocol,
+        PathDelimiter_Entity
     };
 
     enum PathScanningState
     {
-        Initial,
-        ProtocolEnd,
-        HostStart,
-        UserEnd,
-        PasswordEnd,
-        Folder,
-        EntityEnd
+        PathScanningState_Initial,
+        PathScanningState_ProtocolEnd,
+        PathScanningState_HostStart,
+        PathScanningState_UserEnd,
+        PathScanningState_PasswordEnd,
+        PathScanningState_HostEnd,
+        PathScanningState_FolderEnd,
+        PathScanningState_EntityEnd
     };
 
-    bool isDelimiter(const wstring & s, const size_t & pos, const wstring & delimiter)
+    inline bool checkSubStr(const wstring & s, const size_t & pos, const wstring & delimiter)
     {
         return s.compare(pos, delimiter.length(), delimiter) == 0;
     }
 
-    PathDelimiter scanDelimiter(const wstring & s, size_t & pos, PathScanningState & state)
+    PathDelimiter scanDelimiter(const wstring & s, size_t & startPos, size_t & endPos, PathScanningState & state)
     {
-        PathDelimiter result = None;
+        PathDelimiter result = PathDelimiter_None;
 
         for (size_t i = 0; i < s.length(); ++i)
         {
-            if (isDelimiter(s, pos, Path::ProtocolDelimiter))
+            if (checkSubStr(s, startPos, ProtocolAndHost))
             {
                 switch(state)
                 {
-                    case Initial:
-                    case EntityEnd:
-                        pos = i;
-                        state = ProtocolEnd;
-                        return ProtocolDelimiter;
+                    case PathScanningState_Initial:
+                    case PathScanningState_EntityEnd:
+                        endPos = i - 1;
+                        startPos = i + ProtocolAndHost.length();
+                        state = PathScanningState_HostStart;
+                        return PathDelimiter_Protocol;
                     default: break;
                 }
             }
 
-            if (isDelimiter(s, pos, Path::HostDelimiter))
+            if (checkSubStr(s, startPos, Path::ProtocolDelimiter))
             {
+                switch(state)
+                {
+                    case PathScanningState_Initial:
+                    case PathScanningState_EntityEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::ProtocolDelimiter.length();
+                        state = PathScanningState_ProtocolEnd;
+                        return PathDelimiter_Protocol;
+                    default: break;
+                }
             }
 
-            if (isDelimiter(s, pos, Path::PasswordDelimiter))
+            if (checkSubStr(s, startPos, Path::HostDelimiter))
             {
+                switch(state)
+                {
+                    case PathScanningState_Initial:
+                    case PathScanningState_EntityEnd:
+                    case PathScanningState_ProtocolEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::HostDelimiter.length();
+                        state = PathScanningState_HostStart;
+                        return PathDelimiter_Host;
+                    default: break;
+                }
             }
 
-            if (isDelimiter(s, pos, Path::UserDelimiter))
+            if (checkSubStr(s, startPos, Path::PasswordDelimiter))
             {
+                switch(state)
+                {
+                    case PathScanningState_Initial:
+                    case PathScanningState_EntityEnd:
+                    case PathScanningState_HostStart:
+                        endPos = i - 1;
+                        startPos = i + Path::PasswordDelimiter.length();
+                        state = PathScanningState_UserEnd;
+                        return PathDelimiter_Password;
+                    default: break;
+                }
             }
 
-            if (isDelimiter(s, pos, Path::FolderDelimiter))
+            if (checkSubStr(s, startPos, Path::UserDelimiter))
             {
+                switch(state)
+                {
+                    case PathScanningState_Initial:
+                    case PathScanningState_EntityEnd:
+                    case PathScanningState_HostStart:
+                        endPos = i - 1;
+                        startPos = i + Path::UserDelimiter.length();
+                        state = PathScanningState_UserEnd;
+                        return PathDelimiter_User;
+                    case PathScanningState_UserEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::UserDelimiter.length();
+                        state = PathScanningState_PasswordEnd;
+                        return PathDelimiter_User;
+                    default: break;
+                }
             }
 
-            if (isDelimiter(s, pos, Path::EntityDelimiter))
+            if (checkSubStr(s, startPos, Path::FolderDelimiter))
             {
+                switch(state)
+                {
+                    case PathScanningState_Initial:
+                    case PathScanningState_EntityEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::FolderDelimiter.length();
+                        state = PathScanningState_FolderEnd;
+                        return PathDelimiter_Folder;
+                    case PathScanningState_HostStart:
+                    case PathScanningState_UserEnd:
+                    case PathScanningState_PasswordEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::FolderDelimiter.length();
+                        state = PathScanningState_HostEnd;
+                        return PathDelimiter_Folder;
+                    case PathScanningState_HostEnd:
+                    case PathScanningState_FolderEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::FolderDelimiter.length();
+                        state = PathScanningState_FolderEnd;
+                        return PathDelimiter_Folder;
+                    default: break;
+                }
+            }
+
+            if (checkSubStr(s, startPos, Path::EntityDelimiter))
+            {
+                switch(state)
+                {
+                    case PathScanningState_Initial:
+                    case PathScanningState_EntityEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::EntityDelimiter.length();
+                        state = PathScanningState_EntityEnd;
+                        return PathDelimiter_Entity;
+                    case PathScanningState_HostStart:
+                        endPos = i - 1;
+                        startPos = i + Path::EntityDelimiter.length();
+                        state = PathScanningState_HostEnd;
+                        return PathDelimiter_Entity;
+                    case PathScanningState_UserEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::EntityDelimiter.length();
+                        state = PathScanningState_UserEnd;
+                        return PathDelimiter_Entity;
+                    case PathScanningState_PasswordEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::EntityDelimiter.length();
+                        state = PathScanningState_PasswordEnd;
+                        return PathDelimiter_Entity;
+                    case PathScanningState_HostEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::EntityDelimiter.length();
+                        state = PathScanningState_FolderEnd;
+                        return PathDelimiter_Entity;
+                    case PathScanningState_FolderEnd:
+                        endPos = i - 1;
+                        startPos = i + Path::EntityDelimiter.length();
+                        state = PathScanningState_FolderEnd;
+                        return PathDelimiter_Entity;
+                    default: break;
+                }
             }
         }
+
+        startPos = s.length();
+        state = PathScanningState_EntityEnd;
 
         return result;
     }
@@ -159,6 +276,62 @@ namespace viu2x {
      */
     void Path::deserialize(const wstring & path) {
 
+        // Clear current data
+        Entities.clear();
+
+        PathScanningState state = PathScanningState_Initial;
+        size_t newStartPos = 0;
+        Entity entity;
+
+        while (newStartPos < path.length())
+        {
+            size_t startPos = newStartPos;
+            size_t endPos = startPos;
+
+            // Scan the string until the next delimiter
+            PathDelimiter delimiter = scanDelimiter(path, newStartPos, endPos, state);
+
+            switch (state)
+            {
+                case PathScanningState_ProtocolEnd:
+                    // The previous sub string is a protocol identifier
+                    entity.Protocol = path.substr(startPos, endPos - startPos + 1);
+                    break;
+                case PathScanningState_UserEnd:
+                    // The previous sub string is a user name
+                    entity.Username = path.substr(startPos, endPos - startPos + 1);
+                    break;
+                case PathScanningState_PasswordEnd:
+                    // The previous sub string is a password
+                    entity.Password = path.substr(startPos, endPos - startPos + 1);
+                    break;
+                case PathScanningState_HostEnd:
+                    // The previous sub string is a host identifier
+                    entity.Host = path.substr(startPos, endPos - startPos + 1);
+                    break;
+                case PathScanningState_FolderEnd:
+                case PathScanningState_EntityEnd:
+                    // The previous sub string is a folder name
+                    entity.Entries.push_back(path.substr(startPos, endPos - startPos + 1));
+                    break;
+                default:
+                    break;
+            }
+
+            // Check if it is an entity end.
+            if (delimiter == PathDelimiter_Entity)
+            {
+                // Add the current entity to the list
+                Entities.push_back(entity);
+
+                // Clear the current entity
+                entity.Protocol = L"";
+                entity.Host = L"";
+                entity.Username = L"";
+                entity.Password = L"";
+                entity.Entries.clear();
+            }
+        }
     }
 
     /**
