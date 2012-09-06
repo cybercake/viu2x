@@ -41,6 +41,26 @@ namespace viu2x {
         return s.compare(pos, delimiter.length(), delimiter) == 0;
     }
 
+    /**
+     * This function scans the input string from left to right for path delimiters.
+     *
+     * The scan starts from the specified start position and ends by the next delimiter or
+     * end of the string. When the scan stops, the end position of the next non-delimiter
+     * section will be stored in the parameter endPos and the variable state will be updated.
+     *
+     * @param   [in]    s           The path string.
+     * @param   [inout] startPos    Start position of the scanning. When the scan ends, it
+     *                              will be updated as the position right after the found
+     *                              delimiter.
+     * @param   [out]   endPos      End position of the next non-delimiter section. It is
+     *                              also the position right before the found delimiter.
+     * @param   [inout] state       The current state of the scanning. The delimiter
+     *                              recognition depends on the scanning state.
+     *
+     * @return                      The found and recognized path delimiter.
+     *
+     * @throw                       None.
+     */
     PathDelimiter scanDelimiter(const wstring & s, size_t & startPos, size_t & endPos, PathScanningState & state)
     {
         PathDelimiter result = PathDelimiter_None;
@@ -199,34 +219,42 @@ namespace viu2x {
     }
 
     /**
-     *
+     * The default constructor creates an empty path object.
      */
     Path::Path() {
     }
 
     /**
+     * This constructor copies all data from another path object.
      *
+     * @param   [in]    source  Another path object which will be copied.
      */
     Path::Path(const Path & source) {
         Entities = source.Entities;
     }
 
     /**
+     * This constructor copies all data from an path string.
      *
+     * @param   [in]    source  The path string.
      */
     Path::Path(const wstring & source) {
         deserialize(source);
     }
 
     /**
+     * This operator serialize the path object into an string.
      *
+     * @return  The serialized path string.
      */
     Path::operator wstring() const {
         return serialize();
     }
 
     /**
+     * This function converts the current path to a string.
      *
+     * @return  A path string for display or storage
      */
     wstring Path::serialize() const {
         wstring result = L"";
@@ -272,7 +300,10 @@ namespace viu2x {
     }
 
     /**
+     * This function parses the input string into path elements and store them in the current
+     * path object.
      *
+     * @param   [in]    path    The path string to be parsed.
      */
     void Path::deserialize(const wstring & path) {
 
@@ -335,7 +366,10 @@ namespace viu2x {
     }
 
     /**
+     * This operator converts the operand string into a path object and assigns it to the
+     * current path object.
      *
+     * @return  The reference to the current path object.
      */
     Path & Path::operator = (const wstring & source) {
         deserialize(source);
@@ -343,35 +377,60 @@ namespace viu2x {
     }
 
     /**
+     * This operator attaches the operand path object to the end of current path object.
      *
+     * Rules:
+     * ...
+     *
+     * @param   [in]    op  The operand path object.
+     *
+     * @return  A new path object concatated from the current path and the operand path.
      */
     Path Path::operator + (const Path & op) const {
         return Path();
     }
 
     /**
+     * This operator parses the operand path string and attaches it to the end of current
+     * path object.
      *
+     * Rules:
+     * ...
+     *
+     * @param   [in]    op  The operand path object.
+     *
+     * @return  A new path object concatated from the current path and the operand path.
      */
     Path Path::operator + (const wstring & op) const {
         return Path();
     }
 
     /**
+     * This operator calculates the relative path to the operand path.
      *
+     * @param   [in]    op  The base path.
+     *
+     * @return  A new path object containing the calculated relative path.
      */
     Path Path::operator - (const Path & op) const {
         return Path();
     }
 
     /**
+     * This operator calculates the relative path to the operand path string.
      *
+     * @param   [in]    op  The base path.
+     *
+     * @return  A new path object containing the calculated relative path.
      */
     Path Path::operator - (const wstring & op) const {
         return Path();
     }
 
     /**
+     * This operation removes the last element of the path object.
      *
+     * @return  The reference to the current path object.
      */
     Path & Path::operator -- () {
         return *this;
