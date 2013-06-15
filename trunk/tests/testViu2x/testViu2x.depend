@@ -82,7 +82,7 @@
 	"Exceptions.h"
 	"OS.h"
 
-1371255028 source:d:\programs\viu2x\components\common\string.cpp
+1371294661 source:d:\programs\viu2x\components\common\string.cpp
 	"String.h"
 	"Exceptions.h"
 
@@ -5398,7 +5398,7 @@
 	<boost/config.hpp>
 	<boost/version.hpp>
 
-1371253994 source:d:\programs\viu2x\tests\testviu2x\typetest.cpp
+1371295372 source:d:\programs\viu2x\tests\testviu2x\typetest.cpp
 	<iostream>
 	<boost/test/unit_test.hpp>
 	<stdio.h>

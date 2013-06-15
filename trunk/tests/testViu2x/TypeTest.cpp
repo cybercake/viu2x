@@ -26,20 +26,21 @@ BOOST_AUTO_TEST_CASE (String) {
     BOOST_REQUIRE_NO_THROW(s += s2);
     BOOST_REQUIRE_EQUAL(true, s1 + s2 == s);
 
+#define COMPARE_BASE L"Format(1, 2.10, aaa, This is a string)\n"
     BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(L"Format(%d, %.2f, %s, %s)\n", 1, 2.1, L"aaa", s2.c_str()));
-    BOOST_REQUIRE_EQUAL(true, s == L"Format(1, 2.10, aaa, This is a string)\n");
+    BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
     BOOST_REQUIRE_NO_THROW(s = viu2x::String::format("Format(%d, %.2f, %s, %s)\n", 1, 2.1, L"aaa", s2.c_str()));
-    BOOST_REQUIRE_EQUAL(true, s == L"Format(1, 2.10, aaa, This is a string)\n");
+    BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
     BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(viu2x::String(L"Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.c_str()));
-    BOOST_REQUIRE_EQUAL(true, s == L"Format(1, 2.10, aaa, This is a string)\n");
+    BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
     BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(std::wstring(L"Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.c_str()));
-    BOOST_REQUIRE_EQUAL(true, s == L"Format(1, 2.10, aaa, This is a string)\n");
+    BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
     BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(std::string("Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.c_str()));
-    BOOST_REQUIRE_EQUAL(true, s == L"Format(1, 2.10, aaa, This is a string)\n");
+    BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 }
 
 BOOST_AUTO_TEST_CASE (Timespan) {
