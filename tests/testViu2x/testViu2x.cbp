@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="testViu2x" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../bin/Debug/testViu2x" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../bin/Debug" />
+				<Option object_output="../../obj/Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="libboost_unit_test_framework-mgw47-mt-sd-1_53.a" />
+					<Add directory="../../libs/boost-1.53/static/debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../../bin/Release/testViu2x" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../bin/Release/" />
+				<Option object_output="../../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="libboost_unit_test_framework-mgw47-mt-s-1_53.a" />
+					<Add directory="../../libs/boost-1.53/static/release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../../components" />
+			<Add directory="../../libs/boost-1.53" />
+		</Compiler>
+		<Unit filename="../../components/common/CompilationSettings.h" />
+		<Unit filename="../../components/common/CriticalSection.cpp" />
+		<Unit filename="../../components/common/CriticalSection.h" />
+		<Unit filename="../../components/common/Event.cpp" />
+		<Unit filename="../../components/common/Event.h" />
+		<Unit filename="../../components/common/Exceptions.cpp" />
+		<Unit filename="../../components/common/Exceptions.h" />
+		<Unit filename="../../components/common/Mutex.cpp" />
+		<Unit filename="../../components/common/Mutex.h" />
+		<Unit filename="../../components/common/OS.h" />
+		<Unit filename="../../components/common/Object.cpp" />
+		<Unit filename="../../components/common/Object.h" />
+		<Unit filename="../../components/common/String.cpp" />
+		<Unit filename="../../components/common/String.h" />
+		<Unit filename="../../components/common/Timespan.cpp" />
+		<Unit filename="../../components/common/Timespan.h" />
+		<Unit filename="../../components/common/Timestamp.cpp" />
+		<Unit filename="../../components/common/Timestamp.h" />
+		<Unit filename="../../components/common/Types.h" />
+		<Unit filename="../../components/common/Viu2x.h" />
+		<Unit filename="ThreadingTest.cpp" />
+		<Unit filename="TypeTest.cpp" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="1" line="1" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
