@@ -187,26 +187,32 @@ namespace viu2x {
 
     String String::format(const wchar_t * fmt, va_list params) {
 
-        const int initialSize = 8;
-        wchar_t initialBuf[initialSize];
+        const size_t maxSize = 0x7FFFFFFF;
+        const size_t initialSize = 256;
 
-        int requiredSize = _vsnwprintf(initialBuf, initialSize, fmt, params) + 1;
+        size_t bufferSize = initialSize;
 
-        if (requiredSize > initialSize) {
+        while (bufferSize < maxSize) {
 
-            wchar_t * buf = new wchar_t[requiredSize];
-            const int actualSize = _vsnwprintf(initialBuf, requiredSize, fmt, params);
-            String result(buf);
-            delete [] buf;
+            wchar_t * buf = new wchar_t[bufferSize];
+            size_t actualSize = _vsnwprintf(buf, bufferSize, fmt, params) + 1;
 
-            result.resize(actualSize);
-            return result;
+            // Check if it succeeded.
+            if (actualSize > 0 && actualSize < bufferSize) {
 
-        } else {
-            String result(initialBuf);
-            result.resize(requiredSize - 1);
-            return result;
+                String result(buf);
+                delete [] buf;
+
+                result.resize(actualSize - 1);
+                return result;
+
+            } else {
+                delete [] buf;
+                bufferSize *= 2;
+            }
         }
+
+        throw Exception(L"String::format(): Failed to format string! String length out of range!");
     }
 
     //! Convert a multibyte string to unicode and assign to the current
