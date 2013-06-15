@@ -143,49 +143,68 @@ namespace viu2x {
     }
 
     String String::format(const String & fmt, ...) {
-        va_list param;
-        va_start(param, fmt);
-        String result = format(fmt.c_str(), param);
-        va_end(param);
+        va_list params;
+        va_start(params, fmt);
+        String result = vformat(fmt, params);
+        va_end(params);
         return result;
     }
 
     String String::format(const std::string & fmt, ...) {
-        String f(fmt);
-        va_list param;
-        va_start(param, fmt);
-        String result = format(f.c_str(), param);
-        va_end(param);
+        va_list params;
+        va_start(params, fmt);
+        String result = vformat(fmt, params);
+        va_end(params);
         return result;
     }
 
     String String::format(const std::wstring & fmt, ...) {
-        va_list param;
-        va_start(param, fmt);
-        String result = format(fmt.c_str(), param);
-        va_end(param);
+        va_list params;
+        va_start(params, fmt);
+        String result = vformat(fmt, params);
+        va_end(params);
         return result;
     }
 
     String String::format(const char * fmt, ...) {
-        String f(fmt);
-        va_list param;
-        va_start(param, fmt);
-        String result = format(f.c_str(), param);
-        va_end(param);
+        va_list params;
+        va_start(params, fmt);
+        String result = vformat(fmt, params);
+        va_end(params);
         return result;
     }
 
     String String::format(const wchar_t * fmt, ...) {
-        String f(fmt);
-        va_list param;
-        va_start(param, fmt);
-        String result = format(fmt, param);
-        va_end(param);
+        va_list params;
+        va_start(params, fmt);
+        String result = vformat(fmt, params);
+        va_end(params);
         return result;
     }
 
-    String String::format(const wchar_t * fmt, va_list params) {
+    String String::vformat(const String & fmt, va_list params) {
+        String result = vformat(fmt.c_str(), params);
+        return result;
+    }
+
+    String String::vformat(const std::string & fmt, va_list params) {
+        String f(fmt);
+        String result = vformat(f.c_str(), params);
+        return result;
+    }
+
+    String String::vformat(const std::wstring & fmt, va_list params) {
+        String result = vformat(fmt.c_str(), params);
+        return result;
+    }
+
+    String String::vformat(const char * fmt, va_list params) {
+        String f(fmt);
+        String result = vformat(f.c_str(), params);
+        return result;
+    }
+
+    String String::vformat(const wchar_t * fmt, va_list params) {
 
         const size_t maxSize = 0x7FFFFFFF;
         const size_t initialSize = 256;

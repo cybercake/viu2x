@@ -46,9 +46,14 @@ namespace viu2x {
             static String format(const char * fmt, ...);
             static String format(const wchar_t * fmt, ...);
 
+            static String vformat(const String & fmt, va_list params);
+            static String vformat(const std::string & fmt, va_list params);
+            static String vformat(const std::wstring & fmt, va_list params);
+            static String vformat(const char * fmt, va_list params);
+            static String vformat(const wchar_t * fmt, va_list params);
+
         private:
             void copyFromMultibyte(const char * multibyteString);
-            static String format(const wchar_t * fmt, va_list params);
     };
 
 }
