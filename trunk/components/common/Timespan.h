@@ -52,6 +52,8 @@ namespace viu2x {
 
             bool operator <= (const Timespan & op);
 
+            bool isInfinite() const;
+
             static const Timespan Infinite;
 
             static const Timespan Zero;

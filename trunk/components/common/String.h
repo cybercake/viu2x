@@ -52,6 +52,8 @@ namespace viu2x {
             static String vformat(const char * format, va_list params);
             static String vformat(const wchar_t * format, va_list params);
 
+            static const String EMPTY;
+
         private:
             void copyFromMultibyte(const char * multibyteString);
     };

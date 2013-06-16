@@ -2,7 +2,7 @@
 
 namespace viu2x {
 
-    const Timespan Timespan::Infinite(9223372036854775807);
+    const Timespan Timespan::Infinite(MAX_INT64);
 
     const Timespan Timespan::Zero(0);
 
@@ -92,5 +92,9 @@ namespace viu2x {
 
     bool Timespan::operator <= (const Timespan & op) {
         return m_timeInNanoSecond <= op.getTimeInNanoSecond();
+    }
+
+    bool Timespan::isInfinite() const {
+        return m_timeInNanoSecond == MAX_INT64;
     }
 }

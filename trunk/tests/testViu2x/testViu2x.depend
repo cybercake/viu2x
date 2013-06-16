@@ -18,17 +18,19 @@
 	"Viu2x.h"
 	"Timespan.h"
 
-1370384536 d:\programs\viu2x\components\common\os.h
+1371402964 d:\programs\viu2x\components\common\os.h
 	"CompilationSettings.h"
 	<windows.h>
 	<winnt.h>
 	<Winnls.h>
+	<WinBase.h>
 
-1370117791 source:d:\programs\viu2x\components\common\event.cpp
+1371416123 source:d:\programs\viu2x\components\common\event.cpp
 	"Event.h"
 
-1370122033 d:\programs\viu2x\components\common\event.h
+1371402893 d:\programs\viu2x\components\common\event.h
 	"Viu2x.h"
+	"Timespan.h"
 
 1370377003 source:d:\programs\viu2x\components\common\mutex.cpp
 	"Mutex.h"
@@ -37,7 +39,7 @@
 	"Viu2x.h"
 	"Timespan.h"
 
-1370383817 d:\programs\viu2x\components\common\types.h
+1371402455 d:\programs\viu2x\components\common\types.h
 	"CompilationSettings.h"
 	"String.h"
 	<string>
@@ -58,10 +60,10 @@
 	"Object.h"
 	"Types.h"
 
-1370889954 source:d:\programs\viu2x\components\common\timespan.cpp
+1371403536 source:d:\programs\viu2x\components\common\timespan.cpp
 	"Timespan.h"
 
-1370889588 d:\programs\viu2x\components\common\timespan.h
+1371403530 d:\programs\viu2x\components\common\timespan.h
 	"Viu2x.h"
 
 1370903808 source:d:\programs\viu2x\components\common\timestamp.cpp
@@ -71,18 +73,19 @@
 	"Viu2x.h"
 	"Timespan.h"
 
-1371387897 d:\programs\viu2x\components\common\string.h
+1371403429 d:\programs\viu2x\components\common\string.h
 	"OS.h"
 	<string>
 
-1371388020 d:\programs\viu2x\components\common\exceptions.h
+1371415996 d:\programs\viu2x\components\common\exceptions.h
 	"Types.h"
+	<deque>
 
-1371387965 source:d:\programs\viu2x\components\common\exceptions.cpp
+1371421015 source:d:\programs\viu2x\components\common\exceptions.cpp
 	"Exceptions.h"
 	"OS.h"
 
-1371387900 source:d:\programs\viu2x\components\common\string.cpp
+1371403446 source:d:\programs\viu2x\components\common\string.cpp
 	"String.h"
 	"Exceptions.h"
 
@@ -5398,10 +5401,11 @@
 	<boost/config.hpp>
 	<boost/version.hpp>
 
-1371295494 source:d:\programs\viu2x\tests\testviu2x\typetest.cpp
+1371416855 source:d:\programs\viu2x\tests\testviu2x\typetest.cpp
 	<iostream>
 	<boost/test/unit_test.hpp>
 	<stdio.h>
+	<deque>
 	"common/Viu2x.h"
 	"common/Timespan.h"
 	"common/Timestamp.h"

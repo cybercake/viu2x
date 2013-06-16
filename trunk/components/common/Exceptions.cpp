@@ -7,59 +7,37 @@ namespace viu2x {
     // Exception //
     ///////////////
 
-    Exception::Exception(const String & format, ...) {
-        va_list params;
-        va_start(params, format);
-        m_message = String::vformat(format, params);
-        va_end(params);
-    }
+    Exception::Exception(const String & message,
+                         const Exception * internalException) {
 
-    Exception::Exception(const std::string & format, ...) {
-        va_list params;
-        va_start(params, format);
-        m_message = String::vformat(format, params);
-        va_end(params);
-    }
+        if (internalException != NULL)
+            m_messages.assign(internalException->getMessages().begin(), internalException->getMessages().end());
 
-    Exception::Exception(const std::wstring & format, ...) {
-        va_list params;
-        va_start(params, format);
-        m_message = String::vformat(format, params);
-        va_end(params);
-    }
-
-    Exception::Exception(const char * format, ...) {
-        va_list params;
-        va_start(params, format);
-        m_message = String::vformat(format, params);
-        va_end(params);
-    }
-
-    Exception::Exception(const wchar_t * format, ...) {
-        va_list params;
-        va_start(params, format);
-        m_message = String::vformat(format, params);
-        va_end(params);
+        m_messages.push_front(message);
     }
 
     Exception::~Exception() {
     }
 
-    const String & Exception::getMessage() {
-        return m_message;
+    const String & Exception::getMessage() const {
+        return m_messages.front();
+    }
+
+    const std::deque<String> & Exception::getMessages() const {
+        return m_messages;
     }
 
     /////////////////
     // ExceptionOs //
     /////////////////
 
-    ExceptionOs::ExceptionOs(const String & message) :
-        Exception(message) {
+    ExceptionOs::ExceptionOs(const String & caller, const Exception * internalException) :
+        Exception(caller + L": " + getLastErrorMessage(), internalException) {
     }
 
     ExceptionOs::~ExceptionOs() {}
 
-    void ExceptionOs::throwLatestOsError(const String & caller) {
+    String ExceptionOs::getLastErrorMessage() {
 
 #ifdef VIU2X_WINDOWS
         DWORD errorCode = GetLastError();
@@ -74,14 +52,16 @@ namespace viu2x {
             0, NULL);
 
         if (outputStr == NULL)
-            throw Exception(L"ExceptionOs::throwLatestOsError(): Failed to retrieve system error message!");
+            throw Exception(L"ExceptionOs::getLastErrorMessage(): Failed to retrieve system error message!");
 
         String message(outputStr);
         LocalFree(outputStr);
 
-        if (caller.length() > 0)
-            throw ExceptionOs(caller + L": " + message);
-        else throw ExceptionOs(message);
+        return message;
 #endif
+    }
+
+    void ExceptionOs::throwLatestOsError(const String & caller, const Exception * internalException) {
+        throw ExceptionOs(caller, internalException);
     }
 }

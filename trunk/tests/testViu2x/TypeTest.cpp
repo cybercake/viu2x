@@ -126,4 +126,27 @@ BOOST_AUTO_TEST_CASE (Timestamp) {
     BOOST_REQUIRE_EQUAL(true, t1 >= t2);
 }
 
+BOOST_AUTO_TEST_CASE (Exceptions) {
+
+    viu2x::String s;
+    std::deque<viu2x::String> messages;
+    try {
+        try {
+            throw viu2x::Exception(L"Message1", NULL);
+        } catch (viu2x::Exception & e) {
+            throw viu2x::Exception(L"Message2", &e);
+        }
+    } catch (viu2x::Exception & e) {
+        BOOST_REQUIRE_NO_THROW(messages.assign(e.getMessages().begin(), e.getMessages().end()));
+        s = e.getMessage();
+    }
+
+    BOOST_REQUIRE_EQUAL(2u, messages.size());
+    BOOST_REQUIRE_EQUAL(true, s == L"Message2");
+    BOOST_REQUIRE_EQUAL(true, messages[1] == L"Message1");
+    BOOST_REQUIRE_EQUAL(true, messages[0] == L"Message2");
+
+    // @todo Test ExceptionOs
+}
+
 BOOST_AUTO_TEST_SUITE_END( )
