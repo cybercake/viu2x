@@ -3,6 +3,8 @@
 
 namespace viu2x {
 
+    const String String::EMPTY = String(L"");
+
     //! The default constructor resulting in an empty string.
     String::String() : std::wstring() {
     }

@@ -10,6 +10,7 @@
 #include <windows.h>
 #include <winnt.h>
 #include <Winnls.h>
+#include <WinBase.h>
 #endif
 
 #ifdef VIU2X_LINUX

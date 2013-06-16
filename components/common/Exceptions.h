@@ -2,32 +2,47 @@
 #define EXCEPTIONS_H
 
 #include "Types.h"
+#include <deque>
 
 namespace viu2x {
 
+    /**
+     * The common base of all viu2x exceptions.
+     *
+     * @test Types/Exceptions
+     *
+     * @author  Qin
+     */
     class Exception {
 
         public:
-            Exception(const String & format, ...);
-            Exception(const std::string & format, ...);
-            Exception(const std::wstring & format, ...);
-            Exception(const char * format, ...);
-            Exception(const wchar_t * format, ...);
+            Exception(const String & message, const Exception * internalException = NULL);
             virtual ~Exception();
 
-            const String & getMessage();
+            const String & getMessage() const;
+            const std::deque<String> & getMessages() const;
 
         protected:
-            String m_message;
+            std::deque<String> m_messages;
     };
 
+    /**
+     * The common base of all viu2x exceptions.
+     *
+     * @test Types/Exceptions
+     *
+     * @author  Qin
+     */
     class ExceptionOs : public Exception {
 
         public:
-            ExceptionOs(const String & message);
+            ExceptionOs(const String & caller, const Exception * internalException = NULL);
             virtual ~ExceptionOs();
 
-            static void throwLatestOsError(const String & caller);
+            static void throwLatestOsError(const String & caller, const Exception * internalException = NULL);
+
+        private:
+            static String getLastErrorMessage();
     };
 }
 #endif // EXCEPTIONS_H
