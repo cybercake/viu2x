@@ -7,7 +7,39 @@ namespace viu2x {
     // Exception //
     ///////////////
 
-    Exception::Exception(const String & message) : m_message(message) {
+    Exception::Exception(const String & format, ...) {
+        va_list params;
+        va_start(params, format);
+        m_message = String::vformat(format, params);
+        va_end(params);
+    }
+
+    Exception::Exception(const std::string & format, ...) {
+        va_list params;
+        va_start(params, format);
+        m_message = String::vformat(format, params);
+        va_end(params);
+    }
+
+    Exception::Exception(const std::wstring & format, ...) {
+        va_list params;
+        va_start(params, format);
+        m_message = String::vformat(format, params);
+        va_end(params);
+    }
+
+    Exception::Exception(const char * format, ...) {
+        va_list params;
+        va_start(params, format);
+        m_message = String::vformat(format, params);
+        va_end(params);
+    }
+
+    Exception::Exception(const wchar_t * format, ...) {
+        va_list params;
+        va_start(params, format);
+        m_message = String::vformat(format, params);
+        va_end(params);
     }
 
     Exception::~Exception() {
