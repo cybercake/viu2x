@@ -40,17 +40,17 @@ namespace viu2x {
             String operator + (const std::string & op);
             String operator + (const std::wstring & op);
 
-            static String format(const String & fmt, ...);
-            static String format(const std::string & fmt, ...);
-            static String format(const std::wstring & fmt, ...);
-            static String format(const char * fmt, ...);
-            static String format(const wchar_t * fmt, ...);
+            static String format(const String & format, ...);
+            static String format(const std::string & format, ...);
+            static String format(const std::wstring & format, ...);
+            static String format(const char * format, ...);
+            static String format(const wchar_t * format, ...);
 
-            static String vformat(const String & fmt, va_list params);
-            static String vformat(const std::string & fmt, va_list params);
-            static String vformat(const std::wstring & fmt, va_list params);
-            static String vformat(const char * fmt, va_list params);
-            static String vformat(const wchar_t * fmt, va_list params);
+            static String vformat(const String & format, va_list params);
+            static String vformat(const std::string & format, va_list params);
+            static String vformat(const std::wstring & format, va_list params);
+            static String vformat(const char * format, va_list params);
+            static String vformat(const wchar_t * format, va_list params);
 
         private:
             void copyFromMultibyte(const char * multibyteString);

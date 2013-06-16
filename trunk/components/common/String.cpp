@@ -142,69 +142,69 @@ namespace viu2x {
         return result;
     }
 
-    String String::format(const String & fmt, ...) {
+    String String::format(const String & format, ...) {
         va_list params;
-        va_start(params, fmt);
-        String result = vformat(fmt, params);
+        va_start(params, format);
+        String result = vformat(format, params);
         va_end(params);
         return result;
     }
 
-    String String::format(const std::string & fmt, ...) {
+    String String::format(const std::string & format, ...) {
         va_list params;
-        va_start(params, fmt);
-        String result = vformat(fmt, params);
+        va_start(params, format);
+        String result = vformat(format, params);
         va_end(params);
         return result;
     }
 
-    String String::format(const std::wstring & fmt, ...) {
+    String String::format(const std::wstring & format, ...) {
         va_list params;
-        va_start(params, fmt);
-        String result = vformat(fmt, params);
+        va_start(params, format);
+        String result = vformat(format, params);
         va_end(params);
         return result;
     }
 
-    String String::format(const char * fmt, ...) {
+    String String::format(const char * format, ...) {
         va_list params;
-        va_start(params, fmt);
-        String result = vformat(fmt, params);
+        va_start(params, format);
+        String result = vformat(format, params);
         va_end(params);
         return result;
     }
 
-    String String::format(const wchar_t * fmt, ...) {
+    String String::format(const wchar_t * format, ...) {
         va_list params;
-        va_start(params, fmt);
-        String result = vformat(fmt, params);
+        va_start(params, format);
+        String result = vformat(format, params);
         va_end(params);
         return result;
     }
 
-    String String::vformat(const String & fmt, va_list params) {
-        String result = vformat(fmt.c_str(), params);
+    String String::vformat(const String & format, va_list params) {
+        String result = vformat(format.c_str(), params);
         return result;
     }
 
-    String String::vformat(const std::string & fmt, va_list params) {
-        String f(fmt);
+    String String::vformat(const std::string & format, va_list params) {
+        String f(format);
         String result = vformat(f.c_str(), params);
         return result;
     }
 
-    String String::vformat(const std::wstring & fmt, va_list params) {
-        String result = vformat(fmt.c_str(), params);
+    String String::vformat(const std::wstring & format, va_list params) {
+        String result = vformat(format.c_str(), params);
         return result;
     }
 
-    String String::vformat(const char * fmt, va_list params) {
-        String f(fmt);
+    String String::vformat(const char * format, va_list params) {
+        String f(format);
         String result = vformat(f.c_str(), params);
         return result;
     }
 
-    String String::vformat(const wchar_t * fmt, va_list params) {
+    String String::vformat(const wchar_t * format, va_list params) {
 
         const size_t maxSize = 0x7FFFFFFF;
         const size_t initialSize = 256;
@@ -214,17 +214,13 @@ namespace viu2x {
         while (bufferSize < maxSize) {
 
             wchar_t * buf = new wchar_t[bufferSize];
-            size_t actualSize = _vsnwprintf(buf, bufferSize, fmt, params) + 1;
+            size_t actualSize = _vsnwprintf(buf, bufferSize, format, params) + 1; // reserve place for '\0'
 
             // Check if it succeeded.
             if (actualSize > 0 && actualSize < bufferSize) {
-
                 String result(buf);
                 delete [] buf;
-
-                result.resize(actualSize - 1);
                 return result;
-
             } else {
                 delete [] buf;
                 bufferSize *= 2;

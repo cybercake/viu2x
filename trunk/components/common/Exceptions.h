@@ -8,7 +8,11 @@ namespace viu2x {
     class Exception {
 
         public:
-            Exception(const String & message);
+            Exception(const String & format, ...);
+            Exception(const std::string & format, ...);
+            Exception(const std::wstring & format, ...);
+            Exception(const char * format, ...);
+            Exception(const wchar_t * format, ...);
             virtual ~Exception();
 
             const String & getMessage();
