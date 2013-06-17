@@ -1,34 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Release" />
-	<File name="..\..\components\common\Event.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1257" topLine="25" />
-		</Cursor>
-	</File>
-	<File name="..\..\components\common\Event.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="853" topLine="8" />
-		</Cursor>
-	</File>
 	<File name="..\..\components\common\Mutex.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="508" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\components\common\Exceptions.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1130" topLine="29" />
-		</Cursor>
-	</File>
 	<File name="..\..\components\common\Mutex.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="452" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\components\common\Exceptions.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="210" topLine="13" />
+			<Cursor1 position="139" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\..\components\common\OS.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -36,19 +16,9 @@
 			<Cursor1 position="205" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\components\common\CompilationSettings.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="85" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="..\..\components\common\Object.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="18" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\components\common\CriticalSection.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="727" topLine="15" />
 		</Cursor>
 	</File>
 	<File name="..\..\components\common\Object.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -56,14 +26,14 @@
 			<Cursor1 position="36" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\components\common\CriticalSection.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\components\common\String.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="284" topLine="0" />
+			<Cursor1 position="1420" topLine="22" />
 		</Cursor>
 	</File>
-	<File name="..\..\components\common\String.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\components\common\Signal.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="116" topLine="0" />
+			<Cursor1 position="473" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\..\components\common\String.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -71,14 +41,29 @@
 			<Cursor1 position="795" topLine="18" />
 		</Cursor>
 	</File>
+	<File name="..\..\components\common\Signal.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="12" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="..\..\components\common\Timespan.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2732" topLine="65" />
+			<Cursor1 position="51" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\components\common\Exceptions.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1130" topLine="29" />
 		</Cursor>
 	</File>
 	<File name="..\..\components\common\Timespan.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1317" topLine="27" />
+			<Cursor1 position="1369" topLine="30" />
+		</Cursor>
+	</File>
+	<File name="..\..\components\common\Exceptions.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="210" topLine="13" />
 		</Cursor>
 	</File>
 	<File name="..\..\components\common\Timestamp.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -86,9 +71,19 @@
 			<Cursor1 position="115" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="..\..\components\common\CompilationSettings.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="85" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="..\..\components\common\Timestamp.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="941" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\components\common\CriticalSection.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="727" topLine="15" />
 		</Cursor>
 	</File>
 	<File name="..\..\components\common\Types.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -96,19 +91,24 @@
 			<Cursor1 position="388" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="..\..\components\common\CriticalSection.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="97" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="..\..\components\common\Viu2x.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="140" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="ThreadingTest.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ThreadingTest.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="651" topLine="13" />
+			<Cursor1 position="1162" topLine="29" />
 		</Cursor>
 	</File>
-	<File name="TypeTest.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="TypeTest.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="298" topLine="0" />
+			<Cursor1 position="5503" topLine="117" />
 		</Cursor>
 	</File>
 	<File name="main.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
