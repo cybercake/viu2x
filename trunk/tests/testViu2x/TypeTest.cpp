@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE (Exceptions) {
     BOOST_REQUIRE_EQUAL(true, messages[1] == L"Message1");
     BOOST_REQUIRE_EQUAL(true, messages[0] == L"Message2");
 
-    // @todo Test ExceptionOs
+    // @todo Test OsException
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

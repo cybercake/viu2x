@@ -33,11 +33,11 @@ namespace viu2x {
      *
      * @author  Qin
      */
-    class ExceptionOs : public Exception {
+    class OsException : public Exception {
 
         public:
-            ExceptionOs(const String & caller, const Exception * internalException = NULL);
-            virtual ~ExceptionOs();
+            OsException(const String & caller, const Exception * internalException = NULL);
+            virtual ~OsException();
 
             static void throwLatestOsError(const String & caller, const Exception * internalException = NULL);
 

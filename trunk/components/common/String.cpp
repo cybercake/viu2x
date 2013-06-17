@@ -247,7 +247,7 @@ namespace viu2x {
         // Get the required buffer size
         int requiredLength = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, multibyteString, -1, NULL, 0);
         if (requiredLength <= 0)
-            ExceptionOs::throwLatestOsError(L"String::setAsMultibyte()");
+            OsException::throwLatestOsError(L"String::setAsMultibyte()");
 
         // Allocate the buffer
         wchar_t * dst = new wchar_t[requiredLength + 1];
@@ -260,7 +260,7 @@ namespace viu2x {
 
             // Check if conversion was successful
             if (writtenLength == 0)
-                ExceptionOs::throwLatestOsError(L"String::setAsMultibyte()");
+                OsException::throwLatestOsError(L"String::setAsMultibyte()");
 
             // Check if the string length before/after conversion are identical.
             if (writtenLength != requiredLength)
