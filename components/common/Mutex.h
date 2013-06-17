@@ -6,6 +6,9 @@
 
 namespace viu2x {
 
+    /**
+     * @auhor   Qin
+     */
     class Mutex : public Object {
 
         public:

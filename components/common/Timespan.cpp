@@ -2,9 +2,9 @@
 
 namespace viu2x {
 
-    const Timespan Timespan::Infinite(MAX_INT64);
+    const Timespan Timespan::Infinite = Timespan(MAX_INT64);
 
-    const Timespan Timespan::Zero(0);
+    const Timespan Timespan::Zero = Timespan(0);
 
     Timespan::Timespan() {
         m_timeInNanoSecond = 0;

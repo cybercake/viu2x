@@ -28,16 +28,18 @@ namespace viu2x {
     }
 
     /////////////////
-    // ExceptionOs //
+    // OsException //
     /////////////////
 
-    ExceptionOs::ExceptionOs(const String & caller, const Exception * internalException) :
+    OsException::OsException(const String & caller, const Exception * internalException) :
         Exception(caller + L": " + getLastErrorMessage(), internalException) {
     }
 
-    ExceptionOs::~ExceptionOs() {}
+    OsException::~OsException() {
+        // Nothing needs to be done.
+    }
 
-    String ExceptionOs::getLastErrorMessage() {
+    String OsException::getLastErrorMessage() {
 
 #ifdef VIU2X_WINDOWS
         DWORD errorCode = GetLastError();
@@ -52,7 +54,7 @@ namespace viu2x {
             0, NULL);
 
         if (outputStr == NULL)
-            throw Exception(L"ExceptionOs::getLastErrorMessage(): Failed to retrieve system error message!");
+            throw Exception(L"OsException::getLastErrorMessage(): Failed to retrieve system error message!");
 
         String message(outputStr);
         LocalFree(outputStr);
@@ -61,7 +63,7 @@ namespace viu2x {
 #endif
     }
 
-    void ExceptionOs::throwLatestOsError(const String & caller, const Exception * internalException) {
-        throw ExceptionOs(caller, internalException);
+    void OsException::throwLatestOsError(const String & caller, const Exception * internalException) {
+        throw OsException(caller, internalException);
     }
 }
