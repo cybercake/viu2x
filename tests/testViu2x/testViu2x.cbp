@@ -45,8 +45,6 @@
 		<Unit filename="../../components/common/CompilationSettings.h" />
 		<Unit filename="../../components/common/CriticalSection.cpp" />
 		<Unit filename="../../components/common/CriticalSection.h" />
-		<Unit filename="../../components/common/Event.cpp" />
-		<Unit filename="../../components/common/Event.h" />
 		<Unit filename="../../components/common/Exceptions.cpp" />
 		<Unit filename="../../components/common/Exceptions.h" />
 		<Unit filename="../../components/common/Mutex.cpp" />
@@ -54,6 +52,8 @@
 		<Unit filename="../../components/common/OS.h" />
 		<Unit filename="../../components/common/Object.cpp" />
 		<Unit filename="../../components/common/Object.h" />
+		<Unit filename="../../components/common/Signal.cpp" />
+		<Unit filename="../../components/common/Signal.h" />
 		<Unit filename="../../components/common/String.cpp" />
 		<Unit filename="../../components/common/String.h" />
 		<Unit filename="../../components/common/Timespan.cpp" />
