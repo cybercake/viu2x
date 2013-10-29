@@ -7,16 +7,63 @@ namespace viu2x {
     // Exception //
     ///////////////
 
-    Exception::Exception(const String & message,
-                         const Exception * internalException) {
+    Exception::Exception(const String & message, ...) {
 
+        va_list params;
+        va_start(params, message);
+        initialize(String::format(message, params), NULL);
+        va_end(params);
+    }
+
+    Exception::Exception(const String & message, va_list params) {
+
+        initialize(String::format(message, params), NULL);
+    }
+
+    Exception::Exception(const Exception * internalException, const String & message, ...) {
+
+        va_list params;
+        va_start(params, message);
+        initialize(String::format(message, params), internalException);
+        va_end(params);
+    }
+
+    Exception::Exception(const Exception & internalException, const String & message, ...) {
+
+        va_list params;
+        va_start(params, message);
+        initialize(String::format(message, params), internalException);
+        va_end(params);
+    }
+
+    Exception::Exception(const Exception * internalException, const String & message, va_list params) {
+
+        initialize(String::format(message, params), internalException);
+    }
+
+    Exception::Exception(const Exception & internalException, const String & message, va_list params) {
+
+        initialize(String::format(message, params), internalException);
+    }
+
+    Exception::~Exception() {
+    }
+
+    void Exception::initialize(const String & message, const Exception * internalException) {
+
+        // Copy all previous exception messages
         if (internalException != NULL)
             m_messages.assign(internalException->getMessages().begin(), internalException->getMessages().end());
 
         m_messages.push_front(message);
     }
 
-    Exception::~Exception() {
+    void Exception::initialize(const String & message, const Exception & internalException) {
+
+        // Copy all previous exception messages
+        m_messages.assign(internalException.getMessages().begin(), internalException.getMessages().end());
+
+        m_messages.push_front(message);
     }
 
     const String & Exception::getMessage() const {

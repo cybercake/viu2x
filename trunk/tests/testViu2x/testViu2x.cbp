@@ -16,8 +16,8 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="libboost_unit_test_framework-mgw47-mt-sd-1_53.a" />
-					<Add directory="../../libs/boost-1.53/static/debug" />
+					<Add library="libboost_test_exec_monitor-mgw48-mt-d-1_54.a" />
+					<Add directory="../../libs/boost-1.54/static/debug" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -31,8 +31,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="libboost_unit_test_framework-mgw47-mt-s-1_53.a" />
-					<Add directory="../../libs/boost-1.53/static/release" />
+					<Add library="libboost_test_exec_monitor-mgw48-mt-1_54.a" />
+					<Add directory="../../libs/boost-1.54/static/release" />
 				</Linker>
 			</Target>
 		</Build>
@@ -40,8 +40,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add directory="../../components" />
-			<Add directory="../../libs/boost-1.53" />
+			<Add directory="../../libs/boost-1.54" />
 		</Compiler>
+		<Unit filename="../../components/common/Application.cpp" />
+		<Unit filename="../../components/common/Application.h" />
 		<Unit filename="../../components/common/CompilationSettings.h" />
 		<Unit filename="../../components/common/CriticalSection.cpp" />
 		<Unit filename="../../components/common/CriticalSection.h" />
@@ -52,10 +54,13 @@
 		<Unit filename="../../components/common/OS.h" />
 		<Unit filename="../../components/common/Object.cpp" />
 		<Unit filename="../../components/common/Object.h" />
+		<Unit filename="../../components/common/Pointer.hpp" />
 		<Unit filename="../../components/common/Signal.cpp" />
 		<Unit filename="../../components/common/Signal.h" />
 		<Unit filename="../../components/common/String.cpp" />
 		<Unit filename="../../components/common/String.h" />
+		<Unit filename="../../components/common/Thread.cpp" />
+		<Unit filename="../../components/common/Thread.h" />
 		<Unit filename="../../components/common/Timespan.cpp" />
 		<Unit filename="../../components/common/Timespan.h" />
 		<Unit filename="../../components/common/Timestamp.cpp" />

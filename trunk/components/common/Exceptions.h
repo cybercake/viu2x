@@ -2,6 +2,7 @@
 #define EXCEPTIONS_H
 
 #include "Types.h"
+#include "Object.h"
 #include <deque>
 
 namespace viu2x {
@@ -13,10 +14,15 @@ namespace viu2x {
      *
      * @author  Qin
      */
-    class Exception {
+    class Exception : public Object {
 
         public:
-            Exception(const String & message, const Exception * internalException = NULL);
+            Exception(const String & message, ...);
+            Exception(const String & message, va_list params);
+            Exception(const Exception * internalException, const String & message, ...);
+            Exception(const Exception & internalException, const String & message, ...);
+            Exception(const Exception * internalException, const String & message, va_list params);
+            Exception(const Exception & internalException, const String & message, va_list params);
             virtual ~Exception();
 
             const String & getMessage() const;
@@ -24,6 +30,9 @@ namespace viu2x {
 
         protected:
             std::deque<String> m_messages;
+
+            void initialize(const String & message, const Exception * internalException = nullptr);
+            void initialize(const String & message, const Exception & internalException);
     };
 
     /**
@@ -36,10 +45,10 @@ namespace viu2x {
     class OsException : public Exception {
 
         public:
-            OsException(const String & caller, const Exception * internalException = NULL);
+            OsException(const String & caller, const Exception * internalException = nullptr);
             virtual ~OsException();
 
-            static void throwLatestOsError(const String & caller, const Exception * internalException = NULL);
+            static void throwLatestOsError(const String & caller, const Exception * internalException = nullptr);
 
         private:
             static String getLastErrorMessage();

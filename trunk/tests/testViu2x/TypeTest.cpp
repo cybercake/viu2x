@@ -5,6 +5,7 @@
 #include "common/Viu2x.h"
 #include "common/Timespan.h"
 #include "common/Timestamp.h"
+#include "common/Pointer.hpp"
 
 using namespace std;
 
@@ -132,9 +133,9 @@ BOOST_AUTO_TEST_CASE (Exceptions) {
     std::deque<viu2x::String> messages;
     try {
         try {
-            throw viu2x::Exception(L"Message1", NULL);
+            throw viu2x::Exception(nullptr, L"Message1");
         } catch (viu2x::Exception & e) {
-            throw viu2x::Exception(L"Message2", &e);
+            throw viu2x::Exception(e, L"Message2");
         }
     } catch (viu2x::Exception & e) {
         BOOST_REQUIRE_NO_THROW(messages.assign(e.getMessages().begin(), e.getMessages().end()));
@@ -147,6 +148,34 @@ BOOST_AUTO_TEST_CASE (Exceptions) {
     BOOST_REQUIRE_EQUAL(true, messages[0] == L"Message2");
 
     // @todo Test OsException
+}
+
+BOOST_AUTO_TEST_CASE (Pointers) {
+
+    viu2x::inst<viu2x::Object> inst;
+    viu2x::shared<viu2x::Object> obj;
+    boost::shared_ptr<viu2x::Object> obj2;
+
+    BOOST_REQUIRE_EQUAL (false, nullptr == inst.get());
+    BOOST_REQUIRE_EQUAL (true, nullptr == obj.get());
+
+    BOOST_REQUIRE_NO_THROW (obj.reset(new viu2x::Object()));
+    BOOST_REQUIRE_EQUAL (false, nullptr == inst.get());
+
+    BOOST_REQUIRE_NO_THROW (obj2 = obj);
+    BOOST_REQUIRE_EQUAL (false, obj.get() == nullptr);
+
+    BOOST_REQUIRE_NO_THROW (obj.reset());
+    BOOST_REQUIRE_EQUAL (true, obj.get() == nullptr);
+    BOOST_REQUIRE_EQUAL (false, obj2.get() == nullptr);
+
+    BOOST_REQUIRE_NO_THROW (obj = inst);
+    BOOST_REQUIRE_EQUAL (false, obj.get() == nullptr);
+    BOOST_REQUIRE_EQUAL (true, obj.get() == inst.get());
+
+    BOOST_REQUIRE_NO_THROW (obj2.reset());
+    BOOST_REQUIRE_EQUAL (true, obj2.get() == nullptr);
+
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

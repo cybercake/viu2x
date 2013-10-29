@@ -5,7 +5,7 @@
 
 namespace viu2x {
 
-    class Timespan {
+    class Timespan : public Object {
 
         public:
             Timespan();
