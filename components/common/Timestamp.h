@@ -6,7 +6,7 @@
 
 namespace viu2x {
 
-    class Timestamp {
+    class Timestamp : public Object {
 
         public:
             Timestamp();

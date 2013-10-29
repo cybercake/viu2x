@@ -1,6 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "stdint.h"
+
 namespace viu2x {
 
     /**
@@ -12,6 +14,8 @@ namespace viu2x {
         public:
             Object();
             virtual ~Object();
+
+            virtual uint32_t getHash();
     };
 
 }

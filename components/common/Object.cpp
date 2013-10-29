@@ -10,4 +10,7 @@ namespace viu2x {
         // Nothing needs to be done.
     }
 
+    uint32_t Object::getHash() {
+        return (uint32_t)this;
+    }
 }
