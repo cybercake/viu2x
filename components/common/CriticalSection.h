@@ -27,6 +27,17 @@ namespace viu2x {
 
     };
 
+    /**
+     * @auhor   Qin
+     */
+    class CriticalSectionOnStack : public Object {
+        public:
+            CriticalSectionOnStack(CriticalSection & lock);
+            ~CriticalSectionOnStack();
+        private:
+            CriticalSection & m_lock;
+    };
+
 }
 
 #endif // CRITICALSECTION_H

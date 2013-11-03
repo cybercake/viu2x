@@ -47,4 +47,12 @@ namespace viu2x {
         LeaveCriticalSection(&m_cs);
 #endif
     }
+
+    CriticalSectionOnStack::CriticalSectionOnStack(CriticalSection & lock) : m_lock(lock) {
+        m_lock.enter();
+    }
+
+    CriticalSectionOnStack::~CriticalSectionOnStack() {
+        m_lock.leave();
+    }
 }

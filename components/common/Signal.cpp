@@ -7,10 +7,10 @@ namespace viu2x {
 
 #ifdef VIU2X_WINDOWS
         m_event = CreateEvent(
-                      NULL, m_isManualReset, false, m_name.empty() ? NULL : m_name.c_str());
+                      NULL, m_isManualReset, false, m_name.isEmpty() ? NULL : m_name.cStr());
         if (m_event == NULL)
             OsException::throwLatestOsError(
-                String::format(L"Event::Event(\"%s\", %s)", m_name.c_str(), m_isManualReset ? L"true" : L"false"));
+                String::format(L"Event::Event(\"%s\", %s)", m_name.cStr(), m_isManualReset ? L"true" : L"false"));
 #endif
     }
 
@@ -19,10 +19,10 @@ namespace viu2x {
 
 #ifdef VIU2X_WINDOWS
         m_event = CreateEvent(
-                      NULL, m_isManualReset, false, m_name.empty() ? NULL : m_name.c_str());
+                      NULL, m_isManualReset, false, m_name.isEmpty() ? NULL : m_name.cStr());
         if (m_event == NULL)
             OsException::throwLatestOsError(
-                String::format(L"Event::Event(\"%s\", %s)", m_name.c_str(), m_isManualReset ? L"true" : L"false"));
+                String::format(L"Event::Event(\"%s\", %s)", m_name.cStr(), m_isManualReset ? L"true" : L"false"));
 #endif
     }
 
