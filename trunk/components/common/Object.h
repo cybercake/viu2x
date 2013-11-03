@@ -15,7 +15,7 @@ namespace viu2x {
             Object();
             virtual ~Object();
 
-            virtual uint32_t getHash();
+            virtual uint64_t getHash();
     };
 
 }

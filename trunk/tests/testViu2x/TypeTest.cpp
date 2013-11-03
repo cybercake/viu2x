@@ -5,13 +5,18 @@
 #include "common/Viu2x.h"
 #include "common/Timespan.h"
 #include "common/Timestamp.h"
-#include "common/Pointer.hpp"
 
 using namespace std;
 
 BOOST_AUTO_TEST_SUITE (Types) // name of the test suite is stringtest
 
 BOOST_AUTO_TEST_CASE (String) {
+
+//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == viu2x::String(L'x'));
+//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == "x");
+//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == L"x");
+//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == 'x');
+//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == L'x');
 
     viu2x::String s1, s2, s;
     BOOST_REQUIRE_NO_THROW(s1 = L"This is a string");
@@ -28,20 +33,57 @@ BOOST_AUTO_TEST_CASE (String) {
     BOOST_REQUIRE_EQUAL(true, s1 + s2 == s);
 
 #define COMPARE_BASE L"Format(1, 2.10, aaa, This is a string)\n"
-    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(L"Format(%d, %.2f, %s, %s)\n", 1, 2.1, L"aaa", s2.c_str()));
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(L"Format(%d, %.2f, %s, %s)\n", 1, 2.1, L"aaa", s2.cStr()));
     BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
-    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format("Format(%d, %.2f, %s, %s)\n", 1, 2.1, L"aaa", s2.c_str()));
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format("Format(%d, %.2f, %s, %s)\n", 1, 2.1, L"aaa", s2.cStr()));
     BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
-    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(viu2x::String(L"Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.c_str()));
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(viu2x::String(L"Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.cStr()));
     BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
-    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(std::wstring(L"Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.c_str()));
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(std::wstring(L"Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.cStr()));
     BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
 
-    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(std::string("Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.c_str()));
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String::format(std::string("Format(%d, %.2f, %s, %s)\n"), 1, 2.1, L"aaa", s2.cStr()));
     BOOST_REQUIRE_EQUAL(true, s == COMPARE_BASE);
+
+    int32_t i32 = -123;
+    uint32_t ui32 = 123;
+    int32_t i64 = -123;
+    uint32_t ui64 = 123;
+    float fSingle = 1.23456789;
+    double fDouble = -1.23456789;
+
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String(i32));
+    BOOST_REQUIRE_EQUAL(true, s == L"-123");
+    BOOST_REQUIRE_EQUAL(i32, s.asInt32());
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String(ui32));
+    BOOST_REQUIRE_EQUAL(true, s == L"123");
+    BOOST_REQUIRE_EQUAL(ui32, s.asUInt32());
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String(i64));
+    BOOST_REQUIRE_EQUAL(true, s == L"-123");
+    BOOST_REQUIRE_EQUAL(i64, s.asInt64());
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String(ui64));
+    BOOST_REQUIRE_EQUAL(true, s == L"123");
+    BOOST_REQUIRE_EQUAL(ui64, s.asUInt64());
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String(fSingle, L"%.2f"));
+    BOOST_REQUIRE_EQUAL(true, s == L"1.23");
+    BOOST_REQUIRE_EQUAL(1.23f, s.asFloat());
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String(fDouble, L"%.2f"));
+    BOOST_REQUIRE_EQUAL(true, s == L"-1.23");
+    BOOST_REQUIRE_EQUAL(-1.23d, s.asDouble());
+
+    int32_t x = 123;
+    BOOST_REQUIRE_NO_THROW(s = viu2x::String(456, L" \tx: %05d\n"));
+    BOOST_REQUIRE_EQUAL(true, s == L" \tx: 00456\n");
+    BOOST_REQUIRE_EQUAL(false, s.tryParse(x));
+    BOOST_REQUIRE_NO_THROW(s = s.trim());
+    BOOST_REQUIRE_EQUAL(true, s == L"x: 00456");
+    BOOST_REQUIRE_NO_THROW(s1 = s.subStr(5, 3));
+    BOOST_REQUIRE_EQUAL(true, s1 == L"456");
+    BOOST_REQUIRE_EQUAL(true, s1.tryParse(x));
+    BOOST_REQUIRE_EQUAL(456, x);
 }
 
 BOOST_AUTO_TEST_CASE (Timespan) {
@@ -148,34 +190,6 @@ BOOST_AUTO_TEST_CASE (Exceptions) {
     BOOST_REQUIRE_EQUAL(true, messages[0] == L"Message2");
 
     // @todo Test OsException
-}
-
-BOOST_AUTO_TEST_CASE (Pointers) {
-
-    viu2x::inst<viu2x::Object> inst;
-    viu2x::shared<viu2x::Object> obj;
-    boost::shared_ptr<viu2x::Object> obj2;
-
-    BOOST_REQUIRE_EQUAL (false, nullptr == inst.get());
-    BOOST_REQUIRE_EQUAL (true, nullptr == obj.get());
-
-    BOOST_REQUIRE_NO_THROW (obj.reset(new viu2x::Object()));
-    BOOST_REQUIRE_EQUAL (false, nullptr == inst.get());
-
-    BOOST_REQUIRE_NO_THROW (obj2 = obj);
-    BOOST_REQUIRE_EQUAL (false, obj.get() == nullptr);
-
-    BOOST_REQUIRE_NO_THROW (obj.reset());
-    BOOST_REQUIRE_EQUAL (true, obj.get() == nullptr);
-    BOOST_REQUIRE_EQUAL (false, obj2.get() == nullptr);
-
-    BOOST_REQUIRE_NO_THROW (obj = inst);
-    BOOST_REQUIRE_EQUAL (false, obj.get() == nullptr);
-    BOOST_REQUIRE_EQUAL (true, obj.get() == inst.get());
-
-    BOOST_REQUIRE_NO_THROW (obj2.reset());
-    BOOST_REQUIRE_EQUAL (true, obj2.get() == nullptr);
-
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

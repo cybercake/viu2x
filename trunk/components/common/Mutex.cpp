@@ -19,11 +19,11 @@ namespace viu2x {
 #ifdef VIU2X_WINDOWS
         // Try to open an existing mutex first if the name has been specified.
         if (m_name.length() > 0)
-            m_mutex = OpenMutex(SYNCHRONIZE, false, m_name.c_str());
+            m_mutex = OpenMutex(SYNCHRONIZE, false, m_name.cStr());
 
         // Try to create a new mutex
         if (m_mutex == NULL)
-            m_mutex = CreateMutex(NULL, false, m_name.length() > 0 ? m_name.c_str() : NULL);
+            m_mutex = CreateMutex(NULL, false, m_name.length() > 0 ? m_name.cStr() : NULL);
 
         // Check the created mutex handle
         if (m_mutex == NULL)

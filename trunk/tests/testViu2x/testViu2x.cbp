@@ -13,11 +13,12 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++11" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="libboost_test_exec_monitor-mgw48-mt-d-1_54.a" />
-					<Add directory="../../libs/boost-1.54/static/debug" />
+					<Add library="libboost_test_exec_monitor.a" />
+					<Add directory="../../3rdParty/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -28,11 +29,12 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-std=c++11" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="libboost_test_exec_monitor-mgw48-mt-1_54.a" />
-					<Add directory="../../libs/boost-1.54/static/release" />
+					<Add library="libboost_test_exec_monitor.a" />
+					<Add directory="../../3rdParty/lib" />
 				</Linker>
 			</Target>
 		</Build>
@@ -40,7 +42,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add directory="../../components" />
-			<Add directory="../../libs/boost-1.54" />
+			<Add directory="../../3rdParty/include" />
 		</Compiler>
 		<Unit filename="../../components/common/Application.cpp" />
 		<Unit filename="../../components/common/Application.h" />
@@ -54,7 +56,6 @@
 		<Unit filename="../../components/common/OS.h" />
 		<Unit filename="../../components/common/Object.cpp" />
 		<Unit filename="../../components/common/Object.h" />
-		<Unit filename="../../components/common/Pointer.hpp" />
 		<Unit filename="../../components/common/Signal.cpp" />
 		<Unit filename="../../components/common/Signal.h" />
 		<Unit filename="../../components/common/String.cpp" />
