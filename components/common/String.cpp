@@ -161,7 +161,8 @@ namespace viu2x {
     //!
     //! @return         A reference to the current String object
     const String & String::operator = (const char op) {
-        copyFromMultibyte(&op, 1);
+        char temp[2] = {op, '\0'};
+        copyFromMultibyte(temp);
         return *this;
     }
 

@@ -12,11 +12,11 @@ BOOST_AUTO_TEST_SUITE (Types) // name of the test suite is stringtest
 
 BOOST_AUTO_TEST_CASE (String) {
 
-//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == viu2x::String(L'x'));
-//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == "x");
-//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == L"x");
-//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == 'x');
-//    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == L'x');
+    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == viu2x::String(L'x'));
+    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == "x");
+    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == L"x");
+    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == 'x');
+    BOOST_REQUIRE_EQUAL(true, viu2x::String('x') == L'x');
 
     viu2x::String s1, s2, s;
     BOOST_REQUIRE_NO_THROW(s1 = L"This is a string");

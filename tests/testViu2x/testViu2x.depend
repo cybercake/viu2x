@@ -74,7 +74,7 @@
 	"Viu2x.h"
 	"Timespan.h"
 
-1383520944 source:d:\programs\viu2x\components\common\string.cpp
+1383592286 source:d:\programs\viu2x\components\common\string.cpp
 	"String.h"
 	"Exceptions.h"
 	<sstream>
@@ -5304,7 +5304,7 @@
 	"common/Mutex.h"
 	"common/Signal.h"
 
-1383520777 source:d:\programs\viu2x\tests\testviu2x\typetest.cpp
+1383592380 source:d:\programs\viu2x\tests\testviu2x\typetest.cpp
 	<iostream>
 	<boost/test/unit_test.hpp>
 	<stdio.h>
