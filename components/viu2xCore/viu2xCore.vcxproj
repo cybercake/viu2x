@@ -11,19 +11,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="Property.h" />
-    <ClInclude Include="String.h" />
+    <ClInclude Include="Common\Event.h" />
+    <ClInclude Include="Common\Exceptions.h" />
+    <ClInclude Include="Common\Config.h" />
+    <ClInclude Include="Common\Geometry.hpp" />
+    <ClInclude Include="Common\Object.h" />
+    <ClInclude Include="Common\Property.h" />
+    <ClInclude Include="Common\String.h" />
+    <ClInclude Include="common.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Event.cpp" />
-    <ClCompile Include="Exceptions.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Property.cpp" />
-    <ClCompile Include="String.cpp" />
+    <ClCompile Include="Common\Event.cpp" />
+    <ClCompile Include="Common\Exceptions.cpp" />
+    <ClCompile Include="Common\Object.cpp" />
+    <ClCompile Include="Common\Property.cpp" />
+    <ClCompile Include="Common\String.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2D34E503-2056-4CC4-841D-F84AB7788224}</ProjectGuid>
@@ -56,9 +58,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

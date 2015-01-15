@@ -4,7 +4,10 @@
 
 namespace v2x {
 
-	Object::~Object()
-	{
+	Object::Object() {
+	}
+
+	/// We always need virtual deconstructor!
+	Object::~Object() {
 	}
 }

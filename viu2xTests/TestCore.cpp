@@ -1,41 +1,14 @@
 #include "stdafx.h"
+#include <iostream>
 #include "CppUnitTest.h"
-#include <viu2xCore/Property.h>
-#include <viu2xCore/String.h>
+
+#include <viu2xCore/common.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace v2x;
 
 namespace viu2xTests
 {
-	class PropertyContainerTest : protected PropertyContainer {
-	public:
-		PropertyContainerTest() :
-			REGISTER_PROPERTY_WITH_DEFAULT_VALIDATOR(PropertyContainerTest, Property1, 0),
-			REGISTER_PROPERTY_WITH_DEFAULT_NOTIFIER(PropertyContainerTest, Property2, 0)
-		{
-		}
-
-		virtual ~PropertyContainerTest() {}
-
-		static const int32_t PROPERTY1_VALUE = 123;
-		static const int32_t PROPERTY1_TRUE_VALUE = 321;
-		static const int32_t PROPERTY2_VALUE = 123.312;
-
-		Int32Property Property1;
-		DoubleProperty Property2;
-
-		bool Property1Changed = false;
-		bool Property2Changed = false;
-		bool Property1Ok = false;
-		bool Property2Ok = false;
-
-	protected:
-		virtual void validateProperty1(const AbstractProperty * prop, int32_t * value) { *value = PROPERTY1_TRUE_VALUE; }
-		virtual void notifyProperty1(const AbstractProperty * prop, const int32_t * value) { Property1Changed = true; Property1Ok = *value == PROPERTY1_TRUE_VALUE; }
-		virtual void notifyProperty2(const AbstractProperty * prop, const double * value) { Property2Changed = true; Property2Ok = *value == PROPERTY2_VALUE; }
-	};
-
 	TEST_CLASS(TestCore)
 	{
 	public:
@@ -59,7 +32,48 @@ namespace viu2xTests
 
 		TEST_METHOD(TestProperty)
 		{
-			PropertyContainerTest obj;
+			class PropertyContainerTest : protected PropertyContainer {
+			public:
+				Int32Property Property1;
+				DoubleProperty Property2;
+				StringProperty Property3;
+
+				PropertyContainerTest() :
+					REGISTER_PROPERTY_WITH_DEFAULT_VALIDATOR(PropertyContainerTest, Property1, 0),
+					REGISTER_PROPERTY_WITH_DEFAULT_NOTIFIER(PropertyContainerTest, Property2, 0),
+					REGISTER_PROPERTY_WITH_NOTIFIER(PropertyContainerTest, Property3, L"", doOnProperty3Change)
+				{
+				}
+
+				virtual ~PropertyContainerTest() {}
+
+				const int32_t PROPERTY1_VALUE = 123;
+				const int32_t PROPERTY1_TRUE_VALUE = 321;
+				const double PROPERTY2_VALUE = 123.312;
+
+				bool Property1Changed = false;
+				bool Property2Changed = false;
+				bool Property1Ok = false;
+				bool Property2Ok = false;
+
+			protected:
+				virtual void validateProperty1(const PropertyDescriptor * prop, int32_t * value) { *value = PROPERTY1_TRUE_VALUE; }
+				virtual void notifyProperty1(const PropertyDescriptor * prop, const int32_t * value) { Property1Changed = true; Property1Ok = *value == PROPERTY1_TRUE_VALUE; }
+				virtual void notifyProperty2(const PropertyDescriptor * prop, const double * value) { Property2Changed = true; Property2Ok = *value == PROPERTY2_VALUE; }
+				virtual void doOnProperty3Change(const PropertyDescriptor * prop, const String * value) { }
+			};
+
+			/// Test property change notification in descendant class.
+			class PropertyContainerTest2 : public PropertyContainerTest {
+			public:
+				virtual ~PropertyContainerTest2() {}
+
+				bool Property3Changed = false;
+			protected:
+				void doOnProperty3Change(const PropertyDescriptor * prop, const String * value) { Property3Changed = true; }
+			};
+
+			PropertyContainerTest2 obj;
 
 			Assert::AreEqual(true, obj.Property1.getName() == L"Property1");
 			Assert::AreEqual(true, obj.Property2.getName() == L"Property2");
@@ -69,15 +83,177 @@ namespace viu2xTests
 			Assert::AreEqual(false, obj.Property1Ok);
 			Assert::AreEqual(false, obj.Property2Ok);
 
-			obj.Property1 = PropertyContainerTest::PROPERTY1_VALUE;
-			obj.Property2 = PropertyContainerTest::PROPERTY2_VALUE;
+			obj.Property1 = obj.PROPERTY1_VALUE;
+			obj.Property2 = obj.PROPERTY2_VALUE;
+			obj.Property3 = L"aaa";
 
-			Assert::AreEqual(true, obj.Property1 == PropertyContainerTest::PROPERTY1_TRUE_VALUE);
-			Assert::AreEqual(true, obj.Property2 == PropertyContainerTest::PROPERTY2_VALUE);
+			Assert::AreEqual(true, obj.Property1 == obj.PROPERTY1_TRUE_VALUE);
+			Assert::AreEqual(true, obj.Property2 == obj.PROPERTY2_VALUE);
 			Assert::AreEqual(true, obj.Property1Changed);
 			Assert::AreEqual(true, obj.Property2Changed);
+			Assert::AreEqual(true, obj.Property3Changed);
 			Assert::AreEqual(true, obj.Property1Ok);
 			Assert::AreEqual(true, obj.Property2Ok);
+		}
+
+		TEST_METHOD(TestEvents)
+		{
+			class EventData1 : public Object {
+			public:
+				DEFINE_POINTERS(EventData1);
+				EventData1(int data) : m_data(data) {}
+				virtual ~EventData1() {}
+
+				int m_data;
+			};
+
+			class EventTrigger : public Object {
+			public:
+				DEFINE_POINTERS(EventTrigger);
+				EventTrigger() {}
+				virtual ~EventTrigger() {}
+
+				EventSlot OnEvent1;
+				EventSlot OnEvent2;
+
+				void triggerEvents() {
+					OnEvent1.notifyEvent(Event::Shared(new Event(shared_from_this(), EventData1::Shared(new EventData1(12345)))));
+					OnEvent2.notifyEvent(Event::Shared(new Event(shared_from_this(), EventData1::Shared(new EventData1(54321)))));
+				}
+			};
+
+			class EventHandler1 : public Object {
+			public:
+				DEFINE_POINTERS(EventHandler1);
+				EventHandler1() : m_eventData1(0), m_eventData2(0){}
+				virtual ~EventHandler1() {}
+
+				int m_eventData1;
+				int m_eventData2;
+
+				void doOnEvent1(Event::Shared e) {
+					if (e->Data != nullptr)
+						m_eventData1 = e->getDataAs<EventData1>()->m_data;
+				}
+				void doOnEvent2(Event::Shared e) {
+					if (e->Data != nullptr)
+						m_eventData2 = std::dynamic_pointer_cast<const EventData1> (e->Data)->m_data;
+				}
+			};
+
+			class EventHandler2 : public Object {
+			public:
+				DEFINE_POINTERS(EventHandler2);
+				EventHandler2() : m_eventData1(0), m_eventData2(0){}
+				virtual ~EventHandler2() {}
+
+				int m_eventData1;
+				int m_eventData2;
+
+				virtual void doOnEvent1(Event::Shared e) {
+					if (e->Data != nullptr)
+						m_eventData1 = std::dynamic_pointer_cast<const EventData1> (e->Data)->m_data;
+				}
+				void doOnEvent2(Event::Shared e) {
+					if (e->Data != nullptr)
+						m_eventData2 = std::dynamic_pointer_cast<const EventData1> (e->Data)->m_data;
+				}
+			};
+
+			class EventHandler3 : public EventHandler2 {
+			public:
+				DEFINE_POINTERS(EventHandler3);
+				EventHandler3() {}
+				virtual ~EventHandler3() {}
+
+				virtual void doOnEvent1(Event::Shared e) {
+					// do nothing!
+				}
+			};
+
+			EventTrigger::Shared trigger(new EventTrigger());
+			EventHandler1::Shared handler1(new EventHandler1());
+			EventHandler2::Shared handler2(new EventHandler2());
+			EventHandler2::Shared handler3(new EventHandler3());
+			EventHandler2::Weak wh2 = handler2;
+
+			// Adding event handler
+			trigger->OnEvent1 += EventHandler(handler1, std::bind(&EventHandler1::doOnEvent1, handler1.get(), std::placeholders::_1));
+			trigger->OnEvent2 += EventHandler(handler1, std::bind(&EventHandler1::doOnEvent2, handler1.get(), std::placeholders::_1));
+			trigger->OnEvent1 += EVENTHANDLER(handler2, EventHandler2::doOnEvent1);
+			trigger->OnEvent2 += EVENTHANDLER(handler2, EventHandler2::doOnEvent2);
+			trigger->OnEvent1 += EVENTHANDLER(handler3, EventHandler2::doOnEvent1);
+			trigger->OnEvent2 += EVENTHANDLER(handler3, EventHandler2::doOnEvent2);
+
+			Assert::AreEqual(0, handler1->m_eventData1);
+			Assert::AreEqual(0, handler1->m_eventData2);
+			Assert::AreEqual(0, handler2->m_eventData1);
+			Assert::AreEqual(0, handler2->m_eventData2);
+			Assert::AreEqual(0, handler3->m_eventData1);
+			Assert::AreEqual(0, handler3->m_eventData2);
+
+			trigger->triggerEvents();
+
+			Assert::AreEqual(12345, handler1->m_eventData1);
+			Assert::AreEqual(54321, handler1->m_eventData2);
+			Assert::AreEqual(12345, handler2->m_eventData1);
+			Assert::AreEqual(54321, handler2->m_eventData2);
+			Assert::AreEqual(0, handler3->m_eventData1);
+			Assert::AreEqual(54321, handler3->m_eventData2);
+
+			// Test removing event handler
+			handler3->m_eventData2 = 0;
+			trigger->OnEvent2 -= EVENTHANDLER(handler3, EventHandler2::doOnEvent2);
+			trigger->triggerEvents();
+			Assert::AreEqual(0, handler3->m_eventData2);
+
+			// Event handler connections should NEVER prevent deconstruction of 
+			// the receiver object instance.
+			handler2.reset();
+			Assert::AreEqual(true, nullptr == wh2.lock().get());
+			Assert::AreEqual(true, wh2.expired());
+			trigger->triggerEvents();
+		}
+
+		TEST_METHOD(TestObject) {
+
+			class TestObj : public Object {
+			public:
+				TestObj() {}
+				virtual ~TestObj() {}
+			};
+
+			std::shared_ptr<TestObj> obj0(new TestObj());
+			Object::Shared obj1 = obj0;
+			Object::SharedConst obj2 = obj1;
+			Assert::AreEqual(true, obj2 == obj1);
+			Assert::AreEqual(true, obj2 == obj1->shared_from_this());
+			Assert::AreEqual(true, obj2 == obj0);
+		}
+
+		TEST_METHOD(TestGeometry) {
+
+			Vector2DR v1(123, 321);
+			
+			Assert::AreEqual(123.0, v1.x);
+			Assert::AreEqual(321.0, v1.y);
+			Assert::AreEqual(false, v1.isInf());
+			Assert::AreEqual(false, v1.isNaN());
+			Assert::AreEqual(false, v1.isZero());
+
+			Vector2DR v2(v1);
+			Assert::AreEqual(123.0, v2.x);
+			Assert::AreEqual(321.0, v2.y);
+			Assert::AreEqual(true, v1 == v2);
+
+			Vector2DR v3;
+			Assert::AreEqual(0.0, v3.x);
+			Assert::AreEqual(0.0, v3.y);
+			Assert::AreEqual(true, v3.isZero());
+
+			v3 = v2 + v1;
+			Assert::AreEqual(246.0, v3.x);
+			Assert::AreEqual(642.0, v3.y);
 		}
 
 	};
