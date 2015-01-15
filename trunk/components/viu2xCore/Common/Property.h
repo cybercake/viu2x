@@ -9,17 +9,17 @@
 
 namespace v2x {
 
-	class AbstractProperty;
+	class PropertyDescriptor;
 	class PropertyContainer;
 
-	typedef std::map<String, AbstractProperty *> PropertyMap;
+	typedef std::map<String, PropertyDescriptor *> PropertyMap;
 
-	class AbstractProperty {
+	class PropertyDescriptor {
 
 	public:
 
-		AbstractProperty(PropertyContainer * owner, const String & name);
-		virtual ~AbstractProperty();
+		PropertyDescriptor(PropertyContainer * owner, const String & name);
+		virtual ~PropertyDescriptor();
 
 		const String & getName() const;
 
@@ -54,20 +54,25 @@ namespace v2x {
 		PropertyMap::const_iterator m_entry;
 	};
 
+	/// A generic property template which carries a data field and allows to 
+	/// connect two handlers for value validation and notification. The
+	/// handlers MUST point to member function of the OWNER class.
 	template <typename ValueType>
-	class Property : public AbstractProperty {
+	class Property : public PropertyDescriptor {
 	public:
 
 		/// Owner of the property object may provide a before-change handler to 
 		/// verify the new value. It can modify the value through the value 
 		/// pointer. If it is not allowed to change the value (e.g. at a 
 		/// certain time) the owner should throw an exception.
-		typedef std::function<void(const AbstractProperty *, ValueType *)> Validator;
+		/// Note: The property object pointer is NEVER NULL!!!
+		typedef std::function<void(const PropertyDescriptor *, ValueType *)> Validator;
 
 		/// Owner of the property object usually has a after-change handler to 
 		/// perform related operations (e.g. update the GUI) when a property is 
 		/// changed.
-		typedef std::function<void(const AbstractProperty *, const ValueType *)> Notifier;
+		/// Note: The property object pointer is NEVER NULL!!!
+		typedef std::function<void(const PropertyDescriptor *, const ValueType *)> Notifier;
 
 		/// The constructor
 		Property( //
@@ -76,7 +81,7 @@ namespace v2x {
 			const ValueType & defaultValue, //
 			Notifier notifier = nullptr, //
 			Validator validator = nullptr) : //
-			AbstractProperty(owner, name), m_valueState(Default), m_value(defaultValue), m_defaultValue(defaultValue),
+			PropertyDescriptor(owner, name), m_valueState(Default), m_value(defaultValue), m_defaultValue(defaultValue),
 			m_notifier(notifier), m_validator(validator) {
 		}
 
@@ -186,7 +191,7 @@ namespace v2x {
 	/// should be derived from this class.
 	class PropertyContainer {
 
-		friend class AbstractProperty;
+		friend class PropertyDescriptor;
 
 	public:
 		PropertyContainer();

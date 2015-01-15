@@ -6,26 +6,26 @@
 namespace v2x {
 
 	////////////////////////
-	/// AbstractProperty ///
+	/// PropertyDescriptor ///
 	////////////////////////
 
-	AbstractProperty::AbstractProperty(PropertyContainer * owner, const String & name) {
+	PropertyDescriptor::PropertyDescriptor(PropertyContainer * owner, const String & name) {
 
 		if (owner == nullptr)
-			throw Exception(L"AbstractProperty::AbstractProperty(): Owner is null!");
+			throw Exception(L"PropertyDescriptor::PropertyDescriptor(): Owner is null!");
 
 		PropertyMap::const_iterator i = owner->m_properties.find(name);
 		if (i != owner->m_properties.end())
-			throw Exception(L"AbstractProperty::AbstractProperty(): Property name %s duplicated!", name.c_str());
+			throw Exception(L"PropertyDescriptor::PropertyDescriptor(): Property name %s duplicated!", name.c_str());
 
 		owner->m_properties[name] = this;
 		m_entry = owner->m_properties.find(name);
 	}
 
 	/// We always need virtual deconstructor!
-	AbstractProperty::~AbstractProperty() {}
+	PropertyDescriptor::~PropertyDescriptor() {}
 
-	const String & AbstractProperty::getName() const {
+	const String & PropertyDescriptor::getName() const {
 		return m_entry->first;
 	}
 
