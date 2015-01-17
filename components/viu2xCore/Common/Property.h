@@ -76,13 +76,17 @@ namespace v2x {
 
 		/// The constructor
 		Property( //
-			PropertyContainer * owner,
+			PropertyContainer * owner, //
 			const String & name, //
 			const ValueType & defaultValue, //
 			Notifier notifier = nullptr, //
 			Validator validator = nullptr) : //
-			PropertyDescriptor(owner, name), m_valueState(Default), m_value(defaultValue), m_defaultValue(defaultValue),
-			m_notifier(notifier), m_validator(validator) {
+			PropertyDescriptor(owner, name), //
+			m_valueState(Default), //
+			m_value(defaultValue), //
+			m_defaultValue(defaultValue), //
+			m_notifier(notifier), //
+			m_validator(validator) {
 		}
 
 		virtual ~Property() {}

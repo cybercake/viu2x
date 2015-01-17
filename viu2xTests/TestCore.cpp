@@ -2,6 +2,7 @@
 #include <iostream>
 #include "CppUnitTest.h"
 
+#include <math.h>
 #include <viu2xCore/common.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -231,10 +232,14 @@ namespace viu2xTests
 			Assert::AreEqual(true, obj2 == obj0);
 		}
 
-		TEST_METHOD(TestGeometry) {
+		TEST_METHOD(TestVector2D) {
+
+			///////////////////
+			// Vector2D Test //
+			///////////////////
 
 			Vector2DR v1(123, 321);
-			
+
 			Assert::AreEqual(123.0, v1.x);
 			Assert::AreEqual(321.0, v1.y);
 			Assert::AreEqual(false, v1.isInf());
@@ -254,6 +259,81 @@ namespace viu2xTests
 			v3 = v2 + v1;
 			Assert::AreEqual(246.0, v3.x);
 			Assert::AreEqual(642.0, v3.y);
+
+			v3 = v1 * 2;
+			Assert::AreEqual(246.0, v3.x);
+			Assert::AreEqual(642.0, v3.y);
+
+			v3 = v3 / 2;
+			Assert::AreEqual(123.0, v3.x);
+			Assert::AreEqual(321.0, v3.y);
+
+			Vector2DR v4(NAN, 123);
+			Assert::AreEqual(false, v4.isInf());
+			Assert::AreEqual(true, v4.isNaN());
+			Assert::AreEqual(false, v4.isZero());
+			Assert::AreEqual(false, v4 == v4);
+			Assert::AreEqual(false, v4 != v4);
+
+			Vector2DR v5 = v4 + v3;
+			Assert::AreEqual(false, v4.isInf());
+			Assert::AreEqual(true, v4.isNaN());
+			Assert::AreEqual(false, v4.isZero());
+		}
+
+		TEST_METHOD(TestVector3D) {
+
+			///////////////////
+			// Vector2D Test //
+			///////////////////
+
+			Vector3DR v1(123, 321, 111);
+
+			Assert::AreEqual(123.0, v1.x);
+			Assert::AreEqual(321.0, v1.y);
+			Assert::AreEqual(111.0, v1.z);
+			Assert::AreEqual(false, v1.isInf());
+			Assert::AreEqual(false, v1.isNaN());
+			Assert::AreEqual(false, v1.isZero());
+
+			Vector3DR v2(v1);
+			Assert::AreEqual(123.0, v2.x);
+			Assert::AreEqual(321.0, v2.y);
+			Assert::AreEqual(111.0, v2.z);
+			Assert::AreEqual(true, v1 == v2);
+
+			Vector3DR v3;
+			Assert::AreEqual(0.0, v3.x);
+			Assert::AreEqual(0.0, v3.y);
+			Assert::AreEqual(0.0, v3.z);
+			Assert::AreEqual(true, v3.isZero());
+
+			v3 = v2 + v1;
+			Assert::AreEqual(246.0, v3.x);
+			Assert::AreEqual(642.0, v3.y);
+			Assert::AreEqual(222.0, v3.z);
+
+			v3 = v1 * 2;
+			Assert::AreEqual(246.0, v3.x);
+			Assert::AreEqual(642.0, v3.y);
+			Assert::AreEqual(222.0, v3.z);
+
+			v3 = v3 / 2;
+			Assert::AreEqual(123.0, v3.x);
+			Assert::AreEqual(321.0, v3.y);
+			Assert::AreEqual(111.0, v3.z);
+
+			Vector3DR v4(NAN, NAN, 123);
+			Assert::AreEqual(false, v4.isInf());
+			Assert::AreEqual(true, v4.isNaN());
+			Assert::AreEqual(false, v4.isZero());
+			Assert::AreEqual(false, v4 == v4);
+			Assert::AreEqual(false, v4 != v4);
+
+			v4 += v3;
+			Assert::AreEqual(false, v4.isInf());
+			Assert::AreEqual(true, v4.isNaN());
+			Assert::AreEqual(false, v4.isZero());
 		}
 
 	};
