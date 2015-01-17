@@ -14,11 +14,13 @@
     <ClInclude Include="Common\Event.h" />
     <ClInclude Include="Common\Exceptions.h" />
     <ClInclude Include="Common\Config.h" />
-    <ClInclude Include="Common\Geometry.hpp" />
+    <ClInclude Include="Common\Matrix.hpp" />
     <ClInclude Include="Common\Object.h" />
     <ClInclude Include="Common\Property.h" />
     <ClInclude Include="Common\String.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="Common\Vector2D.hpp" />
+    <ClInclude Include="Common\Vector3D.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\Event.cpp" />

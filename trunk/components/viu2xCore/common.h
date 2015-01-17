@@ -9,4 +9,6 @@
 #include "Common/Property.h"
 #include "Common/Event.h"
 
-#include "Common/Geometry.hpp"
+#include "Common/Vector2D.hpp"
+#include "Common/Vector3D.hpp"
+#include "Common/Matrix.hpp"
