@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
+#include <iostream>
+
 #include <viu2xCore/common.h>
 #include <viu2xCore/gui.h>
 
@@ -16,7 +18,6 @@ namespace viu2xTests
 		TEST_METHOD(TextDisplays)
 		{
 			Displays::Shared displays(new Displays());
-			displays->update();
 
 			Assert::IsTrue(displays->count() > 0);
 
@@ -24,7 +25,7 @@ namespace viu2xTests
 			for (size_t i = 0; i < displays->count(); ++i) {
 				Assert::IsTrue(displays->getDisplay(i)->getScreenAreaInPx().size.getArea() > 0);
 				Assert::IsTrue(displays->getDisplay(i)->getWorkAreaInPx().size.getArea() > 0);
-				//Assert::IsTrue(displays->getDisplay(i)->getPhysicalSizeInMm().getArea() > 0);
+				Assert::IsTrue(displays->getDisplay(i)->getPhysicalSizeInMm().getArea() > 0);
 				Assert::IsTrue(displays->getDisplay(i)->getResolutionInDpi().x > 0);
 				Assert::IsTrue(displays->getDisplay(i)->getResolutionInDpi().y > 0);
 				if (displays->getDisplay(i)->getIsPrimary())
@@ -32,6 +33,8 @@ namespace viu2xTests
 			}
 
 			Assert::AreEqual(1u, primaryFound);
+
+			Assert::IsTrue(displays->getPrimaryDisplay() != nullptr);
 		}
 
 	};

@@ -12,6 +12,7 @@
 
 namespace v2x {
 
+	/// Display object is info holder for connected monitors.
 	class Display : public Object {
 	public:
 		DEFINE_POINTERS(Display);
@@ -73,6 +74,7 @@ namespace v2x {
 		bool m_isPrimary;
 	};
 
+	/// This class retrieves all monitor information from the system and expose them to user.
 	class Displays : public Object
 	{
 	public:
@@ -84,6 +86,7 @@ namespace v2x {
 
 		size_t count() const;
 		Display::SharedConst getDisplay (size_t index) const;
+		Display::SharedConst getPrimaryDisplay() const;
 
 	private:
 		typedef std::vector<Display::SharedConst> DisplayList;
