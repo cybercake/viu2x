@@ -2,6 +2,9 @@
 
 #include "Displays.h"
 
+#include <SetupApi.h>
+#include <cfgmgr32.h>
+
 namespace v2x {
 
 	/////////////
@@ -73,6 +76,7 @@ namespace v2x {
 	//////////////
 
 	Displays::Displays() {
+		update();
 	}
 
 	Displays::~Displays() {
@@ -101,7 +105,144 @@ namespace v2x {
 		return m_displays[index];
 	}
 
+	Display::SharedConst Displays::getPrimaryDisplay() const {
+
+		for (DisplayList::const_iterator i = m_displays.begin(); i != m_displays.end(); ++i)
+			if ((*i)->getIsPrimary())
+				return *i;
+
+		throw Exception(L"Displays::getPrimaryDisplay(): No primary display found!");
+	}
+
 #ifdef V2X_WINDOWS
+
+#define NAME_SIZE 128
+
+	const GUID GUID_CLASS_MONITOR = { 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18 };
+
+	String Get2ndSlashBlock(const String & sIn)
+	{
+		int firstSlash = sIn.find(L'\\');
+		String sOut = sIn.substr(firstSlash + 1, sIn.length() - firstSlash - 1);
+		firstSlash = sOut.find(L'\\');
+		sOut = sOut.substr(0, firstSlash);
+		return sOut;
+	}
+
+	// Assumes hEDIDRegKey is valid
+	bool GetMonitorSizeFromEDID(const HKEY hEDIDRegKey, short& WidthMm, short& HeightMm)
+	{
+		DWORD dwType, AcutalValueNameLength = NAME_SIZE;
+		TCHAR valueName[NAME_SIZE];
+
+		BYTE EDIDdata[1024];
+		DWORD edidsize = sizeof(EDIDdata);
+
+		for (LONG i = 0, retValue = ERROR_SUCCESS; retValue != ERROR_NO_MORE_ITEMS; ++i)
+		{
+			retValue = RegEnumValue(hEDIDRegKey, i, &valueName[0],
+				&AcutalValueNameLength, NULL, &dwType,
+				EDIDdata, // buffer
+				&edidsize); // buffer size
+
+			if (retValue != ERROR_SUCCESS || 0 != wcscmp(valueName, L"EDID"))
+				continue;
+
+			WidthMm = ((EDIDdata[68] & 0xF0) << 4) + EDIDdata[66];
+			HeightMm = ((EDIDdata[68] & 0x0F) << 8) + EDIDdata[67];
+
+			return true; // valid EDID found
+		}
+
+		return false; // EDID not found
+	}
+
+	BOOL DisplayDeviceFromHMonitor(HMONITOR hMonitor, DISPLAY_DEVICE & ddMonOut)
+	{
+		MONITORINFOEX mi;
+		mi.cbSize = sizeof(MONITORINFOEX);
+		GetMonitorInfo(hMonitor, &mi);
+
+		DISPLAY_DEVICE dd;
+		dd.cb = sizeof(dd);
+		DWORD devIdx = 0; // device index
+
+		bool bFoundDevice = false;
+		while (EnumDisplayDevices(0, devIdx, &dd, 0))
+		{
+			devIdx++;
+			if (0 != wcscmp(dd.DeviceName, mi.szDevice))
+				continue;
+
+			DISPLAY_DEVICE ddMon;
+			ZeroMemory(&ddMon, sizeof(ddMon));
+			ddMon.cb = sizeof(ddMon);
+			DWORD MonIdx = 0;
+
+			while (EnumDisplayDevices(dd.DeviceName, MonIdx, &ddMon, 0))
+			{
+				MonIdx++;
+
+				ddMonOut = ddMon;
+				return TRUE;
+
+				ZeroMemory(&ddMon, sizeof(ddMon));
+				ddMon.cb = sizeof(ddMon);
+			}
+
+			ZeroMemory(&dd, sizeof(dd));
+			dd.cb = sizeof(dd);
+		}
+
+		return FALSE;
+	}
+
+	bool GetSizeForDevID(const String & TargetDevID, short& WidthMm, short& HeightMm)
+	{
+		HDEVINFO devInfo = SetupDiGetClassDevsEx(
+			&GUID_CLASS_MONITOR, //class GUID
+			NULL, //enumerator
+			NULL, //HWND
+			DIGCF_PRESENT | DIGCF_PROFILE, // Flags //DIGCF_ALLCLASSES|
+			NULL, // device info, create a new one.
+			NULL, // machine name, local machine
+			NULL);// reserved
+
+		if (NULL == devInfo)
+			return false;
+
+		bool bRes = false;
+
+		for (ULONG i = 0; ERROR_NO_MORE_ITEMS != GetLastError(); ++i)
+		{
+			SP_DEVINFO_DATA devInfoData;
+			memset(&devInfoData, 0, sizeof(devInfoData));
+			devInfoData.cbSize = sizeof(devInfoData);
+
+			if (SetupDiEnumDeviceInfo(devInfo, i, &devInfoData))
+			{
+				TCHAR Instance[MAX_DEVICE_ID_LEN];
+				SetupDiGetDeviceInstanceId(devInfo, &devInfoData, Instance, MAX_PATH, NULL);
+
+				String sInstance(Instance);
+				if (String::npos == sInstance.find(TargetDevID))
+					continue;
+
+				HKEY hEDIDRegKey = SetupDiOpenDevRegKey(devInfo, &devInfoData,
+					DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
+
+				if (!hEDIDRegKey || (hEDIDRegKey == INVALID_HANDLE_VALUE))
+					continue;
+
+				bRes = GetMonitorSizeFromEDID(hEDIDRegKey, WidthMm, HeightMm);
+
+				RegCloseKey(hEDIDRegKey);
+			}
+		}
+		SetupDiDestroyDeviceInfoList(devInfo);
+		return bRes;
+	}
+
 	BOOL __stdcall Displays::monitorEnumProcCallback(
 		_In_ HMONITOR hMonitor,
 		_In_ HDC hdcMonitor,
@@ -125,11 +266,19 @@ namespace v2x {
 		const int h2 = info.rcWork.top - info.rcWork.bottom;
 
 		HDC dc = CreateDC(NULL, info.szDevice, NULL, NULL);
-		const double hSize = GetDeviceCaps(dc, HORZSIZE);
-		const double vSize = GetDeviceCaps(dc, VERTSIZE);
 		const double hPixelsPerInch = GetDeviceCaps(dc, LOGPIXELSX);
 		const double vPixelsPerInch = GetDeviceCaps(dc, LOGPIXELSY);
 		DeleteDC(dc);
+
+		DISPLAY_DEVICE ddMon;
+		if (DisplayDeviceFromHMonitor(hMonitor, ddMon) == FALSE)
+			OsException::throwLatest(L"Displays::monitorEnumProcCallback");
+
+		String DeviceID(ddMon.DeviceID);
+		DeviceID = Get2ndSlashBlock(DeviceID);
+
+		short hSize, vSize;
+		bool bFoundDevice = GetSizeForDevID(DeviceID, hSize, vSize);
 
 		Display::Shared display(new Display( //
 			(Display::DisplayId)hMonitor, // Id
