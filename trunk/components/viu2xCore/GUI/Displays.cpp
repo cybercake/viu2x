@@ -93,7 +93,7 @@ namespace v2x {
 		return m_displays.size();
 	}
 
-	Display::SharedConst Displays::getDisplay (size_t index) const {
+	Display::SharedConst Displays::getDisplay(size_t index) const {
 
 		if (index >= m_displays.size())
 			throw Exception(L"Displays::getDisplay: Index %u out of range!", index);
@@ -123,11 +123,19 @@ namespace v2x {
 		const int w2 = info.rcWork.right - info.rcWork.left;
 		const int h1 = info.rcMonitor.bottom - info.rcMonitor.top;
 		const int h2 = info.rcWork.top - info.rcWork.bottom;
+
+		HDC dc = CreateDC(NULL, info.szDevice, NULL, NULL);
+		const double hSize = GetDeviceCaps(dc, HORZSIZE);
+		const double vSize = GetDeviceCaps(dc, VERTSIZE);
+		const double hPixelsPerInch = GetDeviceCaps(dc, LOGPIXELSX);
+		const double vPixelsPerInch = GetDeviceCaps(dc, LOGPIXELSY);
+		DeleteDC(dc);
+
 		Display::Shared display(new Display( //
 			(Display::DisplayId)hMonitor, // Id
 			String(info.szDevice), // Name
-			Size2DR(), // Physical size
-			Vector2DR(96, 96), // Resolution in dpi
+			Size2DR(hSize, vSize), // Physical size
+			Vector2DR(hPixelsPerInch, vPixelsPerInch), // Resolution in dpi
 			Rect32I(info.rcMonitor.left, info.rcMonitor.top, w1, h1), // Screen area
 			Rect32I(info.rcWork.left, info.rcWork.top, w1, h1), // Work area
 			(info.dwFlags & MONITORINFOF_PRIMARY) != 0));

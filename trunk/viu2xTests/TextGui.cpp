@@ -22,8 +22,11 @@ namespace viu2xTests
 
 			size_t primaryFound = 0;
 			for (size_t i = 0; i < displays->count(); ++i) {
-				Assert::IsTrue(displays->getDisplay(i)->getScreenAreaInPx().getWidth() > 0);
-				Assert::IsTrue(displays->getDisplay(i)->getScreenAreaInPx().getHeight() > 0);
+				Assert::IsTrue(displays->getDisplay(i)->getScreenAreaInPx().size.getArea() > 0);
+				Assert::IsTrue(displays->getDisplay(i)->getWorkAreaInPx().size.getArea() > 0);
+				//Assert::IsTrue(displays->getDisplay(i)->getPhysicalSizeInMm().getArea() > 0);
+				Assert::IsTrue(displays->getDisplay(i)->getResolutionInDpi().x > 0);
+				Assert::IsTrue(displays->getDisplay(i)->getResolutionInDpi().y > 0);
 				if (displays->getDisplay(i)->getIsPrimary())
 					++primaryFound;
 			}
