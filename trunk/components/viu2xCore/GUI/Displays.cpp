@@ -116,10 +116,8 @@ namespace v2x {
 
 #ifdef V2X_WINDOWS
 
-#define NAME_SIZE 128
-
-	const GUID GUID_CLASS_MONITOR = { 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18 };
-
+	/// Code from http://ofekshilon.com/2014/06/19/reading-specific-monitor-dimensions/
+	/// The code is NOT fully tested by author!!!
 	String Get2ndSlashBlock(const String & sIn)
 	{
 		int firstSlash = sIn.find(L'\\');
@@ -129,9 +127,11 @@ namespace v2x {
 		return sOut;
 	}
 
-	// Assumes hEDIDRegKey is valid
+	/// Code from http://ofekshilon.com/2014/06/19/reading-specific-monitor-dimensions/
+	/// The code is NOT fully tested by author!!!
 	bool GetMonitorSizeFromEDID(const HKEY hEDIDRegKey, short& WidthMm, short& HeightMm)
 	{
+		const size_t NAME_SIZE = 128;
 		DWORD dwType, AcutalValueNameLength = NAME_SIZE;
 		TCHAR valueName[NAME_SIZE];
 
@@ -157,6 +157,8 @@ namespace v2x {
 		return false; // EDID not found
 	}
 
+	/// Code from http://ofekshilon.com/2014/06/19/reading-specific-monitor-dimensions/
+	/// The code is NOT fully tested by author!!!
 	BOOL DisplayDeviceFromHMonitor(HMONITOR hMonitor, DISPLAY_DEVICE & ddMonOut)
 	{
 		MONITORINFOEX mi;
@@ -197,8 +199,12 @@ namespace v2x {
 		return FALSE;
 	}
 
+	/// Code from http://ofekshilon.com/2014/06/19/reading-specific-monitor-dimensions/
+	/// The code is NOT fully tested by author!!!
 	bool GetSizeForDevID(const String & TargetDevID, short& WidthMm, short& HeightMm)
 	{
+		const GUID GUID_CLASS_MONITOR = { 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18 };
+
 		HDEVINFO devInfo = SetupDiGetClassDevsEx(
 			&GUID_CLASS_MONITOR, //class GUID
 			NULL, //enumerator
@@ -243,6 +249,8 @@ namespace v2x {
 		return bRes;
 	}
 
+	/// This function retrieves related information of the found monitor and 
+	/// add it to the list given by dwData.
 	BOOL __stdcall Displays::monitorEnumProcCallback(
 		_In_ HMONITOR hMonitor,
 		_In_ HDC hdcMonitor,
