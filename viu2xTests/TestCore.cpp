@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <viu2xCore/common.h>
+#include <viu2xCore/gui.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace v2x;
