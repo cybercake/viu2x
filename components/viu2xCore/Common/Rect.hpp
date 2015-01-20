@@ -25,30 +25,30 @@ namespace v2x {
 	/// The pixels on the right and bottom side are seen as NOT included in the rect. The size of the rect is
 	/// the length of the horizontal and vertical side of the rectangle (also computed as p2-p1).
 	template <typename T>
-	class Rect {
+	class Rect_T {
 	public:
 
 		/// The starting point (i.e. one of the corner) of the rectangle.
 		///
 		/// NOTE: it is not always the top-left position!!!
 		/// If you want to get the left/top-of-all positions, please use getLeft/getTop
-		Vector2D <T> position;
+		Vector2D_T <T> position;
 
 		/// The size of the rectangle.
 		///
 		/// NOTE: Its value could be negative!!!
-		Size2D <T> size;
+		Size2D_T <T> size;
 
 		/// The standard constructor.
-		Rect() {
-			position = Vector2D <T>(0, 0);
-			size = Size2D <T>(0, 0);
+		Rect_T() {
+			position = Vector2D_T <T>(0, 0);
+			size = Size2D_T <T>(0, 0);
 		}
 
 		/// The constructor copying data from another instance.
 		///
 		/// @param [in]	rect	The rectangle from which the data should be copied.
-		Rect(const Rect <T> & rect) {
+		Rect_T(const Rect_T <T> & rect) {
 			position = rect.position;
 			size = rect.size;
 		}
@@ -59,9 +59,9 @@ namespace v2x {
 		/// @param [in]	y		The Y-coordinate of the starting point.
 		/// @param [in]	width	The width of the starting point. It could be negative.
 		/// @param [in]	height	The height of the starting point. It could be negative.
-		Rect(T x, T y, T width, T height) {
-			position = Vector2D <T>(x, y);
-			size = Size2D <T>(width, height);
+		Rect_T(T x, T y, T width, T height) {
+			position = Vector2D_T <T>(x, y);
+			size = Size2D_T <T>(width, height);
 		}
 
 		/// The constructor with specified corner position and size.
@@ -71,7 +71,7 @@ namespace v2x {
 		///
 		/// The scaling factor w in the starting position is NOT used in this class. So before accepting any
 		/// 2D vector as starting point, it has to be regularized first!!!
-		Rect(Vector2D <T> p, Size2D <T> s) {
+		Rect_T(Vector2D_T <T> p, Size2D_T <T> s) {
 			position = p;
 			size = s;
 		}
@@ -85,22 +85,22 @@ namespace v2x {
 		///
 		/// The scaling factor w in the starting position is NOT used in this class. So before accepting any
 		/// 2D vector as starting point, it has to be regularized first!!!
-		Rect(Vector2D <T> p1, Vector2D <T> p2) {
+		Rect_T(Vector2D_T <T> p1, Vector2D_T <T> p2) {
 			position = p1;
-			Vector2D <T> d = (p2 - p1);
-			size = Size2D <T>(d.x, d.y);
+			Vector2D_T <T> d = (p2 - p1);
+			size = Size2D_T <T>(d.x, d.y);
 		}
 
 		/// The constructor copying data from another 2D rect of another type
 		///
 		/// @param[in]	other	The rect from which the data has to be copied.
-		template <typename otherType> explicit Rect(const Rect <otherType> & other) {
-			position = Vector2D <T>(other.position);
-			size = Size2D <T>(other.size);
+		template <typename otherType> explicit Rect_T(const Rect_T <otherType> & other) {
+			position = Vector2D_T <T>(other.position);
+			size = Size2D_T <T>(other.size);
 		}
 
 		/// The destructor.
-		virtual ~Rect() {
+		virtual ~Rect_T() {
 		}
 
 		/// Convenience function to set parameters of the current rectangle.
@@ -110,16 +110,16 @@ namespace v2x {
 		/// @param [in]	width	The width of the starting point. It could be negative.
 		/// @param [in]	height	The height of the starting point. It could be negative.
 		void set(T x, T y, T width, T height) {
-			position = Vector2D <T>(x, y);
-			size = Size2D <T>(width, height);
+			position = Vector2D_T <T>(x, y);
+			size = Size2D_T <T>(width, height);
 		}
 
 		/// Centers the rect around the given center point and recomputes the position
 		/// while the size remains untouched.
 		///
 		/// @param [in] 	center	The new center vector of the rect
-		void setCenter(Vector2D <T> center) {
-			position = Vector2D <T>(center.x - size.width / 2, center.y - size.height / 2);
+		void setCenter(Vector2D_T <T> center) {
+			position = Vector2D_T <T>(center.x - size.width / 2, center.y - size.height / 2);
 		}
 
 		/// Convenience function to set boundaries of the current rectangle.
@@ -130,8 +130,8 @@ namespace v2x {
 		/// @param [in]	right	The X-coordinate of the ending point.
 		/// @param [in]	bottom	The Y-coordinate of the ending point.
 		void setBounds(T left, T top, T right, T bottom) {
-			position = Vector2D <T>(left, top);
-			size = Size2D <T>(right - left, bottom - top);
+			position = Vector2D_T <T>(left, top);
+			size = Size2D_T <T>(right - left, bottom - top);
 		}
 
 		/// Clip the current rectangle by a given boundary. If the rectangle and the
@@ -139,7 +139,7 @@ namespace v2x {
 		///
 		/// @param [in]	clipper		The boundary.
 		/// @return	True if the rectangle intersect with the clipper.
-		bool clipBy(const Rect <T>& clipper) { // TODO: CHECK THIS
+		bool clipBy(const Rect_T <T>& clipper) { // TODO: CHECK THIS
 
 			// Calculate the boundary of the clipper.
 			T clipperLeft = clipper.getLeft();
@@ -247,8 +247,8 @@ namespace v2x {
 		/// Get the rectangles center position
 		///
 		/// @return 	The calculated center vector of the rectangle with respect to the underlying type
-		Vector2D <T> getCenter() const {
-			return Vector2D <T>(position.x + (size.width / (T)2), position.y + (size.height / (T)2));
+		Vector2D_T <T> getCenter() const {
+			return Vector2D_T <T>(position.x + (size.width / (T)2), position.y + (size.height / (T)2));
 		}
 
 		/// Get the rectangles center position in floating point precision
@@ -268,7 +268,7 @@ namespace v2x {
 		/// @parem [in]	op	A rectangle from which the data should be copied.
 		///
 		/// @return A reference to the current instance.
-		Rect <T> & operator= (const Rect <T> & op) {
+		Rect_T <T> & operator= (const Rect_T <T> & op) {
 			position = op.position;
 			size = op.size;
 			return *this;
@@ -276,19 +276,19 @@ namespace v2x {
 
 		/// Operator overloaded for inequality comparison.
 		///
-		/// @param [in]	op	The Rect object to be compared.
+		/// @param [in]	op	The Rect_T object to be compared.
 		///
 		/// @return True only if size and position are equal.
-		bool operator != (const Rect <T> & op) const {
+		bool operator != (const Rect_T <T> & op) const {
 			return (position != op.position) || (size != op.size);
 		}
 
 		/// Operator overloaded for equality comparison.
 		///
-		/// @param [in]	op	The Rect object to be compared.
+		/// @param [in]	op	The Rect_T object to be compared.
 		///
 		/// @return True only if size and position are equal.
-		bool operator == (const Rect <T> & op) const {
+		bool operator == (const Rect_T <T> & op) const {
 			return (position == op.position) && (size == op.size);
 		}
 
@@ -299,8 +299,8 @@ namespace v2x {
 		///
 		/// @return		A new rectangle object which has the specified
 		/// 				offset to the current one.
-		Rect <T> operator + (const Vector2D <T> & op) const {
-			return Rect <T>(position + op, size);
+		Rect_T <T> operator + (const Vector2D_T <T> & op) const {
+			return Rect_T <T>(position + op, size);
 		}
 
 		/// This operator creates a rect which completely contains both rects.
@@ -308,12 +308,12 @@ namespace v2x {
 		/// @param [in]	rect	the rect to be included in the first rect.
 		///
 		/// @return		A new rectangle object which contains both rects.
-		Rect <T> operator + (const Rect <T> & op) const {
+		Rect_T <T> operator + (const Rect_T <T> & op) const {
 			const T leftX = std::min(getLeft(), op.getLeft());
 			const T rightX = std::max(getRight(), op.getRight());
 			const T topY = std::min(getTop(), op.getTop());
 			const T bottomY = std::max(getBottom(), op.getBottom());
-			return Rect <T>(leftX, topY, rightX - leftX, bottomY - topY);
+			return Rect_T <T>(leftX, topY, rightX - leftX, bottomY - topY);
 		}
 
 		/// This operator adds an offset to the rectangle object and return
@@ -323,8 +323,8 @@ namespace v2x {
 		///
 		/// @return		A new rectangle object which has the specified
 		/// 				offset to the current one.
-		Rect <T> operator - (const Vector2D <T> & op) const {
-			return Rect <T>(position - op, size);
+		Rect_T <T> operator - (const Vector2D_T <T> & op) const {
+			return Rect_T <T>(position - op, size);
 		}
 
 		/// This operator adds an offset to the current rectangle instance.
@@ -332,7 +332,7 @@ namespace v2x {
 		/// @param [in]	op	The offset value.
 		///
 		/// @return		A reference to the current rectangle object.
-		Rect <T> & operator += (const Vector2D <T> & op) {
+		Rect_T <T> & operator += (const Vector2D_T <T> & op) {
 			position += op;
 			return *this;
 		}
@@ -342,26 +342,28 @@ namespace v2x {
 		/// @param [in]	op	The negative offset value.
 		///
 		/// @return		A reference to the current rectangle object.
-		Rect <T> & operator -= (const Vector2D <T> & op) {
+		Rect_T <T> & operator -= (const Vector2D_T <T> & op) {
 			position -= op;
 			return *this;
 		}
 
 		template <typename S>
-		friend std::wostream& operator<<(std::wostream& out, const Rect<S>& rect);
+		friend std::wostream& operator<<(std::wostream& out, const Rect_T<S>& rect);
 	};
 
 	template <typename S>
-	std::wostream& operator<< (std::wostream& out, const Rect <S>& rect)  {
-		out << "Rect (" << rect.position.x << ", " << rect.position.y << ", "
+	std::wostream& operator<< (std::wostream& out, const Rect_T <S>& rect)  {
+		out << "Rect_T (" << rect.position.x << ", " << rect.position.y << ", "
 			<< rect.size.width << ", " << rect.size.height << ")";
 		return out;
 	}
 
-	typedef Rect <int32_t> Rect32I;
-	typedef Rect <int64_t> Rect64I;
+	typedef Rect_T <int32_t> Rect32I;
+	typedef Rect_T <int64_t> Rect64I;
 
-	typedef Rect <float> Rect32F;
-	typedef Rect <double> Rect64F;
-	typedef Rect <Real> RectR;
+	typedef Rect_T <float> Rect32F;
+	typedef Rect_T <double> Rect64F;
+	typedef Rect_T <Real> RectR;
+
+	typedef Rect_T <Real> Rect;
 }

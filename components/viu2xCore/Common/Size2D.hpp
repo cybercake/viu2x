@@ -15,7 +15,7 @@ namespace v2x {
 	///
 	/// Its width or height could be negative which represents the direction of the size.
 	template <typename T>
-	class Size2D {
+	class Size2D_T {
 	public:
 
 		/// The horizontal size.
@@ -24,11 +24,11 @@ namespace v2x {
 		/// The vertical size.
 		T height;
 
-		virtual ~Size2D() {
+		virtual ~Size2D_T() {
 		}
 
 		/// The standard constructor setting the size to 0.
-		Size2D() {
+		Size2D_T() {
 			width = 0;
 			height = 0;
 		}
@@ -36,15 +36,15 @@ namespace v2x {
 		/// The constructor copying data from another instance.
 		///
 		/// @param [in]	value	The size object from which the data should be copied.
-		Size2D(const Size2D <T> & value) {
+		Size2D_T(const Size2D_T <T> & value) {
 			width = value.width;
 			height = value.height;
 		}
 
 		/// The constructor copying data from another size 2D of another type
 		///
-		/// @param[in]	other	The Size2D from which the data has to be copied.
-		template <typename OtherType> explicit Size2D(const Size2D <OtherType> & other) {
+		/// @param[in]	other	The Size2D_T from which the data has to be copied.
+		template <typename OtherType> explicit Size2D_T(const Size2D_T <OtherType> & other) {
 			width = other.width;
 			height = other.height;
 		}
@@ -53,7 +53,7 @@ namespace v2x {
 		///
 		/// @param [in]	w	The width.
 		/// @param [in]	h	The height.
-		Size2D(T w, T h) {
+		Size2D_T(T w, T h) {
 			width = w;
 			height = h;
 		}
@@ -63,7 +63,7 @@ namespace v2x {
 		/// @param [in]	op	The size object from which the data should be copied.
 		///
 		/// @return A reference to the current 2D size object
-		Size2D <T> & operator = (const Size2D <T> & op) {
+		Size2D_T <T> & operator = (const Size2D_T <T> & op) {
 			width = op.width;
 			height = op.height;
 			return *this;
@@ -74,8 +74,8 @@ namespace v2x {
 		/// @param [in]	op	The size object whose width and height should be added to the current size.
 		///
 		/// @return A new size object.
-		Size2D <T> operator + (const Size2D <T> & op) const {
-			Size2D <T> result(width + op.width, height + op.height);
+		Size2D_T <T> operator + (const Size2D_T <T> & op) const {
+			Size2D_T <T> result(width + op.width, height + op.height);
 			return result;
 		}
 
@@ -84,7 +84,7 @@ namespace v2x {
 		/// @param [in]	op	The size object whose width and height should be added to the current size.
 		///
 		/// @return A reference to the current 2D size object.
-		Size2D <T> & operator += (const Size2D <T> & op) {
+		Size2D_T <T> & operator += (const Size2D_T <T> & op) {
 			width += op.width;
 			height += op.height;
 			return *this;
@@ -93,8 +93,8 @@ namespace v2x {
 		/// Operator overloaded for negative calculation.
 		///
 		/// @return A new size object containing the negative value to the current one.
-		Size2D <T> operator - () const {
-			Size2D <T> result(-width, -height);
+		Size2D_T <T> operator - () const {
+			Size2D_T <T> result(-width, -height);
 			return result;
 		}
 
@@ -104,8 +104,8 @@ namespace v2x {
 		/// @param [in]	op	The size object whose width and height should be subtracted from the current size.
 		///
 		/// @return A new size object.
-		Size2D <T> operator - (const Size2D <T> & op) const {
-			Size2D <T> result(width - op.width, height - op.height);
+		Size2D_T <T> operator - (const Size2D_T <T> & op) const {
+			Size2D_T <T> result(width - op.width, height - op.height);
 			return result;
 		}
 
@@ -114,7 +114,7 @@ namespace v2x {
 		/// @param [in]	op	The size object whose width and height should be subtracted from the current size.
 		///
 		/// @return A reference to the current 2D size object.
-		Size2D <T> & operator -= (const Size2D <T> & op) {
+		Size2D_T <T> & operator -= (const Size2D_T <T> & op) {
 			width -= op.width;
 			height -= op.height;
 			return *this;
@@ -125,8 +125,8 @@ namespace v2x {
 		/// @param [in]	op	The multiplicator.
 		///
 		/// @return A new size object.
-		Size2D <T> operator * (const T & op) const {
-			Size2D <T> result(width * op, height * op);
+		Size2D_T <T> operator * (const T & op) const {
+			Size2D_T <T> result(width * op, height * op);
 			return result;
 		}
 
@@ -135,7 +135,7 @@ namespace v2x {
 		/// @param [in]	op	The multiplicator.
 		///
 		/// @return A reference to the current size object.
-		Size2D <T> & operator *= (const T & op) {
+		Size2D_T <T> & operator *= (const T & op) {
 			width *= op;
 			height *= op;
 			return *this;
@@ -149,13 +149,13 @@ namespace v2x {
 		/// @return A new size object.
 		///
 		/// @throw SmiException if the divisor is zero.
-		Size2D <T> operator / (const T & op) const {
+		Size2D_T <T> operator / (const T & op) const {
 
 			// Check divisor.
 			if (op == 0)
-				throw Exception(L"Size2D::/: The divisor should not be 0!");
+				throw Exception(L"Size2D_T::/: The divisor should not be 0!");
 
-			Size2D <T> result(width / op, height / op);
+			Size2D_T <T> result(width / op, height / op);
 			return result;
 		}
 
@@ -166,11 +166,11 @@ namespace v2x {
 		/// @return A reference to the current size object.
 		///
 		/// @throw SmiException if the divisor is zero.
-		Size2D <T> & operator /= (const T & op) {
+		Size2D_T <T> & operator /= (const T & op) {
 
 			// Check divisor.
 			if (op == 0)
-				throw Exception(L"Size2D::/=: The divisor should not be 0!");
+				throw Exception(L"Size2D_T::/=: The divisor should not be 0!");
 
 			width /= op;
 			height /= op;
@@ -182,7 +182,7 @@ namespace v2x {
 		/// @param [in]	op	The size object to be compared.
 		///
 		/// @return True only if their widths and heights are equal.
-		bool operator == (const Size2D <T> & op) const {
+		bool operator == (const Size2D_T <T> & op) const {
 			return (width == op.width) && (height == op.height);
 		}
 
@@ -191,7 +191,7 @@ namespace v2x {
 		/// @param [in]	op	The size object to be compared.
 		///
 		/// @return True only if their widths or heights are not equal.
-		bool operator != (const Size2D <T> & op) const {
+		bool operator != (const Size2D_T <T> & op) const {
 
 			if (std::isnan(width) || std::isnan(height) || std::isnan(op.width) || std::isnan(op.height))
 				return false;
@@ -222,15 +222,16 @@ namespace v2x {
 
 	template <typename t>
 	inline std::basic_ostream <wchar_t> &
-		operator << (std::basic_ostream <wchar_t> & os, const Size2D <t> & s) {
+		operator << (std::basic_ostream <wchar_t> & os, const Size2D_T <t> & s) {
 		return os << L"(" << s.width << L", " << s.height << L")";
 	}
 
-	typedef Size2D <int32_t> Size2D32I;
-	typedef Size2D <int64_t> Size2D64I;
+	typedef Size2D_T <int32_t> Size2D32I;
+	typedef Size2D_T <int64_t> Size2D64I;
 
-	typedef Size2D <float> Size2D32F;
-	typedef Size2D <double> Size2D64F;
-	typedef Size2D <Real> Size2DR;
+	typedef Size2D_T <float> Size2D32F;
+	typedef Size2D_T <double> Size2D64F;
+	typedef Size2D_T <Real> Size2DR;
 
+	typedef Size2D_T <Real> Size;
 }

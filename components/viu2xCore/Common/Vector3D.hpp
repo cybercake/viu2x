@@ -9,7 +9,7 @@
 namespace v2x {
 
 	template <typename T>
-	class Vector3D {
+	class Vector3D_T {
 
 	public:
 
@@ -26,30 +26,30 @@ namespace v2x {
 
 		/// The default constructor
 		/// It sets the vector to 0.
-		Vector3D() : x(), y(), z() {
+		Vector3D_T() : x(), y(), z() {
 		}
 
-		virtual ~Vector3D() {
+		virtual ~Vector3D_T() {
 		}
 
 		/// The constructor copying data from another 2D vector of the same type
 		/// @param[in]	other	The vector from which the data is to be copied.
-		Vector3D(const Vector2D <T> & other) : x(other.x), y(other.y), z(other.z)  {
+		Vector3D_T(const Vector2D_T <T> & other) : x(other.x), y(other.y), z(other.z)  {
 		}
 
 		/// The constructor copying data from another 2D vector of another type
 		/// @param[in]	other	The vector from which the data is to be copied.
-		template <typename OtherType> explicit Vector3D(const Vector3D <OtherType> & other) : x(other.x), y(other.y), z(other.z) {
+		template <typename OtherType> explicit Vector3D_T(const Vector3D_T <OtherType> & other) : x(other.x), y(other.y), z(other.z) {
 		}
 
 		/// The constructor with specification of its values
 		/// @param [in] xValue The scaled x value of the vector
 		/// @param [in] yValue The scaled y value of the vector
-		Vector3D(T xValue, T yValue, T zValue) : x(xValue), y(yValue), z(zValue) {
+		Vector3D_T(T xValue, T yValue, T zValue) : x(xValue), y(yValue), z(zValue) {
 		}
 
 		/// Set the components to zero.
-		Vector3D <T> & zero() {
+		Vector3D_T <T> & zero() {
 			x = 0;
 			y = 0;
 			z = 0;
@@ -65,7 +65,7 @@ namespace v2x {
 
 		/// Operator overload for assignment.
 		/// @param [in] op The source of the data. Its data will be copied to the current object.
-		Vector3D <T> & operator = (const Vector3D <T> & op) {
+		Vector3D_T <T> & operator = (const Vector3D_T <T> & op) {
 			x = op.x;
 			y = op.y;
 			z = op.z;
@@ -75,7 +75,7 @@ namespace v2x {
 		/// operator overload for increment
 		/// @param [in] op The operand
 		/// @return this = this + op
-		Vector3D <T> & operator += (const Vector3D <T> & op) {
+		Vector3D_T <T> & operator += (const Vector3D_T <T> & op) {
 			x += op.x;
 			y += op.y;
 			z += op.z;
@@ -84,14 +84,14 @@ namespace v2x {
 
 		/// operator overload for negative calculation
 		/// @return result = - this
-		Vector3D <T> operator - () const {
-			return Vector3D <T>(-x, -y, -z);
+		Vector3D_T <T> operator - () const {
+			return Vector3D_T <T>(-x, -y, -z);
 		}
 
 		/// operator overload for decrement
 		/// @param [in] op The operand
 		/// @return this = this - op
-		Vector3D <T> & operator -= (const Vector3D <T> & op) {
+		Vector3D_T <T> & operator -= (const Vector3D_T <T> & op) {
 			x -= op.x;
 			y -= op.y;
 			z -= op.z;
@@ -101,7 +101,7 @@ namespace v2x {
 		/// operator overload for self scalar multiplication
 		/// @param [in] op The scale factor
 		/// @return this = this * op
-		Vector3D <T> & operator *= (const T & op) {
+		Vector3D_T <T> & operator *= (const T & op) {
 			x *= op;
 			y *= op;
 			z *= op;
@@ -111,10 +111,10 @@ namespace v2x {
 		/// operator overload for self scalar division
 		/// @param [in] op The scale factor
 		/// @return this = this / op
-		Vector3D <T> & operator /= (const T & op) {
+		Vector3D_T <T> & operator /= (const T & op) {
 
 			if (op == 0)
-				throw Exception(L"Vector3D::/=: The operator should not be 0!");
+				throw Exception(L"Vector3D_T::/=: The operator should not be 0!");
 
 			x /= op;
 			y /= op;
@@ -125,46 +125,46 @@ namespace v2x {
 		/// operator overload for addition
 		/// @param [in] op The operand
 		/// @return result = this + op
-		Vector3D <T> operator + (const Vector3D <T> & op) const {
-			return Vector3D <T>(x + op.x, y + op.y, z + op.z);
+		Vector3D_T <T> operator + (const Vector3D_T <T> & op) const {
+			return Vector3D_T <T>(x + op.x, y + op.y, z + op.z);
 		}
 
 		/// operator overload for subtraction
 		/// @param [in] op The operand
 		/// @return result = this - op
-		Vector3D <T> operator - (const Vector3D <T> & op) const {
-			return Vector3D <T>(x - op.x, y - op.y, z - op.z);
+		Vector3D_T <T> operator - (const Vector3D_T <T> & op) const {
+			return Vector3D_T <T>(x - op.x, y - op.y, z - op.z);
 		}
 
 		/// operator overload for scalar multiplication
 		/// @param [in] op The scale factor
 		/// @return result = this * op
-		Vector3D <T> operator * (const T & op) const {
-			return Vector3D <T>(x * op, y * op, z * op);
+		Vector3D_T <T> operator * (const T & op) const {
+			return Vector3D_T <T>(x * op, y * op, z * op);
 		}
 
 		/// operator overload for scalar division
 		/// @param [in] op The scale factor
 		/// @return result = this / op
-		Vector3D <T> operator / (const T & op) const {
+		Vector3D_T <T> operator / (const T & op) const {
 
 			if (op == 0)
-				throw Exception(L"Vector3D::/: The operator should not be 0!");
+				throw Exception(L"Vector3D_T::/: The operator should not be 0!");
 
-			return Vector3D <T>(x / op, y / op, z / op);
+			return Vector3D_T <T>(x / op, y / op, z / op);
 		}
 
 		/// operator overload for equality comparison
 		/// @param [in] op The operand
 		/// @return True if this = op considering the scale factor w
-		bool operator == (const Vector3D <T> & op) const {
+		bool operator == (const Vector3D_T <T> & op) const {
 			return (x == op.x) && (y == op.y) && (z == op.z);
 		}
 
 		/// operator overload for inequality comparison
 		/// @param [in] op The operand
 		/// @return False if this = op considering the scale factor w
-		bool operator != (const Vector3D <T> & op) const {
+		bool operator != (const Vector3D_T <T> & op) const {
 
 			if (std::isnan(x) || std::isnan(y) || std::isnan(z) ||
 				std::isnan(op.x) || std::isnan(op.y) || std::isnan(op.z))
@@ -188,8 +188,8 @@ namespace v2x {
 		/// Return the normalized vector.
 		/// @return The normalized vector.
 		/// @throw Exception if norm == 0.
-		Vector3D <T> normalize() const {
-			Vector3D <T> result;
+		Vector3D_T <T> normalize() const {
+			Vector3D_T <T> result;
 			Real n = norm();
 			result.x = (T)(x / n);
 			result.y = (T)(y / n);
@@ -201,15 +201,15 @@ namespace v2x {
 		/// Compute the dot product of two vectors
 		/// @param [in] op The operand
 		/// @return The dot product of the current vector and op (this . op)
-		T dot(const Vector3D <T> & op) const {
+		T dot(const Vector3D_T <T> & op) const {
 			return x * op.x + y * op.y + z * op.z;
 		}
 
 		/// Compute the cross product of two vectors
 		/// @param [in] op The operand
 		/// @return The cross product of the current vector and op (this x op)
-		T cross(const Vector3D <T> & op) const {
-			Vector3D <T> result;
+		T cross(const Vector3D_T <T> & op) const {
+			Vector3D_T <T> result;
 			result.x = y * op.z - z * op.y;
 			result.y = z * op.x - x * op.z;
 			result.z = x * op.y - y * op.x;
@@ -242,8 +242,10 @@ namespace v2x {
 		}
 	};
 
-	typedef Vector3D<int32_t> Vector3D32I;
-	typedef Vector3D<float> Vector3D32F;
-	typedef Vector3D<double> Vector3D64F;
-	typedef Vector3D<Real> Vector3DR;
+	typedef Vector3D_T<int32_t> Vector3D32I;
+	typedef Vector3D_T<float> Vector3D32F;
+	typedef Vector3D_T<double> Vector3D64F;
+	typedef Vector3D_T<Real> Vector3DR;
+
+	typedef Vector3D_T<Real> Point3D;
 }
