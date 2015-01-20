@@ -236,7 +236,7 @@ namespace viu2xTests
 		TEST_METHOD(TestVector2D) {
 
 			///////////////////
-			// Vector2D Test //
+			// Vector2D_T Test //
 			///////////////////
 
 			Vector2DR v1(123, 321);
@@ -285,7 +285,7 @@ namespace viu2xTests
 		TEST_METHOD(TestVector3D) {
 
 			///////////////////
-			// Vector2D Test //
+			// Vector2D_T Test //
 			///////////////////
 
 			Vector3DR v1(123, 321, 111);

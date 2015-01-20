@@ -11,7 +11,7 @@ namespace v2x {
 	typedef double Real;
 
 	template <typename T>
-	class Vector2D {
+	class Vector2D_T {
 
 	public:
 
@@ -25,30 +25,30 @@ namespace v2x {
 
 		/// The default constructor
 		/// It sets the vector to 0.
-		Vector2D() : x(), y() {
+		Vector2D_T() : x(), y() {
 		}
 
-		virtual ~Vector2D() {
+		virtual ~Vector2D_T() {
 		}
 
 		/// The constructor copying data from another 2D vector of the same type
 		/// @param[in]	other	The vector from which the data is to be copied.
-		Vector2D(const Vector2D <T> & other) : x(other.x), y(other.y)  {
+		Vector2D_T(const Vector2D_T <T> & other) : x(other.x), y(other.y)  {
 		}
 
 		/// The constructor copying data from another 2D vector of another type
 		/// @param[in]	other	The vector from which the data is to be copied.
-		template <typename OtherType> explicit Vector2D(const Vector2D <OtherType> & other) : x(other.x), y(other.y)  {
+		template <typename OtherType> explicit Vector2D_T(const Vector2D_T <OtherType> & other) : x(other.x), y(other.y)  {
 		}
 
 		/// The constructor with specification of its values
 		/// @param [in] xValue The scaled x value of the vector
 		/// @param [in] yValue The scaled y value of the vector
-		Vector2D(T xValue, T yValue) : x(xValue), y(yValue) {
+		Vector2D_T(T xValue, T yValue) : x(xValue), y(yValue) {
 		}
 
 		/// Set the components to zero.
-		Vector2D <T> & zero() {
+		Vector2D_T <T> & zero() {
 			x = 0;
 			y = 0;
 			return *this;
@@ -62,7 +62,7 @@ namespace v2x {
 
 		/// Operator overload for assignment.
 		/// @param [in] op The source of the data. Its data will be copied to the current object.
-		Vector2D <T> & operator = (const Vector2D <T> & op) {
+		Vector2D_T <T> & operator = (const Vector2D_T <T> & op) {
 			x = op.x;
 			y = op.y;
 			return *this;
@@ -71,7 +71,7 @@ namespace v2x {
 		/// operator overload for increment
 		/// @param [in] op The operand
 		/// @return this = this + op
-		Vector2D <T> & operator += (const Vector2D <T> & op) {
+		Vector2D_T <T> & operator += (const Vector2D_T <T> & op) {
 			x += op.x;
 			y += op.y;
 			return *this;
@@ -79,15 +79,15 @@ namespace v2x {
 
 		/// operator overload for negative calculation
 		/// @return result = - this
-		Vector2D <T> operator - () const {
-			Vector2D <T> result(-x, -y);
+		Vector2D_T <T> operator - () const {
+			Vector2D_T <T> result(-x, -y);
 			return result;
 		}
 
 		/// operator overload for decrement
 		/// @param [in] op The operand
 		/// @return this = this - op
-		Vector2D <T> & operator -= (const Vector2D <T> & op) {
+		Vector2D_T <T> & operator -= (const Vector2D_T <T> & op) {
 			x -= op.x;
 			y -= op.y;
 			return *this;
@@ -96,7 +96,7 @@ namespace v2x {
 		/// operator overload for self scalar multiplication
 		/// @param [in] op The scale factor
 		/// @return this = this * op
-		Vector2D <T> & operator *= (const T & op) {
+		Vector2D_T <T> & operator *= (const T & op) {
 			x *= op;
 			y *= op;
 			return *this;
@@ -105,10 +105,10 @@ namespace v2x {
 		/// operator overload for self scalar division
 		/// @param [in] op The scale factor
 		/// @return this = this / op
-		Vector2D <T> & operator /= (const T & op) {
+		Vector2D_T <T> & operator /= (const T & op) {
 
 			if (op == 0)
-				throw Exception(L"Vector2D::/=: The operator should not be 0!");
+				throw Exception(L"Vector2D_T::/=: The operator should not be 0!");
 
 			x /= op;
 			y /= op;
@@ -118,46 +118,46 @@ namespace v2x {
 		/// operator overload for addition
 		/// @param [in] op The operand
 		/// @return result = this + op
-		Vector2D <T> operator + (const Vector2D <T> & op) const {
-			return Vector2D <T>(x + op.x, y + op.y);
+		Vector2D_T <T> operator + (const Vector2D_T <T> & op) const {
+			return Vector2D_T <T>(x + op.x, y + op.y);
 		}
 
 		/// operator overload for subtraction
 		/// @param [in] op The operand
 		/// @return result = this - op
-		Vector2D <T> operator - (const Vector2D <T> & op) const {
-			return Vector2D <T>(x - op.x, y - op.y);
+		Vector2D_T <T> operator - (const Vector2D_T <T> & op) const {
+			return Vector2D_T <T>(x - op.x, y - op.y);
 		}
 
 		/// operator overload for scalar multiplication
 		/// @param [in] op The scale factor
 		/// @return result = this * op
-		Vector2D <T> operator * (const T & op) const {
-			return Vector2D <T>(x * op, y * op);
+		Vector2D_T <T> operator * (const T & op) const {
+			return Vector2D_T <T>(x * op, y * op);
 		}
 
 		/// operator overload for scalar division
 		/// @param [in] op The scale factor
 		/// @return result = this / op
-		Vector2D <T> operator / (const T & op) const {
+		Vector2D_T <T> operator / (const T & op) const {
 
 			if (op == 0)
-				throw Exception(L"Vector2D::/: The operator should not be 0!");
+				throw Exception(L"Vector2D_T::/: The operator should not be 0!");
 
-			return Vector2D <T>(x / op, y / op);
+			return Vector2D_T <T>(x / op, y / op);
 		}
 
 		/// operator overload for equality comparison
 		/// @param [in] op The operand
 		/// @return True if this = op considering the scale factor w
-		bool operator == (const Vector2D <T> & op) const {
+		bool operator == (const Vector2D_T <T> & op) const {
 			return (x == op.x) && (y == op.y);
 		}
 
 		/// operator overload for inequality comparison
 		/// @param [in] op The operand
 		/// @return False if this = op considering the scale factor w
-		bool operator != (const Vector2D <T> & op) const {
+		bool operator != (const Vector2D_T <T> & op) const {
 
 			if (std::isnan(x) || std::isnan(y) ||
 				std::isnan(op.x) || std::isnan(op.y))
@@ -185,8 +185,8 @@ namespace v2x {
 		/// @return The normalized vector.
 		///
 		/// @throw Exception if w == 0.
-		Vector2D <T> normalize() const {
-			Vector2D <T> result;
+		Vector2D_T <T> normalize() const {
+			Vector2D_T <T> result;
 			Real n = norm();
 			result.x = (T)(x / n);
 			result.y = (T)(y / n);
@@ -197,14 +197,14 @@ namespace v2x {
 		/// Compute the dot product of two vectors
 		/// @param [in] op The operand
 		/// @return The dot product of the current vector and op (this . op)
-		T dot(const Vector2D <T> & op) const {
+		T dot(const Vector2D_T <T> & op) const {
 			return x * op.x + y * op.y;
 		}
 
 		/// Compute the cross product of two vectors
 		/// @param [in] op The operand
 		/// @return The cross product of the current vector and op (this x op)
-		T cross(const Vector2D <T> & op) const {
+		T cross(const Vector2D_T <T> & op) const {
 			return x * op.y - y * op.x;
 		}
 
@@ -235,8 +235,10 @@ namespace v2x {
 		}
 	};
 
-	typedef Vector2D<int32_t> Vector2D32I;
-	typedef Vector2D<float> Vector2D32F;
-	typedef Vector2D<double> Vector2D64F;
-	typedef Vector2D<Real> Vector2DR;
+	typedef Vector2D_T<int32_t> Vector2D32I;
+	typedef Vector2D_T<float> Vector2D32F;
+	typedef Vector2D_T<double> Vector2D64F;
+	typedef Vector2D_T<Real> Vector2DR;
+
+	typedef Vector2D_T<Real> Point;
 }
