@@ -23,6 +23,8 @@ namespace v2x {
 		Object::Weak Sender;
 		Object::Shared Data;
 
+		bool Handled;
+
 		template <typename T>
 		std::shared_ptr<T> getDataAs() const {
 			return std::dynamic_pointer_cast<T> (Data);
@@ -51,7 +53,7 @@ namespace v2x {
 
 	protected:
 		bool isExpired() const;
-		void notifyEvent(Event::Shared e) const;
+		bool notifyEvent(Event::Shared e) const;
 
 	private:
 		Object::Weak m_handler;
@@ -78,8 +80,8 @@ namespace v2x {
 		void operator -= (const EventHandler & handler);
 
 		void clear();
-		void notifyEvent(Event::Shared e) const;
-		void notifyEvent(Object::Weak sender, Object::Shared data) const;
+		bool notifyEvent(Event::Shared e) const;
+		bool notifyEvent(Object::Weak sender, Object::Shared data) const;
 
 	private:
 		typedef std::vector<EventHandler> EventHandlerList;

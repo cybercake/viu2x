@@ -231,7 +231,6 @@ namespace v2x {
 
 	typedef Size2D_T <float> Size2D32F;
 	typedef Size2D_T <double> Size2D64F;
-	typedef Size2D_T <Real> Size2DR;
 
 	typedef Size2D_T <Real> Size;
 }

@@ -13,8 +13,8 @@ namespace v2x {
 
 	Display::Display(const DisplayId & displayId, //
 		const String & displayName, //
-		const Size2DR & physicalSizeInMm, //
-		const Vector2DR & resolutionInDpi, //
+		const Size & physicalSizeInMm, //
+		const Vector2D & resolutionInDpi, //
 		const Rect32I & screenAreaInPx, //
 		const Rect32I & workAreaInPx, //
 		const bool & isPrimary) : //
@@ -41,18 +41,18 @@ namespace v2x {
 	}
 
 	/// Physical size of the screen, given in mm.
-	const Size2DR & Display::getPhysicalSizeInMm() const {
+	const Size & Display::getPhysicalSizeInMm() const {
 		return m_physicalSizeInMm;
 	}
 
 	/// Specified resolution, not the actual one.
-	const Vector2DR & Display::getResolutionInDpi() const {
+	const Vector2D & Display::getResolutionInDpi() const {
 		return m_resolutionInDpi;
 	}
 
 	/// Specified resolution, not the actual one.
-	Vector2DR Display::getActualResolutionInDpi() const {
-		return Vector2DR(m_screenAreaInPx.getWidth() * 25.4 / m_physicalSizeInMm.width, //
+	Vector2D Display::getActualResolutionInDpi() const {
+		return Vector2D(m_screenAreaInPx.getWidth() * 25.4 / m_physicalSizeInMm.width, //
 			m_screenAreaInPx.getHeight() * 25.4 / m_physicalSizeInMm.height);
 	}
 
@@ -291,8 +291,8 @@ namespace v2x {
 		Display::Shared display(new Display( //
 			(Display::DisplayId)hMonitor, // Id
 			String(info.szDevice), // Name
-			Size2DR(hSize, vSize), // Physical size
-			Vector2DR(hPixelsPerInch, vPixelsPerInch), // Resolution in dpi
+			Size(hSize, vSize), // Physical size
+			Vector2D(hPixelsPerInch, vPixelsPerInch), // Resolution in dpi
 			Rect32I(info.rcMonitor.left, info.rcMonitor.top, w1, h1), // Screen area
 			Rect32I(info.rcWork.left, info.rcWork.top, w1, h1), // Work area
 			(info.dwFlags & MONITORINFOF_PRIMARY) != 0));

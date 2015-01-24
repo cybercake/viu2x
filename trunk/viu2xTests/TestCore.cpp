@@ -14,7 +14,7 @@ namespace viu2xTests
 	TEST_CLASS(TestCore)
 	{
 	public:
-
+		
 		TEST_METHOD(TestString)
 		{
 			Assert::AreEqual(L"This is a string", StrUtils::format(L"This is a %s", L"string").c_str(), L"Failed to format string value");
@@ -31,73 +31,7 @@ namespace viu2xTests
 
 			Assert::AreEqual(L"Trim", StrUtils::trim(L"\t\n Trim\n\t\t ").c_str(), L"Failed to trim string");
 		}
-
-		TEST_METHOD(TestProperty)
-		{
-			class PropertyContainerTest : protected PropertyContainer {
-			public:
-				Int32Property Property1;
-				DoubleProperty Property2;
-				StringProperty Property3;
-
-				PropertyContainerTest() :
-					REGISTER_PROPERTY_WITH_DEFAULT_VALIDATOR(PropertyContainerTest, Property1, 0),
-					REGISTER_PROPERTY_WITH_DEFAULT_NOTIFIER(PropertyContainerTest, Property2, 0),
-					REGISTER_PROPERTY_WITH_NOTIFIER(PropertyContainerTest, Property3, L"", doOnProperty3Change)
-				{
-				}
-
-				virtual ~PropertyContainerTest() {}
-
-				const int32_t PROPERTY1_VALUE = 123;
-				const int32_t PROPERTY1_TRUE_VALUE = 321;
-				const double PROPERTY2_VALUE = 123.312;
-
-				bool Property1Changed = false;
-				bool Property2Changed = false;
-				bool Property1Ok = false;
-				bool Property2Ok = false;
-
-			protected:
-				virtual void validateProperty1(const PropertyDescriptor * prop, int32_t * value) { *value = PROPERTY1_TRUE_VALUE; }
-				virtual void notifyProperty1(const PropertyDescriptor * prop, const int32_t * value) { Property1Changed = true; Property1Ok = *value == PROPERTY1_TRUE_VALUE; }
-				virtual void notifyProperty2(const PropertyDescriptor * prop, const double * value) { Property2Changed = true; Property2Ok = *value == PROPERTY2_VALUE; }
-				virtual void doOnProperty3Change(const PropertyDescriptor * prop, const String * value) { }
-			};
-
-			/// Test property change notification in descendant class.
-			class PropertyContainerTest2 : public PropertyContainerTest {
-			public:
-				virtual ~PropertyContainerTest2() {}
-
-				bool Property3Changed = false;
-			protected:
-				void doOnProperty3Change(const PropertyDescriptor * prop, const String * value) { Property3Changed = true; }
-			};
-
-			PropertyContainerTest2 obj;
-
-			Assert::AreEqual(true, obj.Property1.getName() == L"Property1");
-			Assert::AreEqual(true, obj.Property2.getName() == L"Property2");
-
-			Assert::AreEqual(false, obj.Property1Changed);
-			Assert::AreEqual(false, obj.Property2Changed);
-			Assert::AreEqual(false, obj.Property1Ok);
-			Assert::AreEqual(false, obj.Property2Ok);
-
-			obj.Property1 = obj.PROPERTY1_VALUE;
-			obj.Property2 = obj.PROPERTY2_VALUE;
-			obj.Property3 = L"aaa";
-
-			Assert::AreEqual(true, obj.Property1 == obj.PROPERTY1_TRUE_VALUE);
-			Assert::AreEqual(true, obj.Property2 == obj.PROPERTY2_VALUE);
-			Assert::AreEqual(true, obj.Property1Changed);
-			Assert::AreEqual(true, obj.Property2Changed);
-			Assert::AreEqual(true, obj.Property3Changed);
-			Assert::AreEqual(true, obj.Property1Ok);
-			Assert::AreEqual(true, obj.Property2Ok);
-		}
-
+		
 		TEST_METHOD(TestEvents)
 		{
 			class EventData1 : public Object {
@@ -118,9 +52,13 @@ namespace viu2xTests
 				EventSlot OnEvent1;
 				EventSlot OnEvent2;
 
-				void triggerEvents() {
-					OnEvent1.notifyEvent(Event::Shared(new Event(shared_from_this(), EventData1::Shared(new EventData1(12345)))));
-					OnEvent2.notifyEvent(Event::Shared(new Event(shared_from_this(), EventData1::Shared(new EventData1(54321)))));
+				bool triggerEvents() {
+
+					bool result = false;
+					result |= OnEvent1.notifyEvent(Event::Shared(new Event(shared_from_this(), EventData1::Shared(new EventData1(12345)))));
+					result |= OnEvent2.notifyEvent(Event::Shared(new Event(shared_from_this(), EventData1::Shared(new EventData1(54321)))));
+
+					return result;
 				}
 			};
 
@@ -136,6 +74,7 @@ namespace viu2xTests
 				void doOnEvent1(Event::Shared e) {
 					if (e->Data != nullptr)
 						m_eventData1 = e->getDataAs<EventData1>()->m_data;
+					e->Handled = true;
 				}
 				void doOnEvent2(Event::Shared e) {
 					if (e->Data != nullptr)
@@ -194,7 +133,7 @@ namespace viu2xTests
 			Assert::AreEqual(0, handler3->m_eventData1);
 			Assert::AreEqual(0, handler3->m_eventData2);
 
-			trigger->triggerEvents();
+			Assert::AreEqual(true, trigger->triggerEvents());
 
 			Assert::AreEqual(12345, handler1->m_eventData1);
 			Assert::AreEqual(54321, handler1->m_eventData2);
@@ -239,7 +178,7 @@ namespace viu2xTests
 			// Vector2D_T Test //
 			///////////////////
 
-			Vector2DR v1(123, 321);
+			Vector2D v1(123, 321);
 
 			Assert::AreEqual(123.0, v1.x);
 			Assert::AreEqual(321.0, v1.y);
@@ -247,12 +186,12 @@ namespace viu2xTests
 			Assert::AreEqual(false, v1.isNaN());
 			Assert::AreEqual(false, v1.isZero());
 
-			Vector2DR v2(v1);
+			Vector2D v2(v1);
 			Assert::AreEqual(123.0, v2.x);
 			Assert::AreEqual(321.0, v2.y);
 			Assert::AreEqual(true, v1 == v2);
 
-			Vector2DR v3;
+			Vector2D v3;
 			Assert::AreEqual(0.0, v3.x);
 			Assert::AreEqual(0.0, v3.y);
 			Assert::AreEqual(true, v3.isZero());
@@ -269,14 +208,14 @@ namespace viu2xTests
 			Assert::AreEqual(123.0, v3.x);
 			Assert::AreEqual(321.0, v3.y);
 
-			Vector2DR v4(NAN, 123);
+			Vector2D v4(NAN, 123);
 			Assert::AreEqual(false, v4.isInf());
 			Assert::AreEqual(true, v4.isNaN());
 			Assert::AreEqual(false, v4.isZero());
 			Assert::AreEqual(false, v4 == v4);
 			Assert::AreEqual(false, v4 != v4);
 
-			Vector2DR v5 = v4 + v3;
+			Vector2D v5 = v4 + v3;
 			Assert::AreEqual(false, v4.isInf());
 			Assert::AreEqual(true, v4.isNaN());
 			Assert::AreEqual(false, v4.isZero());
@@ -288,7 +227,7 @@ namespace viu2xTests
 			// Vector2D_T Test //
 			///////////////////
 
-			Vector3DR v1(123, 321, 111);
+			Vector3D v1(123, 321, 111);
 
 			Assert::AreEqual(123.0, v1.x);
 			Assert::AreEqual(321.0, v1.y);
@@ -297,13 +236,13 @@ namespace viu2xTests
 			Assert::AreEqual(false, v1.isNaN());
 			Assert::AreEqual(false, v1.isZero());
 
-			Vector3DR v2(v1);
+			Vector3D v2(v1);
 			Assert::AreEqual(123.0, v2.x);
 			Assert::AreEqual(321.0, v2.y);
 			Assert::AreEqual(111.0, v2.z);
 			Assert::AreEqual(true, v1 == v2);
 
-			Vector3DR v3;
+			Vector3D v3;
 			Assert::AreEqual(0.0, v3.x);
 			Assert::AreEqual(0.0, v3.y);
 			Assert::AreEqual(0.0, v3.z);
@@ -324,7 +263,7 @@ namespace viu2xTests
 			Assert::AreEqual(321.0, v3.y);
 			Assert::AreEqual(111.0, v3.z);
 
-			Vector3DR v4(NAN, NAN, 123);
+			Vector3D v4(NAN, NAN, 123);
 			Assert::AreEqual(false, v4.isInf());
 			Assert::AreEqual(true, v4.isNaN());
 			Assert::AreEqual(false, v4.isZero());

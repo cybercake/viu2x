@@ -238,7 +238,7 @@ namespace v2x {
 	typedef Vector2D_T<int32_t> Vector2D32I;
 	typedef Vector2D_T<float> Vector2D32F;
 	typedef Vector2D_T<double> Vector2D64F;
-	typedef Vector2D_T<Real> Vector2DR;
+	typedef Vector2D_T<Real> Vector2D;
 
 	typedef Vector2D_T<Real> Point;
 }
