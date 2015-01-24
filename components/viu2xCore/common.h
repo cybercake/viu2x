@@ -5,8 +5,9 @@
 #include "Common/Config.h"
 #include "Common/String.h"
 #include "Common/Exceptions.h"
+#include "Common/EnumHelpers.h"
 #include "Common/Object.h"
-#include "Common/Property.h"
+#include "Common/Ownership.hpp"
 #include "Common/Event.h"
 
 #include "Common/Vector2D.hpp"

@@ -254,8 +254,8 @@ namespace v2x {
 		/// Get the rectangles center position in floating point precision
 		///
 		/// @return 	The calculated center vector of the rectangle
-		Vector2DR getCenterExact() const {
-			return Vector2DR(position.x + (size.width / (real)2), position.y + (size.height / (real)2));
+		Vector2D getCenterExact() const {
+			return Vector2D(position.x + (size.width / (real)2), position.y + (size.height / (real)2));
 		}
 
 		/// @return if the rectangle is empty.

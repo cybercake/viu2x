@@ -245,7 +245,7 @@ namespace v2x {
 	typedef Vector3D_T<int32_t> Vector3D32I;
 	typedef Vector3D_T<float> Vector3D32F;
 	typedef Vector3D_T<double> Vector3D64F;
-	typedef Vector3D_T<Real> Vector3DR;
+	typedef Vector3D_T<Real> Vector3D;
 
 	typedef Vector3D_T<Real> Point3D;
 }

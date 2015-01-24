@@ -20,8 +20,8 @@ namespace v2x {
 		typedef int DisplayId;
 		Display(const DisplayId & displayId, //
 			const String & displayName, //
-			const Size2DR & physicalSizeInMm, //
-			const Vector2DR & resolutionInDpi, //
+			const Size & physicalSizeInMm, //
+			const Vector2D & resolutionInDpi, //
 			const Rect32I & screenAreaInPx, //
 			const Rect32I & workAreaInPx, //
 			const bool & isPrimary);
@@ -34,13 +34,13 @@ namespace v2x {
 		const String & getDisplayName() const;
 
 		/// Physical size of the screen, given in mm.
-		const Size2DR & getPhysicalSizeInMm() const;
+		const Size & getPhysicalSizeInMm() const;
 		
 		/// Specified resolution, not the actual one.
-		const Vector2DR & getResolutionInDpi() const;
+		const Vector2D & getResolutionInDpi() const;
 
 		/// Specified resolution, not the actual one.
-		Vector2DR getActualResolutionInDpi() const;
+		Vector2D getActualResolutionInDpi() const;
 
 		/// The region where the display is mapped to.
 		const Rect32I & getScreenAreaInPx() const;
@@ -59,10 +59,10 @@ namespace v2x {
 		String m_displayName;
 
 		/// Physical size of the screen, given in mm.
-		Size2DR m_physicalSizeInMm;
+		Size m_physicalSizeInMm;
 
 		/// Specified resolution, not the actual one.
-		Vector2DR m_resolutionInDpi;
+		Vector2D m_resolutionInDpi;
 
 		/// The region where the display is mapped to.
 		Rect32I m_screenAreaInPx;

@@ -8,10 +8,10 @@ namespace v2x {
 	// Event //
 	///////////
 
-	Event::Event() {
+	Event::Event() : Handled(false) {
 	}
 
-	Event::Event(Object::Weak sender, Object::Shared data) : Sender(sender), Data(data) {
+	Event::Event(Object::Weak sender, Object::Shared data) : Sender(sender), Data(data), Handled(false) {
 	}
 
 	/// We always need virtual deconstructor!
@@ -41,11 +41,14 @@ namespace v2x {
 		return m_handler.expired();
 	}
 
-	void EventHandler::notifyEvent(Event::Shared e) const {
+	bool EventHandler::notifyEvent(Event::Shared e) const {
+
 		Object::SharedConst handlerLock = m_handler.lock();
 		if (handlerLock != NULL)
 			m_callback(e);
 		handlerLock.reset();
+
+		return e->Handled;
 	}
 
 	/// We always need virtual deconstructor!
@@ -93,18 +96,28 @@ namespace v2x {
 		m_slots.clear();
 	}
 
-	void EventSlot::notifyEvent(Event::Shared e) const {
+	bool EventSlot::notifyEvent(Event::Shared e) const {
+
+		bool result = false;
 		EventSlot::EventHandlerList::const_iterator i;
 		for (i = m_slots.begin(); i != m_slots.end(); ++i) {
 			i->notifyEvent(e);
+			result |= e->Handled;
 		}
+
+		return result;
 	}
 
-	void EventSlot::notifyEvent(Object::Weak sender, Object::Shared data) const {
+	bool EventSlot::notifyEvent(Object::Weak sender, Object::Shared data) const {
+
+		bool result = false;
 		Event::Shared e(new Event(sender, data));
 		EventSlot::EventHandlerList::const_iterator i;
 		for (i = m_slots.begin(); i != m_slots.end(); ++i) {
 			i->notifyEvent(e);
+			result |= e->Handled;
 		}
+
+		return result;
 	}
 }
