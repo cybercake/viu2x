@@ -4,161 +4,100 @@
 
 namespace v2x {
 
-	//////////////
-	// SizeSpec //
-	//////////////
+	////////////////
+	// ScalarSpec //
+	////////////////
 
-	SizeSpec::SizeSpec(Listener<SizeSpec> notifier) : //
-		m_size(0), m_unit(SizeUnit::Pixel), m_notifier(notifier) {}
+	ScalarSpec::ScalarSpec(const Listener & listener) : //
+		Notifier<ScalarSpec>(listener), Size(0, m_subListener), Unit(ScalarUnit::Pixel, m_subListener) {}
 
-	SizeSpec::SizeSpec(const SizeSpec & sizeSpec, Listener<SizeSpec> notifier) : //
-		m_size(sizeSpec.getSize()), m_unit(sizeSpec.getUnit()), m_notifier(notifier) {}
+	ScalarSpec::ScalarSpec(const ScalarSpec & sizeSpec, const Listener & listener) : //
+		Notifier<ScalarSpec>(listener), Size(sizeSpec.Size, m_subListener), Unit(sizeSpec.Unit, m_subListener) {}
 
-	SizeSpec::SizeSpec(const double & size, Listener<SizeSpec> notifier) : //
-		m_size(size), m_unit(SizeUnit::Pixel), m_notifier(notifier) {}
+	ScalarSpec::ScalarSpec(const double & size, const Listener & listener) : //
+		Notifier<ScalarSpec>(listener), Size(size, m_subListener), Unit(ScalarUnit::Pixel, m_subListener) {}
 
-	SizeSpec::SizeSpec(const double & size, const SizeUnit & unit, Listener<SizeSpec> notifier) : //
-		m_size(size), m_unit(unit), m_notifier(notifier) {}
+	ScalarSpec::ScalarSpec(const double & size, const ScalarUnit & unit, const Listener & listener) : //
+		Notifier<ScalarSpec>(listener), Size(size, m_subListener), Unit(unit, m_subListener) {}
 
-	SizeSpec::~SizeSpec() {}
+	ScalarSpec::~ScalarSpec() {}
 
-	const double & SizeSpec::getSize() const { return m_size; }
-	void SizeSpec::setSize(const double & value) {
-		if (!(value >= 0))
-			throw Exception(L"SizeSpec::setSize(): Unexpected size value: %f", value);
-		m_size = value;
-		notifyChange(this, &m_size);
-	}
-
-	const SizeUnit & SizeSpec::getUnit() const { return m_unit; }
-	void SizeSpec::setUnit(const SizeUnit & value) {
-		m_unit = value;
-		notifyChange(this, &m_unit);
-	}
-
-	SizeSpec & SizeSpec::operator = (const SizeSpec & value) {
-		m_size = value.getSize();
-		m_unit = value.getUnit();
-		if (m_notifier != nullptr)
-			m_notifier(this, this);
+	ScalarSpec & ScalarSpec::operator = (const ScalarSpec & value) {
+		beginUpdate();
+		Size = value.Size;
+		Unit = value.Unit;
+		endUpdate();
 		return *this;
 	}
 
-	bool SizeSpec::operator == (const SizeSpec & value) const { return m_size == value.getSize() && m_unit == value.getUnit(); }
-	bool SizeSpec::operator != (const SizeSpec & value) const { if (std::isnan(m_size) || std::isnan(value.getSize())) return false; return m_size != value.getSize() || m_unit != value.getUnit(); }
-	bool SizeSpec::operator > (const SizeSpec & value) const {
-		if (std::isnan(m_size) || std::isnan(value.getSize()))
-			return false;
-		if (m_unit != value.getUnit())
-			throw Exception(L"SizeSpec::>: Inidentical unit!");
+	bool ScalarSpec::operator == (const ScalarSpec & value) const { return Size == value.Size && Unit == value.Unit; }
+	bool ScalarSpec::operator != (const ScalarSpec & value) const { return Size != value.Size || Unit != value.Unit; }
 
-		return m_size > value.getSize();
+	//////////////////
+	// Vector2DSpec //
+	//////////////////
+
+	Vector2DSpec::Vector2DSpec(const Listener & listener) : //
+		Notifier<Vector2DSpec>(listener), X(0, m_subListener), Y(0, m_subListener), Unit(ScalarUnit::Pixel, m_subListener) {}
+	Vector2DSpec::Vector2DSpec(const Vector2DSpec & vector2DSpec, const Listener & listener) : //
+		Notifier<Vector2DSpec>(listener), X(vector2DSpec.X, m_subListener), Y(vector2DSpec.Y, m_subListener), Unit(vector2DSpec.Unit, m_subListener) {}
+	Vector2DSpec::Vector2DSpec(const double & x, const double & y, const Listener & listener) : //
+		Notifier<Vector2DSpec>(listener), X(x, m_subListener), Y(y, m_subListener), Unit(ScalarUnit::Pixel, m_subListener) {}
+	Vector2DSpec::Vector2DSpec(const double & x, const double & y, const ScalarUnit & unit, const Listener & listener) : //
+		Notifier<Vector2DSpec>(listener), X(x, m_subListener), Y(y, m_subListener), Unit(unit, m_subListener) {}
+	Vector2DSpec::~Vector2DSpec() {}
+
+	Vector2DSpec & Vector2DSpec::operator = (const Vector2DSpec & value) {
+		beginUpdate();
+		X = value.X;
+		Y = value.Y;
+		Unit = value.Unit;
+		endUpdate();
+		return *this;
 	}
-	bool SizeSpec::operator >= (const SizeSpec & value) const {
-		if (std::isnan(m_size) || std::isnan(value.getSize()))
-			return false;
-		if (m_unit != value.getUnit())
-			throw Exception(L"SizeSpec::>=: Inidentical unit!");
-
-		return m_size >= value.getSize();
+	bool Vector2DSpec::operator == (const Vector2DSpec & value) const {
+		return X == value.X && Y == value.Y && Unit == value.Unit;
 	}
-	bool SizeSpec::operator < (const SizeSpec & value) const {
-		if (std::isnan(m_size) || std::isnan(value.getSize()))
-			return false;
-		if (m_unit != value.getUnit())
-			throw Exception(L"SizeSpec::<: Inidentical unit!");
-
-		return m_size < value.getSize();
-	}
-	bool SizeSpec::operator <= (const SizeSpec & value) const {
-		if (std::isnan(m_size) || std::isnan(value.getSize()))
-			return false;
-		if (m_unit != value.getUnit())
-			throw Exception(L"SizeSpec::<=: Inidentical unit!");
-
-		return m_size <= value.getSize();
-	}
-
-	void SizeSpec::callNotify(const void * data) {
-		if (m_notifier != nullptr)
-			m_notifier(this, &m_unit);
+	bool Vector2DSpec::operator != (const Vector2DSpec & value) const {
+		return X != value.X || Y != value.Y || Unit != value.Unit;
 	}
 
 	////////////
 	// Margin //
 	////////////
 
-	MarginSpec::MarginSpec(Listener<MarginSpec> notifier) :
-		m_left(0), m_top(0), m_right(), m_bottom(0), m_notifier(notifier) {}
-	MarginSpec::MarginSpec(const MarginSpec & marginSpec, Listener<MarginSpec> notifier) :
-		m_left(marginSpec.getLeft()), m_top(marginSpec.getTop()), m_right(marginSpec.getRight()), m_bottom(marginSpec.getBottom()), m_unit(marginSpec.getUnit()), m_notifier(notifier) {}
-	MarginSpec::MarginSpec(const double & left, const double & top, const double & right, const double & bottom, Listener<MarginSpec> notifier) :
-		m_left(left), m_top(top), m_right(right), m_bottom(bottom), m_unit(SizeUnit::Pixel), m_notifier(notifier) {}
-	MarginSpec::MarginSpec(const double & left, const double & top, const double & right, const double & bottom, const SizeUnit & unit, Listener<MarginSpec> notifier) :
-		m_left(left), m_top(top), m_right(right), m_bottom(bottom), m_unit(unit), m_notifier(notifier) {}
+	MarginSpec::MarginSpec(const Listener & listener) :
+		Notifier<MarginSpec>(listener), Left(0, m_subListener), Top(0, m_subListener), Right(0, m_subListener), Bottom(0, m_subListener), Unit(ScalarUnit::Pixel, m_subListener) {}
+	MarginSpec::MarginSpec(const MarginSpec & marginSpec, const Listener & listener) :
+		Notifier<MarginSpec>(listener), Left(marginSpec.Left, m_subListener), Top(marginSpec.Top, m_subListener), Right(marginSpec.Right, m_subListener), Bottom(marginSpec.Bottom, m_subListener), Unit(marginSpec.Unit, m_subListener) {}
+	MarginSpec::MarginSpec(const double & left, const double & top, const double & right, const double & bottom, const Listener & listener) :
+		Notifier<MarginSpec>(listener), Left(left, m_subListener), Top(top, m_subListener), Right(right, m_subListener), Bottom(bottom, m_subListener), Unit(ScalarUnit::Pixel, m_subListener) {}
+	MarginSpec::MarginSpec(const double & left, const double & top, const double & right, const double & bottom, const ScalarUnit & unit, const Listener & listener) :
+		Notifier<MarginSpec>(listener), Left(left, m_subListener), Top(top, m_subListener), Right(right, m_subListener), Bottom(bottom, m_subListener), Unit(unit, m_subListener) {}
 	MarginSpec::~MarginSpec() {}
 
-	const double & MarginSpec::getLeft() const { return m_left; }
-	void MarginSpec::setLeft(const double & value) {
-		if (!(value >= 0))
-			throw Exception(L"MarginSpec::setLeft(): Unexpected size value: %f", value);
-		m_left = value;
-		notifyChange(this, &m_left);
-	}
-	const double & MarginSpec::getTop() const { return m_top; }
-	void MarginSpec::setTop(const double & value) {
-		if (!(value >= 0))
-			throw Exception(L"MarginSpec::setTop(): Unexpected size value: %f", value);
-		m_top = value;
-		notifyChange(this, &m_top);
-	}
-	const double & MarginSpec::getRight() const { return m_right; }
-	void MarginSpec::setRight(const double & value) {
-		if (!(value >= 0))
-			throw Exception(L"MarginSpec::setRight(): Unexpected size value: %f", value);
-		m_right = value;
-		notifyChange(this, &m_right);
-	}
-	const double & MarginSpec::getBottom() const { return m_bottom; }
-	void MarginSpec::setBottom(const double & value) {
-		if (!(value >= 0))
-			throw Exception(L"MarginSpec::setBottom(): Unexpected size value: %f", value);
-		m_bottom = value;
-		notifyChange(this, &m_bottom);
-	}
-
-	const SizeUnit & MarginSpec::getUnit() const { return m_unit; }
-	void MarginSpec::setUnit(const SizeUnit & value) {
-		m_unit = value;
-		notifyChange(this, &m_unit);
-	}
-
 	MarginSpec & MarginSpec::operator = (const MarginSpec & value) {
-		m_left = value.getLeft();
-		m_top = value.getTop();
-		m_right = value.getRight();
-		m_bottom = value.getBottom();
-		m_unit = value.getUnit();
-		notifyChange(this, this);
+		beginUpdate();
+		Left = value.Left;
+		Top = value.Top;
+		Right = value.Right;
+		Bottom = value.Bottom;
+		Unit = value.Unit;
+		endUpdate();
 		return *this;
 	}
 	bool MarginSpec::operator == (const MarginSpec & value) const {
-		return m_left == value.getLeft() &&
-			m_top == value.getTop() &&
-			m_right == value.getRight() &&
-			m_bottom == value.getBottom() &&
-			m_unit == value.getUnit();
+		return Left == value.Left &&
+			Top == value.Top &&
+			Right == value.Right &&
+			Bottom == value.Bottom &&
+			Unit == value.Unit;
 	}
 	bool MarginSpec::operator != (const MarginSpec & value) const {
-		if (std::isnan(m_left) || std::isnan(value.getLeft()) ||
-			std::isnan(m_top) || std::isnan(value.getTop()) ||
-			std::isnan(m_right) || std::isnan(value.getRight()) ||
-			std::isnan(m_bottom) || std::isnan(value.getBottom())) return false;
-
-		return m_left != value.getLeft() ||
-			m_top != value.getTop() ||
-			m_right != value.getRight() ||
-			m_bottom != value.getBottom() ||
-			m_unit != value.getUnit();
+		return Left != value.Left ||
+			Top != value.Top ||
+			Right != value.Right ||
+			Bottom != value.Bottom ||
+			Unit != value.Unit;
 	}
 }
