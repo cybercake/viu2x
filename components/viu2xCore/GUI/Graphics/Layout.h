@@ -47,7 +47,7 @@ namespace v2x {
 	typedef SimpleSpec<VerticalAlignment> VerticalAlignmentSpec;
 
 	/// Alignment options in the horizontal direction
-	enum class TextAlignment {
+	enum class FlowAlignment {
 
 		/// All text aligned to left without adjusting the space size.
 		Left,
@@ -74,23 +74,17 @@ namespace v2x {
 		JustifyBoth,
 	};
 
-	typedef SimpleSpec<TextAlignment> TextAlignmentSpec;
+	typedef SimpleSpec<FlowAlignment> FlowAlignmentSpec;
 
 	/// Horizontal flowing direction of multiple sub-controls
-	enum class HorizontalFlowDirection {
-		LeftToRight,
-		RightToLeft,
+	enum class FlowDirection {
+		TopLeftToBottomRight,
+		TopRightToBottomLeft,
+		BottomLeftToTopRight,
+		BottomRightToTopLeft,
 	};
 
-	typedef SimpleSpec<HorizontalFlowDirection> HorizontalFlowDirectionSpec;
-
-	/// Vertical flowing direction of multiple sub-controls
-	enum class VerticalFlowDirection {
-		TopToBottom,
-		BottomToTop,
-	};
-
-	typedef SimpleSpec<VerticalFlowDirection> VerticalFlowDirectionSpec;
+	typedef SimpleSpec<FlowDirection> FlowDirectionSpec;
 
 	/// Unit of size values.
 	enum class ScalarUnit {
@@ -169,48 +163,111 @@ namespace v2x {
 		MarginSpec(const double & left, const double & top, const double & right, const double & bottom, const ScalarUnit & unit, const Listener & listener = nullptr);
 		virtual ~MarginSpec();
 
-		NumberSpec Left;
-		NumberSpec Top;
-		NumberSpec Right;
-		NumberSpec Bottom;
-		ScalarUnitSpec Unit;
+		SizeSpec Left;
+		SizeSpec Top;
+		SizeSpec Right;
+		SizeSpec Bottom;
 
 		MarginSpec & operator = (const MarginSpec & value);
 		bool operator == (const MarginSpec & value) const;
 		bool operator != (const MarginSpec & value) const;
 	};
 
-	enum class FontDecoration {
+	typedef MarginSpec PaddingSpec;
+
+	/// A mode how objects position itself in the parent.
+	enum class PositionMode {
+
+		/// The object is positioned in a line and affect the height of that line. This is the default mode.
+		Inline,
+
+		/// The object floats in the middle of the parent and inline contents should make way for it.
+		FloatSurround,
+
+		/// The object floats and reserves the space of the whole row for itself. Inline contents should make way for it.
+		FloatRow,
+
+		/// The object floats behind all inline contents.
+		FloatBack,
+
+		/// The object floats in front of all inline contents.
+		FloatFront,
+	};
+
+	typedef SimpleSpec<PositionMode> PositionModeSpec;
+
+	class LayoutSpec : public Specification, public Notifier < LayoutSpec > {
+	public:
+		LayoutSpec(const Listener & listener = nullptr);
+		LayoutSpec(const LayoutSpec & layoutSpec, const Listener & listener = nullptr);
+		virtual ~LayoutSpec();
+
+		SizeSpec Width;
+		SizeSpec Height;
+		SizeSpec MinWidth;
+		SizeSpec MinHeight;
+		SizeSpec MaxWidth;
+		SizeSpec MaxHeight;
+
+		MarginSpec Margin;
+		PositionModeSpec PositionMode;
+		HorizontalAlignmentSpec HorizontalAlignment;
+		VerticalAlignmentSpec VerticalAlignment;
+
+		LayoutSpec & operator = (const LayoutSpec & value);
+		bool operator == (const LayoutSpec & value) const;
+		bool operator != (const LayoutSpec & value) const;
+	};
+
+	class ContentLayoutSpec : public Specification, public Notifier < ContentLayoutSpec > {
+	public:
+		ContentLayoutSpec(const Listener & listener = nullptr);
+		ContentLayoutSpec(const ContentLayoutSpec & contentLayoutSpec, const Listener & listener = nullptr);
+		ContentLayoutSpec(const double & width, const double & height, //
+			const HorizontalAlignment & horzAlignment, const VerticalAlignment & vertAlignment, //
+			const Listener & listener = nullptr);
+		ContentLayoutSpec(const double & margin, //
+			const HorizontalAlignment & horzAlignment, const VerticalAlignment & vertAlignment, //
+			const Listener & listener = nullptr);
+		virtual ~ContentLayoutSpec();
+
+		PaddingSpec Padding;
+		FlowAlignmentSpec FlowAlignment;
+		FlowDirectionSpec FlowDirection;
+
+		ContentLayoutSpec & operator = (const ContentLayoutSpec & value);
+		bool operator == (const ContentLayoutSpec & value) const;
+		bool operator != (const ContentLayoutSpec & value) const;
+	};
+
+	enum class FontStyle {
 		Bold,
 		Italic,
 		Underline,
 		Stroke,
 	};
 
-	typedef std::unordered_set<FontDecoration> FontDecorationSpec;
+	typedef std::unordered_set<FontStyle> FontStyles;
+
+	typedef SimpleSpec<FontStyles> FontStylesSpec;
 
 	/// Font specification which can be applied down to one single character.
 	/// This class should be used as a value-type.
-	class FontSpec : public Notifier < FontSpec > {
+	class FontSpec : public Specification, public Notifier < FontSpec > {
 
 	public:
 		FontSpec(const Listener & listener = nullptr);
 		FontSpec(const FontSpec & fontSpec, const Listener & listener = nullptr);
-		FontSpec(const String & m_fontName, const double & m_size, const FontDecorationSpec & m_decoration, const Listener & listener = nullptr);
-		FontSpec(const String & m_fontName, const double & m_size, const ScalarUnit & unit, const FontDecorationSpec & m_decoration, const Listener & listener = nullptr);
+		FontSpec(const String & fontName, const double & size, const FontStyles & styles, const Listener & listener = nullptr);
+		FontSpec(const String & fontName, const double & size, const ScalarUnit & unit, const FontStyles & styles, const Listener & listener = nullptr);
 		virtual ~FontSpec();
 
+		StringSpec Name;
 		SizeSpec Size;
+		FontStylesSpec Styles;
 
 		FontSpec & operator = (const FontSpec & value);
 		bool operator == (const FontSpec & value) const;
 		bool operator != (const FontSpec & value) const;
-
-	protected:
-		virtual void doOnSizeChgange(const SizeSpec & sender, const void * data);
-
-	private:
-		String m_name;		
-		FontDecorationSpec m_decoration;
 	};
 }
