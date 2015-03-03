@@ -14,7 +14,7 @@ namespace v2x {
 	class Notifier {
 	public:
 		Notifier(const Listener & listener) : //
-			m_subListener(std::bind(&Notifier<T>::notifyChange, this, std::placeholders::_1, std::placeholders::_2)), //
+			m_subListener(std::bind(&Notifier<T>::doOnSubChange, this, std::placeholders::_1, std::placeholders::_2)), //
 			m_beginUpdateCount(0), m_isChanged(false), m_listener(listener) {}
 		virtual ~Notifier() {}
 
@@ -34,7 +34,7 @@ namespace v2x {
 
 		Listener m_subListener;
 
-		void notifyChange(const void * sender, const void * data) {
+		virtual void notifyChange(const void * sender, const void * data) {
 
 			if (sender == nullptr)
 				throw Exception(L"Notifier::notifyChange(): The input sender pointer is NULL!");
@@ -47,6 +47,14 @@ namespace v2x {
 			else m_isChanged = true;
 		}
 
+		virtual void doOnSubChange(const void * sender, const void * data) {
+
+			if (sender == nullptr)
+				throw Exception(L"Notifier::doOnSubChange(): The input sender pointer is NULL!");
+
+			notifyChange(this, sender);
+		}
+
 	private:
 		int m_beginUpdateCount;
 		bool m_isChanged;
@@ -57,6 +65,7 @@ namespace v2x {
 	class Specification {
 	public:
 		Specification() : m_isSet(false) {};
+		Specification(const Specification & spec) : m_isSet(spec.isSet()) {};
 		Specification(bool isSet) : m_isSet(isSet) {};
 		virtual ~Specification();
 
@@ -110,7 +119,7 @@ namespace v2x {
 		SimpleSpec <T> & operator = (const SimpleSpec<T> & value) {
 			m_value = value.get();
 			m_isSet = value.isSet();
-			notifyChange(this, &m_value);
+			notifyChange(this, this);
 			return *this;
 		}
 
@@ -118,7 +127,7 @@ namespace v2x {
 			if (!m_isSet)
 				return;
 			Specification::unset();
-			notifyChange(this, &m_isSet);
+			notifyChange(this, this);
 		}
 
 		bool operator == (const SimpleSpec <T> & value) const {
@@ -179,7 +188,7 @@ namespace v2x {
 			if (!m_isSet)
 				return;
 			Specification::unset();
-			notifyChange(this, &m_isSet);
+			notifyChange(this, this);
 		}
 
 		// Assignment
@@ -193,7 +202,7 @@ namespace v2x {
 		SimpleSpec <double> & operator = (const SimpleSpec<double> & value) {
 			m_value = value.get();
 			m_isSet = value.isSet();
-			notifyChange(this, &m_value);
+			notifyChange(this, this);
 			return *this;
 		}
 
@@ -256,7 +265,7 @@ namespace v2x {
 			if (!m_isSet)
 				return;
 			Specification::unset();
-			notifyChange(this, &m_isSet);
+			notifyChange(this, this);
 		}
 
 		// Assignment
@@ -264,13 +273,15 @@ namespace v2x {
 			m_value = value;
 			m_isSet = true;
 			notifyChange(this, &m_value);
+			return *this;
 		}
 
 		// Assignment
 		SimpleSpec <String> & operator = (const SimpleSpec<String> & value) {
 			m_value = value.get();
 			m_isSet = value.isSet();
-			notifyChange(this, &m_value);
+			notifyChange(this, this);
+			return *this;
 		}
 
 		bool operator == (const SimpleSpec <String> & value) const {
