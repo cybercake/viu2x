@@ -1,0 +1,11 @@
+# Development Environment #
+
+All parts of **viu2x** is written in **C++** using **Code::Blocks** (http://www.codeblocks.org/). You can simply open the project files (.cbp) in **Code::Blocks** and build them using the menu.
+
+**Code::Blocks** version 12.11 is currently used. You can download the installer from here: http://www.codeblocks.org/downloads/26. The built-in **MinGW/GCC** 4.7, which is installed with **Code::Blocks**, should be OK for compilation. There is generally no need to install **MinGW/GCC** separately.
+
+# Libraries #
+
+**viu2x** requires the following libraries:
+  * **STL**
+  * **Boost** (version 1.53 is currently used)
