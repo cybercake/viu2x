@@ -80,8 +80,8 @@ namespace v2x {
 
 		size_t left = 0;
 		for (; left < s.size(); ++left)
-		if (!isspace(s[left]))
-			break;
+			if (!isspace(s[left]))
+				break;
 
 		size_t right = s.size() - 1;
 		for (;; --right) {
@@ -95,6 +95,28 @@ namespace v2x {
 			return s.substr(left, right - left + 1);
 		}
 		else return String();
+	}
+
+	void StrUtils::split(const String & s, const String & splitters, std::vector<String> & tokens) {
+
+		int tokenStart = 0;
+		int i = 0;
+
+		for (; i < (int)s.length(); ++i) {
+
+			// Check if it is splitter
+			if (splitters.find(s[i]) != String::npos) {
+
+				// Check if it is not right after another splitter
+				if (i > tokenStart)
+					tokens.push_back(s.substr(tokenStart, i - tokenStart));
+				tokenStart = i + 1;
+			}
+		}
+
+		// Process the last token
+		if (i > tokenStart)
+			tokens.push_back(s.substr(tokenStart, i - tokenStart));
 	}
 
 	//! Convert a multibyte string to unicode and assign to the current
@@ -142,5 +164,5 @@ namespace v2x {
 #else
 #error Not implemented!
 #endif
+		}
 	}
-}

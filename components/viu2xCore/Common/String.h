@@ -4,9 +4,10 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 namespace v2x {
-	
+
 	typedef std::wstring String;
 	typedef wchar_t Char;
 
@@ -24,6 +25,8 @@ namespace v2x {
 		static String toStr(const char * & s);
 
 		static String trim(const String & s);
+
+		static void split(const String & s, const String & splitters, std::vector<String> & tokens);
 
 	private:
 		static void multibyteToUnicode(String & unicodeString, const char * multibyteString);

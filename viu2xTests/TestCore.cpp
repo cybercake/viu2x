@@ -14,7 +14,7 @@ namespace viu2xTests
 	TEST_CLASS(TestCore)
 	{
 	public:
-		
+
 		TEST_METHOD(TestString)
 		{
 			Assert::AreEqual(L"This is a string", StrUtils::format(L"This is a %s", L"string").c_str(), L"Failed to format string value");
@@ -30,8 +30,30 @@ namespace viu2xTests
 			Assert::AreEqual(L"std::string", StrUtils::toStr(std::string("std::string")).c_str(), L"Failed to convert std::string");
 
 			Assert::AreEqual(L"Trim", StrUtils::trim(L"\t\n Trim\n\t\t ").c_str(), L"Failed to trim string");
+
+			std::vector<String> tokens;
+			StrUtils::split(L"", L"", tokens);
+			Assert::AreEqual(0u, tokens.size());
+			tokens.clear();
+			StrUtils::split(L"", L"\\", tokens);
+			Assert::AreEqual(0u, tokens.size());			
+			tokens.clear();
+			StrUtils::split(L"aaa\\bbb\\/", L"\\/", tokens);
+			Assert::AreEqual(2u, tokens.size());
+			Assert::AreEqual(L"aaa", tokens[0].c_str());
+			Assert::AreEqual(L"bbb", tokens[1].c_str());
+			tokens.clear();
+			StrUtils::split(L"\\aaa\\//bbb", L"\\/", tokens);
+			Assert::AreEqual(2u, tokens.size());
+			Assert::AreEqual(L"aaa", tokens[0].c_str());
+			Assert::AreEqual(L"bbb", tokens[1].c_str());
+			tokens.clear();
+			StrUtils::split(L"\\aaa\\//bbb//\\", L"\\/", tokens);
+			Assert::AreEqual(2u, tokens.size());
+			Assert::AreEqual(L"aaa", tokens[0].c_str());
+			Assert::AreEqual(L"bbb", tokens[1].c_str());
 		}
-		
+
 		TEST_METHOD(TestEvents)
 		{
 			class EventData1 : public Object {
