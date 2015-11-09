@@ -14,10 +14,10 @@ namespace v2x {
 	{
 	public:
 
-		static String format(const String & format, ...);
+		//static String format(const String & format, ...);
 		static String format(const Char * format, ...);
 
-		static String vformat(const String & format, va_list params);
+		//static String vformat(const String & format, va_list params);
 		static String vformat(const Char * format, va_list params);
 
 		static String toStr(const std::string & s);

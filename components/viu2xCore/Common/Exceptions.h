@@ -18,14 +18,14 @@ namespace v2x {
 	class Exception {
 
 	public:
-		Exception(const String & message, ...);
-		Exception(const String & message, va_list params);
-		//Exception(const Char * message, ...);
-		//Exception(const Char * message, va_list params);
-		Exception(const Exception & internalException, const String & message, ...);
-		Exception(const Exception & internalException, const String & message, va_list params);
-		//Exception(const Exception & internalException, const Char * message, ...);
-		//Exception(const Exception & internalException, const Char * message, va_list params);
+		//Exception(const String & message, ...);
+		//Exception(const String & message, va_list params);
+		Exception(const Char * message, ...);
+		Exception(const Char * message, va_list params);
+		//Exception(const Exception & internalException, const String & message, ...);
+		//Exception(const Exception & internalException, const String & message, va_list params);
+		Exception(const Exception & internalException, const Char * message, ...);
+		Exception(const Exception & internalException, const Char * message, va_list params);
 		virtual ~Exception();
 
 		const String & getMessage() const;
@@ -48,10 +48,10 @@ namespace v2x {
 	class OsException : public Exception {
 
 	public:
-		OsException(const String & caller);
-		OsException(const String & caller, const Exception & internalException);
+		//OsException(const String & caller);
+		//OsException(const Exception & internalException, const String & caller);
 		OsException(const Char * caller);
-		OsException(const Char * caller, const Exception & internalException);
+		OsException(const Exception & internalException, const Char * caller);
 		virtual ~OsException();
 
 		static void throwLatest(const String & caller);

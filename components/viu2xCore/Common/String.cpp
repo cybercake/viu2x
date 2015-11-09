@@ -12,13 +12,13 @@
 
 namespace v2x {
 
-	String StrUtils::format(const String & format, ...) {
-		va_list params;
-		va_start(params, format);
-		String result = vformat(format, params);
-		va_end(params);
-		return result;
-	}
+	//String StrUtils::format(const String & format, ...) {
+	//	va_list params;
+	//	va_start(params, format);
+	//	String result = vformat(format, params);
+	//	va_end(params);
+	//	return result;
+	//}
 
 	String StrUtils::format(const Char * format, ...) {
 		va_list params;
@@ -28,10 +28,10 @@ namespace v2x {
 		return result;
 	}
 
-	String StrUtils::vformat(const String & format, va_list params) {
-		String result = vformat(format.c_str(), params);
-		return result;
-	}
+	//String StrUtils::vformat(const String & format, va_list params) {
+	//	String result = vformat(format.c_str(), params);
+	//	return result;
+	//}
 
 	String StrUtils::vformat(const Char * format, va_list params) {
 

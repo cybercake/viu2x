@@ -12,33 +12,7 @@ namespace v2x {
 	// Exception //
 	///////////////
 
-	Exception::Exception(const String & message, ...) {
-
-		va_list params;
-		va_start(params, message);
-		initialize(StrUtils::format(message, params));
-		va_end(params);
-	}
-
-	Exception::Exception(const String & message, va_list params) {
-
-		initialize(StrUtils::format(message, params));
-	}
-
-	Exception::Exception(const Exception & internalException, const String & message, ...) {
-
-		va_list params;
-		va_start(params, message);
-		initialize(StrUtils::format(message, params), internalException);
-		va_end(params);
-	}
-
-	Exception::Exception(const Exception & internalException, const String & message, va_list params) {
-
-		initialize(StrUtils::format(message, params), internalException);
-	}
-
-	//Exception::Exception(const Char * message, ...) {
+	//Exception::Exception(const String & message, ...) {
 
 	//	va_list params;
 	//	va_start(params, message);
@@ -46,12 +20,12 @@ namespace v2x {
 	//	va_end(params);
 	//}
 
-	//Exception::Exception(const Char * message, va_list params) {
+	//Exception::Exception(const String & message, va_list params) {
 
 	//	initialize(StrUtils::format(message, params));
 	//}
 
-	//Exception::Exception(const Exception & internalException, const Char * message, ...) {
+	//Exception::Exception(const Exception & internalException, const String & message, ...) {
 
 	//	va_list params;
 	//	va_start(params, message);
@@ -59,10 +33,36 @@ namespace v2x {
 	//	va_end(params);
 	//}
 
-	//Exception::Exception(const Exception & internalException, const Char * message, va_list params) {
+	//Exception::Exception(const Exception & internalException, const String & message, va_list params) {
 
 	//	initialize(StrUtils::format(message, params), internalException);
 	//}
+
+	Exception::Exception(const Char * message, ...) {
+
+		va_list params;
+		va_start(params, message);
+		initialize(StrUtils::format(message, params));
+		va_end(params);
+	}
+
+	Exception::Exception(const Char * message, va_list params) {
+
+		initialize(StrUtils::format(message, params));
+	}
+
+	Exception::Exception(const Exception & internalException, const Char * message, ...) {
+
+		va_list params;
+		va_start(params, message);
+		initialize(StrUtils::format(message, params), internalException);
+		va_end(params);
+	}
+
+	Exception::Exception(const Exception & internalException, const Char * message, va_list params) {
+
+		initialize(StrUtils::format(message, params), internalException);
+	}
 
 	Exception::~Exception() {
 	}
@@ -93,20 +93,20 @@ namespace v2x {
 	// OsException //
 	/////////////////
 
-	OsException::OsException(const String & caller) :
-		Exception(caller + L": " + getLastErrorMessage()) {
-	}
+	//OsException::OsException(const String & caller) :
+	//	Exception(caller + L": " + getLastErrorMessage()) {
+	//}
 
-	OsException::OsException(const String & caller, const Exception & internalException) :
-		Exception(caller + L": " + getLastErrorMessage(), internalException) {
-	}
+	//OsException::OsException(const Exception & internalException, const String & caller) :
+	//	Exception(caller + L": " + getLastErrorMessage(), internalException) {
+	//}
 
 	OsException::OsException(const Char * caller) :
-		Exception(String(caller) + L": " + getLastErrorMessage()) {
+		Exception(StrUtils::format(L"%s: %s", caller, getLastErrorMessage().c_str()).c_str()) {
 	}
 
-	OsException::OsException(const Char * caller, const Exception & internalException) :
-		Exception(String(caller) + L": " + getLastErrorMessage(), internalException) {
+	OsException::OsException(const Exception & internalException, const Char * caller) :
+		Exception(internalException, L"%s: %s", caller, getLastErrorMessage().c_str()) {
 	}
 
 	OsException::~OsException() {
@@ -139,16 +139,16 @@ namespace v2x {
 #endif
 	}
 
-	void OsException::throwLatest(const String & caller, const Exception & internalException) {
-		throw OsException(caller, internalException);
-	}
+	//void OsException::throwLatest(const String & caller, const Exception & internalException) {
+	//	throw OsException(internalException, caller);
+	//}
 
-	void OsException::throwLatest(const String & caller) {
-		throw OsException(caller);
-	}
+	//void OsException::throwLatest(const String & caller) {
+	//	throw OsException(caller);
+	//}
 
 	void OsException::throwLatest(const Char * caller, const Exception & internalException) {
-		throw OsException(caller, internalException);
+		throw OsException(internalException, caller);
 	}
 
 	void OsException::throwLatest(const Char * caller) {
