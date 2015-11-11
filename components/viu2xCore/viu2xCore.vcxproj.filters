@@ -65,6 +65,9 @@
     <ClInclude Include="GUI\Graphics\Layout.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="Common\EnumSet.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GUI">

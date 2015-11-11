@@ -15,3 +15,4 @@
 #include "Common/Size2D.hpp"
 #include "Common/Rect.hpp"
 #include "Common/Matrix.hpp"
+#include "Common/EnumSet.hpp"

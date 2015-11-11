@@ -14,7 +14,7 @@ namespace v2x {
 	class Notifier {
 	public:
 		Notifier(const Listener & listener) : //
-			m_subListener(std::bind(&Notifier<T>::doOnSubChange, this, std::placeholders::_1, std::placeholders::_2)), //
+			m_memberListener(std::bind(&Notifier<T>::doOnMemberChange, this, std::placeholders::_1, std::placeholders::_2)), //
 			m_beginUpdateCount(0), m_isChanged(false), m_listener(listener) {}
 		virtual ~Notifier() {}
 
@@ -32,12 +32,11 @@ namespace v2x {
 
 	protected:
 
-		Listener m_subListener;
+		// A bounded functor to doOnMemberChange.
+		Listener m_memberListener;
 
+		// A function for members to notify changes to owner.
 		virtual void notifyChange(const void * sender, const void * data) {
-
-			if (sender == nullptr)
-				throw Exception(L"Notifier::notifyChange(): The input sender pointer is NULL!");
 
 			if (m_beginUpdateCount == 0) {
 				if (m_listener != nullptr)
@@ -47,11 +46,10 @@ namespace v2x {
 			else m_isChanged = true;
 		}
 
-		virtual void doOnSubChange(const void * sender, const void * data) {
+		// A function called when some member notifies that it has been changed.
+		virtual void doOnMemberChange(const void * sender, const void * data) {
 
-			if (sender == nullptr)
-				throw Exception(L"Notifier::doOnSubChange(): The input sender pointer is NULL!");
-
+			// Forward the notification to owner.
 			notifyChange(this, sender);
 		}
 
@@ -157,6 +155,7 @@ namespace v2x {
 	typedef SimpleSpec<int64_t> Int64Spec;
 	typedef SimpleSpec<uint64_t> UInt64Spec;
 
+	// Specialization for decimal
 	template <>
 	class SimpleSpec<double> : public Specification, public Notifier < SimpleSpec <double> > {
 
@@ -236,6 +235,7 @@ namespace v2x {
 
 	typedef SimpleSpec<double> NumberSpec;
 
+	// Specialization for string
 	template <>
 	class SimpleSpec<String> : public Specification, public Notifier < SimpleSpec <String> > {
 

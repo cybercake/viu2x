@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <unordered_set>
-
 #include "../../common.h"
 
 namespace v2x {
@@ -247,7 +245,7 @@ namespace v2x {
 		Stroke,
 	};
 
-	typedef std::unordered_set<FontStyle> FontStyles;
+	typedef EnumSet<FontStyle> FontStyles;
 
 	typedef SimpleSpec<FontStyles> FontStylesSpec;
 
