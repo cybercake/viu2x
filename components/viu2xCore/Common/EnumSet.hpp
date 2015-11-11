@@ -34,6 +34,7 @@ namespace v2x {
 
 		bool isEmpty() const { return m_bits == 0; }
 		bool contains(t value) const { return (m_bits & (1 << (unsigned int)value)) != 0; }
+		bool contains(const EnumSet<t> & set) const { return (set.m_bits & !m_bits) == 0; }
 		void clear() { m_bits = 0; }
 
 	private:
