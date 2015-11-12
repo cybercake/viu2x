@@ -36,7 +36,7 @@ namespace viu2xTests
 			Assert::AreEqual(0u, tokens.size());
 			tokens.clear();
 			StrUtils::split(L"", L"\\", tokens);
-			Assert::AreEqual(0u, tokens.size());			
+			Assert::AreEqual(0u, tokens.size());
 			tokens.clear();
 			StrUtils::split(L"aaa\\bbb\\/", L"\\/", tokens);
 			Assert::AreEqual(2u, tokens.size());
@@ -298,5 +298,88 @@ namespace viu2xTests
 			Assert::AreEqual(false, v4.isZero());
 		}
 
+		TEST_METHOD(TestEnumSet) {
+
+			enum class TestEnum {
+				Value_1,
+				Value_2,
+				Value_3,
+				Value_4,
+				Value_5,
+				Value_6,
+				Value_7,
+				Value_8,
+				Value_9,
+				Value_10,
+				Value_11,
+				Value_12,
+				Value_13,
+				Value_14,
+				Value_15,
+				Value_16,
+				Value_17,
+				Value_18,
+				Value_19,
+				Value_20,
+				Value_21,
+				Value_22,
+				Value_23,
+				Value_24,
+				Value_25,
+				Value_26,
+				Value_27,
+				Value_28,
+				Value_29,
+				Value_30,
+				Value_31,
+				Value_32,
+			};
+
+			EnumSet <TestEnum> empty;
+			for (int i = static_cast<int>(TestEnum::Value_1); i <= static_cast<int>(TestEnum::Value_32); ++i)
+				Assert::AreEqual(false, empty.contains(static_cast<TestEnum>(i)));
+			Assert::AreEqual(true, empty.isEmpty());
+
+			EnumSet <TestEnum> complete;
+			for (int i = static_cast<int>(TestEnum::Value_1); i <= static_cast<int>(TestEnum::Value_32); ++i)
+				complete.include(static_cast<TestEnum>(i));
+			for (int i = static_cast<int>(TestEnum::Value_1); i <= static_cast<int>(TestEnum::Value_32); ++i)
+				Assert::AreEqual(true, complete.contains(static_cast<TestEnum>(i)));
+
+			Assert::AreEqual(true, complete.contains(empty));
+			Assert::AreEqual(false, empty == complete);
+			Assert::AreEqual(true, empty != complete);
+
+			EnumSet <TestEnum> temp = empty.getComplement();
+			Assert::AreEqual(true, temp == complete);
+			Assert::AreEqual(true, (empty * complete).isEmpty());
+
+			temp.clear();
+			Assert::AreEqual(true, empty == temp);
+			Assert::AreEqual(false, empty != temp);
+
+			EnumSet <TestEnum> s1, s2;
+			s1.include(TestEnum::Value_1);
+			s1.include(TestEnum::Value_2);
+			s1.include(TestEnum::Value_3);
+			s2 = s2 + TestEnum::Value_11;
+			s2 += TestEnum::Value_12;
+			s2.include(TestEnum::Value_13);
+
+			Assert::AreEqual(true, complete.contains(s1));
+			Assert::AreEqual(true, complete.contains(s2));
+
+			EnumSet <TestEnum> s3 = s1 + s2;
+			Assert::AreEqual(true, complete.contains(s3));
+			Assert::AreEqual(true, (s1 * s2).isEmpty());
+			Assert::AreEqual(true, s3.contains(s1));
+			Assert::AreEqual(true, s3.contains(s2));
+			Assert::AreEqual(true, (s3 - s2) == s1);
+			Assert::AreEqual(true, (s3 - s1) == s2);
+
+			s1 += TestEnum::Value_11;
+			Assert::AreEqual(true, (s1 * s2).contains(TestEnum::Value_11));
+			Assert::AreEqual(false, (s1 * s2).isEmpty());
+		}
 	};
 }
