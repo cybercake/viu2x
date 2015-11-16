@@ -5,7 +5,7 @@
 #include "Common/Config.h"
 #include "Common/String.h"
 #include "Common/Exceptions.h"
-#include "Common/EnumHelpers.h"
+#include "Common/EnumString.hpp"
 #include "Common/Object.h"
 #include "Common/Ownership.hpp"
 #include "Common/Event.h"

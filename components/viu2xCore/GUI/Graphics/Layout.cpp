@@ -192,6 +192,8 @@ namespace v2x {
 	// FontSpec //
 	//////////////
 
+
+
 	FontSpec::FontSpec(const Listener & listener) :
 		Notifier<FontSpec>(listener), Name(m_memberListener), Size(m_memberListener), Styles(m_memberListener) {}
 	FontSpec::FontSpec(const FontSpec & fontSpec, const Listener & listener) :

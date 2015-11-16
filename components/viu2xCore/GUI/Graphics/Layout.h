@@ -245,6 +245,12 @@ namespace v2x {
 		Stroke,
 	};
 
+	std::vector<const Char *> EnumString<FontStyle>::m_strings = {
+		L"Bold",
+		L"Italic",
+		L"Underline",
+		L"Stroke" };
+
 	typedef EnumSet<FontStyle> FontStyles;
 
 	typedef SimpleSpec<FontStyles> FontStylesSpec;

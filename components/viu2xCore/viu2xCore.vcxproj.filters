@@ -29,9 +29,6 @@
     <ClInclude Include="GUI\Displays.h">
       <Filter>GUI</Filter>
     </ClInclude>
-    <ClInclude Include="Common\EnumHelpers.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\Event.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -66,6 +63,9 @@
       <Filter>GUI</Filter>
     </ClInclude>
     <ClInclude Include="Common\EnumSet.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\EnumString.hpp">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

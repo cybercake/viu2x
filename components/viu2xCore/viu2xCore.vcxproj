@@ -15,7 +15,7 @@
     <ClInclude Include="Common\Event.h" />
     <ClInclude Include="Common\Exceptions.h" />
     <ClInclude Include="Common\Config.h" />
-    <ClInclude Include="Common\EnumHelpers.h" />
+    <ClInclude Include="Common\EnumString.hpp" />
     <ClInclude Include="Common\Matrix.hpp" />
     <ClInclude Include="Common\Object.h" />
     <ClInclude Include="Common\Rect.hpp" />

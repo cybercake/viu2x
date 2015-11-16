@@ -62,10 +62,10 @@ namespace v2x {
 
 	class Specification {
 	public:
-		Specification() : m_isSet(false) {};
-		Specification(const Specification & spec) : m_isSet(spec.isSet()) {};
-		Specification(bool isSet) : m_isSet(isSet) {};
-		virtual ~Specification();
+		Specification() : m_isSet(false) {}
+		Specification(const Specification & spec) : m_isSet(spec.isSet()) {}
+		Specification(bool isSet) : m_isSet(isSet) {}
+		virtual ~Specification() {}
 
 		virtual bool isSet() const { return m_isSet; }
 		virtual void unset() { m_isSet = false; }
@@ -168,7 +168,7 @@ namespace v2x {
 			Specification(true),
 			Notifier < SimpleSpec <double> >(listener), m_value(value) {
 		}
-		virtual ~SimpleSpec();
+		virtual ~SimpleSpec() {}
 
 		// Implicit conversion
 		operator double() const { return m_value; }
@@ -246,7 +246,7 @@ namespace v2x {
 		SimpleSpec(const String & value, const Listener & listener = nullptr) : //
 			Specification(false),
 			Notifier < SimpleSpec <String> >(listener), m_value(value) {}
-		virtual ~SimpleSpec();
+		virtual ~SimpleSpec() {}
 
 		// Implicit conversion
 		operator String() const { return m_value; }
