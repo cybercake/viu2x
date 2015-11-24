@@ -26,15 +26,15 @@ namespace v2x {
 	}
 
 	bool EventHandler::operator == (const EventHandler & slot) const {
-		Object::SharedConst h1 = m_handler.lock();
-		Object::SharedConst h2 = slot.m_handler.lock();
-		return h1 == h2 && m_callback.target<void(Event::SharedConst e)>() == slot.m_callback.target<void(Event::SharedConst e)>();
+		Object::ConstShared h1 = m_handler.lock();
+		Object::ConstShared h2 = slot.m_handler.lock();
+		return h1 == h2 && m_callback.target<void(Event::ConstShared e)>() == slot.m_callback.target<void(Event::ConstShared e)>();
 	}
 
 	bool EventHandler::operator != (const EventHandler & slot) const {
-		Object::SharedConst h1 = m_handler.lock();
-		Object::SharedConst h2 = slot.m_handler.lock();
-		return h1 != h2 || m_callback.target<void(Event::SharedConst e)>() != slot.m_callback.target<void(Event::SharedConst e)>();
+		Object::ConstShared h1 = m_handler.lock();
+		Object::ConstShared h2 = slot.m_handler.lock();
+		return h1 != h2 || m_callback.target<void(Event::ConstShared e)>() != slot.m_callback.target<void(Event::ConstShared e)>();
 	}
 
 	bool EventHandler::isExpired() const {
@@ -43,7 +43,7 @@ namespace v2x {
 
 	bool EventHandler::notifyEvent(Event::Shared e) const {
 
-		Object::SharedConst handlerLock = m_handler.lock();
+		Object::ConstShared handlerLock = m_handler.lock();
 		if (handlerLock != NULL)
 			m_callback(e);
 		handlerLock.reset();

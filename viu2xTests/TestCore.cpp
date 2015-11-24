@@ -188,7 +188,7 @@ namespace viu2xTests
 
 			std::shared_ptr<TestObj> obj0(new TestObj());
 			Object::Shared obj1 = obj0;
-			Object::SharedConst obj2 = obj1;
+			Object::ConstShared obj2 = obj1;
 			Assert::AreEqual(true, obj2 == obj1);
 			Assert::AreEqual(true, obj2 == obj1->shared_from_this());
 			Assert::AreEqual(true, obj2 == obj0);

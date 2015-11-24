@@ -14,7 +14,7 @@ namespace v2x {
 	class Notifier {
 	public:
 		Notifier(const Listener & listener) : //
-			m_memberListener(std::bind(&Notifier<T>::doOnMemberChange, this, std::placeholders::_1, std::placeholders::_2)), //
+			m_memberChangeListener(std::bind(&Notifier<T>::doOnMemberChange, this, std::placeholders::_1, std::placeholders::_2)), //
 			m_beginUpdateCount(0), m_isChanged(false), m_listener(listener) {}
 		virtual ~Notifier() {}
 
@@ -33,7 +33,7 @@ namespace v2x {
 	protected:
 
 		// A bounded functor to doOnMemberChange.
-		Listener m_memberListener;
+		Listener m_memberChangeListener;
 
 		// A function for members to notify changes to owner.
 		virtual void notifyChange(const void * sender, const void * data) {

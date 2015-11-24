@@ -97,7 +97,7 @@ namespace v2x {
 		return m_displays.size();
 	}
 
-	Display::SharedConst Displays::getDisplay(size_t index) const {
+	Display::ConstShared Displays::getDisplay(size_t index) const {
 
 		if (index >= m_displays.size())
 			throw Exception(L"Displays::getDisplay: Index %u out of range!", index);
@@ -105,7 +105,7 @@ namespace v2x {
 		return m_displays[index];
 	}
 
-	Display::SharedConst Displays::getPrimaryDisplay() const {
+	Display::ConstShared Displays::getPrimaryDisplay() const {
 
 		for (DisplayList::const_iterator i = m_displays.begin(); i != m_displays.end(); ++i)
 			if ((*i)->getIsPrimary())

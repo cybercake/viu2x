@@ -19,8 +19,10 @@ namespace v2x {
 	///
 	/// The parameter type T can be any signed types which support algebra calculations,
 	/// typically "float" and "double".
+	/// 
+	/// Content of the matrix will be set to zero on construction.
 	template <typename T>
-	class Matrix {
+	class _Matrix {
 	protected:
 
 		/// Number of the columns.
@@ -45,14 +47,19 @@ namespace v2x {
 				// Check if the number of columns and rows are valid.
 				if (m_colCount <= 0 || m_rowCount <= 0)
 					throw Exception(
-					L"Matrix::initializeStorage: The number of rows and columns should not be zero!");
+					L"_Matrix::initializeStorage: The number of rows and columns should not be zero!");
 
 				// Allocates spaces for all row pointers.
 				m_elements = (T**)malloc(m_rowCount * sizeof(T*));
 				// For all rows...
-				for (int i = 0; i < m_rowCount; i++)
+				for (int i = 0; i < m_rowCount; i++) {
+
+					const size_t ColSize = m_colCount * sizeof(T);
+
 					// Allocate space for each row.
-					m_elements[i] = (T*)malloc(m_colCount * sizeof(T));
+					m_elements[i] = (T*)malloc(ColSize);
+					memset(m_elements[i], 0, ColSize);
+				}
 			}
 		}
 
@@ -173,7 +180,7 @@ namespace v2x {
 	public:
 
 		/// The default constructor.
-		Matrix() {
+		_Matrix() {
 			m_colCount = 0;
 			m_rowCount = 0;
 			m_elements = NULL;
@@ -186,7 +193,7 @@ namespace v2x {
 		/// @param [in]	cols	The number of columns. It has to be an integer greater than 0.
 		///
 		/// @throw @see initializeStorage().
-		Matrix(int rows, int cols) {
+		_Matrix(int rows, int cols) {
 			m_colCount = cols;
 			m_rowCount = rows;
 			m_elements = NULL;
@@ -200,7 +207,7 @@ namespace v2x {
 		/// @param [in]	matrix	An existing matrix from which the data should be copied.
 		///
 		/// @throw @see initializeStorage().
-		Matrix(Matrix <T> const & matrix) {
+		_Matrix(_Matrix <T> const & matrix) {
 			m_colCount = matrix.getColCount();
 			m_rowCount = matrix.getRowCount();
 			m_elements = NULL;
@@ -215,10 +222,9 @@ namespace v2x {
 		}
 
 		/// The destructor.
-		virtual ~Matrix() {
+		virtual ~_Matrix() {
 			finalizeStorage();
 		}
-
 
 		/// Fill the whole matrix with the specified value.
 		///
@@ -228,7 +234,7 @@ namespace v2x {
 		virtual void fill(T value) {
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::fill: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::fill: The matrix has not been initialized.");
 
 			// Apply the value to all elements.
 			for (int j = 0; j < m_rowCount; j++)
@@ -258,11 +264,11 @@ namespace v2x {
 		virtual const T & getElement(int row, int col) const {
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::getElement: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::getElement: The matrix has not been initialized.");
 
 			// Check the index range.
 			if (row < 0 || row >= m_rowCount || col < 0 || col >= m_colCount)
-				throw Exception(L"Matrix::getElement: Matrix index out of range!");
+				throw Exception(L"_Matrix::getElement: _Matrix index out of range!");
 
 			return m_elements[row][col];
 		}
@@ -278,11 +284,11 @@ namespace v2x {
 		virtual void setElement(int row, int col, const T & value) {
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::setElement: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::setElement: The matrix has not been initialized.");
 
 			// Check the index range.
 			if (row < 0 || row >= m_rowCount || col < 0 || col >= m_colCount)
-				throw Exception(L"Matrix::setElement: Matrix index out of range!");
+				throw Exception(L"_Matrix::setElement: _Matrix index out of range!");
 
 			m_elements[row][col] = value;
 		}
@@ -306,7 +312,7 @@ namespace v2x {
 		/// operator overloaded for comparison of equality.
 		///
 		/// @param [in]	op	The matrix to compare to.
-		bool operator == (const Matrix <T> & op) const {
+		bool operator == (const _Matrix <T> & op) const {
 
 			if (m_rowCount != op.m_rowCount) {
 				return false;
@@ -320,7 +326,7 @@ namespace v2x {
 			for (int j = 0; j < m_rowCount; j++)
 				for (int i = 0; i < m_colCount; i++)
 					if (m_elements[j][i] != op[j][i]) {
-				return false;
+						return false;
 					}
 
 			return true;
@@ -331,7 +337,7 @@ namespace v2x {
 		/// @param [in]	op	The matrix from which the data should be copied.
 		///
 		/// @throw @see initializeStorage().
-		Matrix <T> & operator = (const Matrix <T> & op) {
+		_Matrix <T> & operator = (const _Matrix <T> & op) {
 
 			// Clear the old data.
 			finalizeStorage();
@@ -353,40 +359,40 @@ namespace v2x {
 		///
 		/// @throw Exception if the internal storage is not initialized.
 		/// @throw Exception if the two matrices cannot be multiplied.
-		Matrix <T> operator * (const Matrix <T> & op) const {
+		_Matrix <T> operator * (const _Matrix <T> & op) const {
 
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::*: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::*: The matrix has not been initialized.");
 
 			// Check if the two matrices can be multiplied!
 			if (m_colCount == op.getRowCount()) {
 
 				// Define the result and give the matrix size.
-				Matrix <T> result(m_rowCount, op.getColCount());
+				_Matrix <T> result(m_rowCount, op.getColCount());
 
 				// Perform the multiplication using a unoptimized method.
 				// Note: for 3x3 and 4x4 matrices, a faster multiplication algorithm is used.
 				for (int row = 0; row < result.getRowCount(); row++)
 					for (int col = 0; col < result.getColCount(); col++) {
-					T value = 0;
-					for (int i = 0; i < m_colCount; i++)
-						value += m_elements[row][i] * op[i][col];
-					result[row][col] = value;
+						T value = 0;
+						for (int i = 0; i < m_colCount; i++)
+							value += m_elements[row][i] * op[i][col];
+						result[row][col] = value;
 					}
 				return result;
 			}
 			else
-				throw Exception(L"Matrix::*: The size of matrices doesn't match in a multiplication!");
+				throw Exception(L"_Matrix::*: The size of matrices doesn't match in a multiplication!");
 		}
 
 		/// Operator overloaded for scalar multiplication.
 		///
 		/// @throw Exception if the internal storage is not initialized.
-		Matrix <T> & operator *= (const T & op) {
+		_Matrix <T> & operator *= (const T & op) {
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::*=: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::*=: The matrix has not been initialized.");
 
 			// Scale all elements.
 			for (int row = 0; row < m_rowCount; row++)
@@ -400,14 +406,14 @@ namespace v2x {
 		///
 		/// @throw Exception if the internal storage is not initialized.
 		/// @throw Exception if the input operand is zero.
-		Matrix <T> & operator /= (const T & op) {
+		_Matrix <T> & operator /= (const T & op) {
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::/=: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::/=: The matrix has not been initialized.");
 
 			// Check the operand.
 			if (op == 0)
-				throw Exception(L"Matrix::/=: The input operand is zero!");
+				throw Exception(L"_Matrix::/=: The input operand is zero!");
 
 			// Scale all elements.
 			for (int row = 0; row < m_rowCount; row++)
@@ -437,12 +443,12 @@ namespace v2x {
 		virtual void eliminate(int fromCol, int fromRow, int toCol, int toRow) {
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::fill: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::fill: The matrix has not been initialized.");
 
 			// Check if the input column-/row-indices is in a valid range.
 			if (fromCol < 0 || toCol < fromCol || toCol >= m_colCount || //
 				fromRow < 0 || toRow < fromRow || toRow >= m_rowCount)
-				throw Exception(L"Matrix::eliminate: Column or row index out of range!");
+				throw Exception(L"_Matrix::eliminate: Column or row index out of range!");
 
 			// Calculate the size of the zone.
 			int dCol = toCol - fromCol + 1;
@@ -450,7 +456,7 @@ namespace v2x {
 
 			// Check if the zone is a square matrix
 			if (dCol != dRow)
-				throw Exception(L"Matrix::eliminate: Only square sub-matrix can be eliminated!");
+				throw Exception(L"_Matrix::eliminate: Only square sub-matrix can be eliminated!");
 
 			// Check if the zone has at more than one column/row.
 			if (dCol > 1) {
@@ -482,7 +488,7 @@ namespace v2x {
 							// Check if the row is found.
 							if (nz < 0)
 								// If not found, it means the matrix cannot be eliminated.
-								throw Exception(L"Matrix::eliminate: The specified zone cannot be eliminated!");
+								throw Exception(L"_Matrix::eliminate: The specified zone cannot be eliminated!");
 
 							// Adapt the current row.
 							// After this operation, the current diagonal element should be 1 and all elements (in the sub-matrix and
@@ -521,7 +527,7 @@ namespace v2x {
 					// be true. Just left here for higher security)
 					if (m_elements[current_row][current_col] == 0)
 						// If true, this matrix cannot be eliminated.
-						throw Exception(L"Matrix::eliminate: The specified zone cannot be eliminated!");
+						throw Exception(L"_Matrix::eliminate: The specified zone cannot be eliminated!");
 
 					// Do it for all rows (in the same column) above the diagonal element.
 					for (int r = current_row - 1; r >= fromRow; r--) {
@@ -540,7 +546,7 @@ namespace v2x {
 				// Check if the element is zero.
 				if (m_elements[fromRow][fromCol] == 0)
 					// if true, the matrix cannot be eliminated.
-					throw Exception(L"Matrix::eliminate: The specified zone cannot be eliminated!");
+					throw Exception(L"_Matrix::eliminate: The specified zone cannot be eliminated!");
 
 				// To avoid divisions, just compute a scale factor first, then only multiplications are used later.
 				T factor = 1 / m_elements[fromRow][fromCol];
@@ -560,13 +566,13 @@ namespace v2x {
 		/// |    ...    |    |   ...   |
 		///
 		/// @throw Exception if the internal storage is not initialized.
-		Matrix <T> transpose() const {
+		_Matrix <T> transpose() const {
 			// Check the storage.
 			if (m_elements == NULL)
-				throw Exception(L"Matrix::fill: The matrix has not been initialized.");
+				throw Exception(L"_Matrix::fill: The matrix has not been initialized.");
 
 			// Define the result.
-			Matrix <T> result(m_colCount, m_rowCount);
+			_Matrix <T> result(m_colCount, m_rowCount);
 
 			// Copy all elements.
 			for (int j = 0; j < m_rowCount; j++)
@@ -589,7 +595,7 @@ namespace v2x {
 		/// @param [in]	numberOfCols	The number of columns to be copied.
 		///
 		/// @throw		Exception if any of the indices is out of range.
-		void copyFrom(const Matrix <T> source, //
+		void copyFrom(const _Matrix <T> source, //
 			int fromSrcRow, int fromSrcCol, //
 			int toDstRow, int toDstCol, //
 			int numberOfRows, int numberOfCols) {
@@ -623,7 +629,8 @@ namespace v2x {
 		}
 	};
 
-	typedef Matrix <float> Matrix32F;
-	typedef Matrix <double> Matrix64F;
-	typedef Matrix <Real> MatrixR;
+	typedef _Matrix <float> Matrix32F;
+	typedef _Matrix <double> Matrix64F;
+	typedef _Matrix <Real> MatrixR;
+	typedef _Matrix <double> Matrix;
 }

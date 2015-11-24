@@ -9,16 +9,16 @@ namespace v2x {
 	////////////////
 
 	ScalarSpec::ScalarSpec(const Listener & listener) : //
-		Notifier<ScalarSpec>(listener), Size(m_memberListener), Unit(m_memberListener) {}
+		Notifier<ScalarSpec>(listener), Size(m_memberChangeListener), Unit(m_memberChangeListener) {}
 
 	ScalarSpec::ScalarSpec(const ScalarSpec & sizeSpec, const Listener & listener) : //
-		Notifier<ScalarSpec>(listener), Size(sizeSpec.Size, m_memberListener), Unit(sizeSpec.Unit, m_memberListener) {}
+		Notifier<ScalarSpec>(listener), Size(sizeSpec.Size, m_memberChangeListener), Unit(sizeSpec.Unit, m_memberChangeListener) {}
 
 	ScalarSpec::ScalarSpec(const double & size, const Listener & listener) : //
-		Notifier<ScalarSpec>(listener), Size(size, m_memberListener), Unit(ScalarUnit::Pixel, m_memberListener) {}
+		Notifier<ScalarSpec>(listener), Size(size, m_memberChangeListener), Unit(ScalarUnit::Pixel, m_memberChangeListener) {}
 
 	ScalarSpec::ScalarSpec(const double & size, const ScalarUnit & unit, const Listener & listener) : //
-		Notifier<ScalarSpec>(listener), Size(size, m_memberListener), Unit(unit, m_memberListener) {}
+		Notifier<ScalarSpec>(listener), Size(size, m_memberChangeListener), Unit(unit, m_memberChangeListener) {}
 
 	ScalarSpec::~ScalarSpec() {}
 
@@ -38,13 +38,13 @@ namespace v2x {
 	//////////////////
 
 	Vector2DSpec::Vector2DSpec(const Listener & listener) : //
-		Notifier<Vector2DSpec>(listener), X(m_memberListener), Y(m_memberListener), Unit(m_memberListener) {}
+		Notifier<Vector2DSpec>(listener), X(m_memberChangeListener), Y(m_memberChangeListener), Unit(m_memberChangeListener) {}
 	Vector2DSpec::Vector2DSpec(const Vector2DSpec & vector2DSpec, const Listener & listener) : //
-		Notifier<Vector2DSpec>(listener), X(vector2DSpec.X, m_memberListener), Y(vector2DSpec.Y, m_memberListener), Unit(vector2DSpec.Unit, m_memberListener) {}
+		Notifier<Vector2DSpec>(listener), X(vector2DSpec.X, m_memberChangeListener), Y(vector2DSpec.Y, m_memberChangeListener), Unit(vector2DSpec.Unit, m_memberChangeListener) {}
 	Vector2DSpec::Vector2DSpec(const double & x, const double & y, const Listener & listener) : //
-		Notifier<Vector2DSpec>(listener), X(x, m_memberListener), Y(y, m_memberListener), Unit(ScalarUnit::Pixel, m_memberListener) {}
+		Notifier<Vector2DSpec>(listener), X(x, m_memberChangeListener), Y(y, m_memberChangeListener), Unit(ScalarUnit::Pixel, m_memberChangeListener) {}
 	Vector2DSpec::Vector2DSpec(const double & x, const double & y, const ScalarUnit & unit, const Listener & listener) : //
-		Notifier<Vector2DSpec>(listener), X(x, m_memberListener), Y(y, m_memberListener), Unit(unit, m_memberListener) {}
+		Notifier<Vector2DSpec>(listener), X(x, m_memberChangeListener), Y(y, m_memberChangeListener), Unit(unit, m_memberChangeListener) {}
 	Vector2DSpec::~Vector2DSpec() {}
 
 	Vector2DSpec & Vector2DSpec::operator = (const Vector2DSpec & value) {
@@ -67,13 +67,13 @@ namespace v2x {
 	////////////////
 
 	MarginSpec::MarginSpec(const Listener & listener) :
-		Notifier<MarginSpec>(listener), Left(m_memberListener), Top(m_memberListener), Right(m_memberListener), Bottom(m_memberListener) {}
+		Notifier<MarginSpec>(listener), Left(m_memberChangeListener), Top(m_memberChangeListener), Right(m_memberChangeListener), Bottom(m_memberChangeListener) {}
 	MarginSpec::MarginSpec(const MarginSpec & marginSpec, const Listener & listener) :
-		Notifier<MarginSpec>(listener), Left(marginSpec.Left, m_memberListener), Top(marginSpec.Top, m_memberListener), Right(marginSpec.Right, m_memberListener), Bottom(marginSpec.Bottom, m_memberListener) {}
+		Notifier<MarginSpec>(listener), Left(marginSpec.Left, m_memberChangeListener), Top(marginSpec.Top, m_memberChangeListener), Right(marginSpec.Right, m_memberChangeListener), Bottom(marginSpec.Bottom, m_memberChangeListener) {}
 	MarginSpec::MarginSpec(const double & left, const double & top, const double & right, const double & bottom, const Listener & listener) :
-		Notifier<MarginSpec>(listener), Left(left, m_memberListener), Top(top, m_memberListener), Right(right, m_memberListener), Bottom(bottom, m_memberListener){}
+		Notifier<MarginSpec>(listener), Left(left, m_memberChangeListener), Top(top, m_memberChangeListener), Right(right, m_memberChangeListener), Bottom(bottom, m_memberChangeListener){}
 	MarginSpec::MarginSpec(const double & left, const double & top, const double & right, const double & bottom, const ScalarUnit & unit, const Listener & listener) :
-		Notifier<MarginSpec>(listener), Left(left, m_memberListener), Top(top, m_memberListener), Right(right, m_memberListener), Bottom(bottom, m_memberListener){}
+		Notifier<MarginSpec>(listener), Left(left, m_memberChangeListener), Top(top, m_memberChangeListener), Right(right, m_memberChangeListener), Bottom(bottom, m_memberChangeListener){}
 	MarginSpec::~MarginSpec() {}
 
 	MarginSpec & MarginSpec::operator = (const MarginSpec & value) {
@@ -104,18 +104,18 @@ namespace v2x {
 
 	LayoutSpec::LayoutSpec(const Listener & listener) :
 		Notifier<LayoutSpec>(listener), //
-		Width(m_memberListener), Height(m_memberListener), //
-		MinWidth(m_memberListener), MinHeight(m_memberListener), //
-		MaxWidth(m_memberListener), MaxHeight(m_memberListener), //
-		Margin(m_memberListener), PositionMode(m_memberListener), //
-		HorizontalAlignment(m_memberListener), VerticalAlignment(m_memberListener) {}
+		Width(m_memberChangeListener), Height(m_memberChangeListener), //
+		MinWidth(m_memberChangeListener), MinHeight(m_memberChangeListener), //
+		MaxWidth(m_memberChangeListener), MaxHeight(m_memberChangeListener), //
+		Margin(m_memberChangeListener), PositionMode(m_memberChangeListener), //
+		HorizontalAlignment(m_memberChangeListener), VerticalAlignment(m_memberChangeListener) {}
 	LayoutSpec::LayoutSpec(const LayoutSpec & layoutSpec, const Listener & listener) :
 		Notifier<LayoutSpec>(listener), //
-		Width(layoutSpec.Width, m_memberListener), Height(layoutSpec.Height, m_memberListener), //
-		MinWidth(layoutSpec.MinWidth, m_memberListener), MinHeight(layoutSpec.MinHeight, m_memberListener), //
-		MaxWidth(layoutSpec.MaxWidth, m_memberListener), MaxHeight(layoutSpec.MaxHeight, m_memberListener), //
-		Margin(layoutSpec.Margin, m_memberListener), PositionMode(layoutSpec.PositionMode, m_memberListener), //
-		HorizontalAlignment(layoutSpec.HorizontalAlignment, m_memberListener), VerticalAlignment(layoutSpec.VerticalAlignment, m_memberListener) {}
+		Width(layoutSpec.Width, m_memberChangeListener), Height(layoutSpec.Height, m_memberChangeListener), //
+		MinWidth(layoutSpec.MinWidth, m_memberChangeListener), MinHeight(layoutSpec.MinHeight, m_memberChangeListener), //
+		MaxWidth(layoutSpec.MaxWidth, m_memberChangeListener), MaxHeight(layoutSpec.MaxHeight, m_memberChangeListener), //
+		Margin(layoutSpec.Margin, m_memberChangeListener), PositionMode(layoutSpec.PositionMode, m_memberChangeListener), //
+		HorizontalAlignment(layoutSpec.HorizontalAlignment, m_memberChangeListener), VerticalAlignment(layoutSpec.VerticalAlignment, m_memberChangeListener) {}
 	LayoutSpec::~LayoutSpec() {}
 
 	LayoutSpec & LayoutSpec::operator = (const LayoutSpec & value) {
@@ -163,10 +163,10 @@ namespace v2x {
 	///////////////////////
 
 	ContentLayoutSpec::ContentLayoutSpec(const Listener & listener) :
-		Notifier<ContentLayoutSpec>(listener), Padding(m_memberListener), FlowAlignment(m_memberListener), FlowDirection(m_memberListener) {}
+		Notifier<ContentLayoutSpec>(listener), Padding(m_memberChangeListener), FlowAlignment(m_memberChangeListener), FlowDirection(m_memberChangeListener) {}
 	ContentLayoutSpec::ContentLayoutSpec(const ContentLayoutSpec & contentLayoutSpec, const Listener & listener) :
-		Notifier<ContentLayoutSpec>(listener), Padding(contentLayoutSpec.Padding, m_memberListener), //
-		FlowAlignment(contentLayoutSpec.FlowAlignment, m_memberListener), FlowDirection(contentLayoutSpec.FlowDirection, m_memberListener){}
+		Notifier<ContentLayoutSpec>(listener), Padding(contentLayoutSpec.Padding, m_memberChangeListener), //
+		FlowAlignment(contentLayoutSpec.FlowAlignment, m_memberChangeListener), FlowDirection(contentLayoutSpec.FlowDirection, m_memberChangeListener){}
 	ContentLayoutSpec::~ContentLayoutSpec() {}
 
 	ContentLayoutSpec & ContentLayoutSpec::operator = (const ContentLayoutSpec & value) {
@@ -195,13 +195,13 @@ namespace v2x {
 
 
 	FontSpec::FontSpec(const Listener & listener) :
-		Notifier<FontSpec>(listener), Name(m_memberListener), Size(m_memberListener), Styles(m_memberListener) {}
+		Notifier<FontSpec>(listener), Name(m_memberChangeListener), Size(m_memberChangeListener), Styles(m_memberChangeListener) {}
 	FontSpec::FontSpec(const FontSpec & fontSpec, const Listener & listener) :
-		Notifier<FontSpec>(listener), Name(fontSpec.Name.get(), m_memberListener), Size(11, ScalarUnit::Dot, m_memberListener), Styles(m_memberListener) {}
+		Notifier<FontSpec>(listener), Name(fontSpec.Name.get(), m_memberChangeListener), Size(11, ScalarUnit::Dot, m_memberChangeListener), Styles(m_memberChangeListener) {}
 	FontSpec::FontSpec(const String & fontName, const double & size, const FontStyles & styles, const Listener & listener) :
-		Notifier<FontSpec>(listener), Name(fontName, m_memberListener), Size(size, ScalarUnit::Dot, m_memberListener), Styles(styles, m_memberListener) {}
+		Notifier<FontSpec>(listener), Name(fontName, m_memberChangeListener), Size(size, ScalarUnit::Dot, m_memberChangeListener), Styles(styles, m_memberChangeListener) {}
 	FontSpec::FontSpec(const String & fontName, const double & size, const ScalarUnit & unit, const FontStyles & styles, const Listener & listener) :
-		Notifier<FontSpec>(listener), Name(fontName, m_memberListener), Size(size, unit, m_memberListener), Styles(styles, m_memberListener) {}
+		Notifier<FontSpec>(listener), Name(fontName, m_memberChangeListener), Size(size, unit, m_memberChangeListener), Styles(styles, m_memberChangeListener) {}
 	FontSpec::~FontSpec() {}
 
 	FontSpec & FontSpec::operator = (const FontSpec & value) {

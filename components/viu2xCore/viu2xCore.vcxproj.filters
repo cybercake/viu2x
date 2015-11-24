@@ -19,6 +19,9 @@
     <ClCompile Include="GUI\Graphics\Layout.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="Common\Transformation.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -33,9 +36,6 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\Exceptions.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Matrix.hpp">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\Object.h">
@@ -66,6 +66,12 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\EnumString.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Matrix.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Transformation.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

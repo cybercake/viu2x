@@ -85,11 +85,11 @@ namespace v2x {
 		void update();
 
 		size_t count() const;
-		Display::SharedConst getDisplay (size_t index) const;
-		Display::SharedConst getPrimaryDisplay() const;
+		Display::ConstShared getDisplay (size_t index) const;
+		Display::ConstShared getPrimaryDisplay() const;
 
 	private:
-		typedef std::vector<Display::SharedConst> DisplayList;
+		typedef std::vector<Display::ConstShared> DisplayList;
 		DisplayList m_displays;
 
 #ifdef V2X_WINDOWS

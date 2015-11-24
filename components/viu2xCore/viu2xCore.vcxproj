@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\Transformation.h" />
     <ClInclude Include="Common\Ownership.hpp" />
     <ClInclude Include="Common\Event.h" />
     <ClInclude Include="Common\Exceptions.h" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <ClCompile Include="Common\Event.cpp" />
     <ClCompile Include="Common\Exceptions.cpp" />
+    <ClCompile Include="Common\Transformation.cpp" />
     <ClCompile Include="Common\Object.cpp" />
     <ClCompile Include="Common\String.cpp" />
     <ClCompile Include="GUI\Displays.cpp" />
