@@ -100,13 +100,13 @@ namespace v2x {
 		else return m_param->getTransformationMatrix();
 	}
 
-	Vector2D Transformation2D::operator * (const Vector2D & v) const {
+	Vector2D Transformation2D::transform(const Vector2D & v) const {
 		if (m_param == nullptr)
 			return v;
 		else return m_param->transform(v);
 	}
 
-	Transformation2D Transformation2D::operator * (const Transformation2D & t) const {
+	Transformation2D Transformation2D::multiply (const Transformation2D & t) const {
 		if (m_param == nullptr)
 			return t;
 		else return Transformation2D(m_param->mutiply(t.m_param));

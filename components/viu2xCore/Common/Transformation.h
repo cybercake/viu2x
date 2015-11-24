@@ -76,8 +76,8 @@ namespace v2x {
 		virtual ~Transformation2D();
 
 		Matrix getTransformationMatrix() const;
-		Vector2D operator * (const Vector2D & v) const;
-		Transformation2D operator * (const Transformation2D & t) const;
+		Vector2D transform (const Vector2D & v) const;
+		Transformation2D multiply (const Transformation2D & t) const;
 
 	private:
 		Param::ConstShared m_param;
