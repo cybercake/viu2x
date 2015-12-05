@@ -5,6 +5,10 @@
 
 namespace v2x {
 
+	Transformation2D::Param::~Param() {
+
+	}
+
 	///////////////////////////////////
 	// Transformation2D::ParamOffset //
 	///////////////////////////////////
@@ -29,6 +33,10 @@ namespace v2x {
 	Vector2D Transformation2D::ParamOffset::transform(const Vector2D & v) const { return v + m_offset; }
 
 	Transformation2D::Param::Shared Transformation2D::ParamOffset::mutiply(Transformation2D::Param::ConstShared t) const {
+
+		if (nullptr == t)
+			return Transformation2D::Param::Shared(new Transformation2D::ParamGeneral(getTransformationMatrix()));
+
 		Transformation2D::ParamOffset::ConstShared test = std::dynamic_pointer_cast<const Transformation2D::ParamOffset>(t);
 		if (nullptr != test)
 			return Transformation2D::Param::Shared(new Transformation2D::ParamOffset(m_offset + test->m_offset));
@@ -88,10 +96,16 @@ namespace v2x {
 	Transformation2D::Transformation2D(Transformation2D::Param::ConstShared param) : m_param(param) {}
 	Transformation2D::~Transformation2D() {}
 
+	Transformation2D Transformation2D::fromOffset(const Vector2D & offset) {
+		Transformation2D result;
+		result.m_param.reset(new ParamOffset(offset));
+		return result;
+	}
+
 	Matrix Transformation2D::getTransformationMatrix() const {
 		if (m_param == nullptr)
 		{
-			Matrix result;
+			Matrix result(3, 3);
 			result[0][0] = 1;
 			result[1][1] = 1;
 			result[2][2] = 1;
@@ -106,7 +120,7 @@ namespace v2x {
 		else return m_param->transform(v);
 	}
 
-	Transformation2D Transformation2D::multiply (const Transformation2D & t) const {
+	Transformation2D Transformation2D::multiply(const Transformation2D & t) const {
 		if (m_param == nullptr)
 			return t;
 		else return Transformation2D(m_param->mutiply(t.m_param));

@@ -298,6 +298,68 @@ namespace viu2xTests
 			Assert::AreEqual(false, v4.isZero());
 		}
 
+		TEST_METHOD(TestTransformation2D) {
+
+			Transformation2D t;
+			{
+				auto m = t.getTransformationMatrix();
+
+				Assert::AreEqual(m[0][0], 1.0);
+				Assert::AreEqual(m[0][1], 0.0);
+				Assert::AreEqual(m[0][2], 0.0);
+
+				Assert::AreEqual(m[1][0], 0.0);
+				Assert::AreEqual(m[1][1], 1.0);
+				Assert::AreEqual(m[1][2], 0.0);
+
+				Assert::AreEqual(m[2][0], 0.0);
+				Assert::AreEqual(m[2][1], 0.0);
+				Assert::AreEqual(m[2][2], 1.0);
+			}
+
+			Vector2D v(100, 200);
+			Vector2D v2 = t.transform(v);
+
+			Assert::IsTrue(v == v2);
+
+			Transformation2D t2 = Transformation2D::fromOffset(v);
+			{
+				auto m = t2.getTransformationMatrix();
+
+				Assert::AreEqual(m[0][0], 1.0);
+				Assert::AreEqual(m[0][1], 0.0);
+				Assert::AreEqual(m[0][2], v.x);
+
+				Assert::AreEqual(m[1][0], 0.0);
+				Assert::AreEqual(m[1][1], 1.0);
+				Assert::AreEqual(m[1][2], v.y);
+
+				Assert::AreEqual(m[2][0], 0.0);
+				Assert::AreEqual(m[2][1], 0.0);
+				Assert::AreEqual(m[2][2], 1.0);
+			}
+
+			Transformation2D t3 = t2.multiply(t);
+			{
+				auto m = t3.getTransformationMatrix();
+
+				Assert::AreEqual(m[0][0], 1.0);
+				Assert::AreEqual(m[0][1], 0.0);
+				Assert::AreEqual(m[0][2], v.x);
+
+				Assert::AreEqual(m[1][0], 0.0);
+				Assert::AreEqual(m[1][1], 1.0);
+				Assert::AreEqual(m[1][2], v.y);
+
+				Assert::AreEqual(m[2][0], 0.0);
+				Assert::AreEqual(m[2][1], 0.0);
+				Assert::AreEqual(m[2][2], 1.0);
+			}
+
+			Vector2D v3 = t3.transform(v);
+			Assert::IsTrue(v3 == (v + v));
+		}
+
 		TEST_METHOD(TestEnumSet) {
 
 			enum class TestEnum {

@@ -10,8 +10,23 @@
 namespace v2x {
 
 	// A container of all kinds of 2D transformation parameters.
+	//
+	// The idea is to keep the parameter simple as long as there is only 
+	// translations. In this case there will be no multiplication while 
+	// transforming.
 	class Transformation2D
 	{
+	public:
+		Transformation2D();
+		Transformation2D(const Transformation2D & source);
+		virtual ~Transformation2D();
+
+		static Transformation2D fromOffset(const Vector2D & offset);
+
+		Matrix getTransformationMatrix() const;
+		Vector2D transform(const Vector2D & v) const;
+		Transformation2D multiply(const Transformation2D & t) const;
+
 	protected:
 
 		// A virtual definition of all kinds of 2D transformation parameters.
@@ -69,15 +84,6 @@ namespace v2x {
 		};
 
 		Transformation2D(Param::ConstShared param);
-
-	public:
-		Transformation2D();
-		Transformation2D(const Transformation2D & source);
-		virtual ~Transformation2D();
-
-		Matrix getTransformationMatrix() const;
-		Vector2D transform (const Vector2D & v) const;
-		Transformation2D multiply (const Transformation2D & t) const;
 
 	private:
 		Param::ConstShared m_param;
