@@ -477,8 +477,7 @@ namespace viu2xTests
 			Assert::AreEqual(0, (int)Message::UNSPECIFIED_MESSAGE_ID);
 
 			const Message::Id MSGID_FOR_TEST = 12345;
-			Message::Shared msg;
-			msg.reset(new Message(MSGID_FOR_TEST, MessageData2::Shared(new MessageData2())));
+			Message::Shared msg = MESSAGE(MSGID_FOR_TEST, new MessageData2());
 
 			Assert::AreEqual(MSGID_FOR_TEST, msg->getId());
 

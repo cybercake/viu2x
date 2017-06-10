@@ -48,4 +48,5 @@ namespace v2x {
 		Object::Shared m_data;
 	};
 
+#define MESSAGE(id, nativeDataPointer) Message::Shared(new Message((id), Object::Shared(nativeDataPointer)))
 }
