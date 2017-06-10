@@ -17,11 +17,17 @@ namespace v2x {
 		Left,
 
 		/// In this mode the width of the control will be fixed as specified.
-		Middle,
+		Center,
 
 		/// In this mode the width of the control will be fixed as specified.
 		Right,
 	};
+
+	std::vector<const Char *> EnumString<HorizontalAlignment>::m_strings = {
+		L"Stretch",
+		L"Left",
+		L"Center",
+		L"Right" };
 
 	typedef SimpleSpec<HorizontalAlignment> HorizontalAlignmentSpec;
 
@@ -41,6 +47,12 @@ namespace v2x {
 		/// In this mode the height of the control will be fixed as specified.
 		Bottom,
 	};
+
+	std::vector<const Char *> EnumString<VerticalAlignment>::m_strings = {
+		L"Stretch",
+		L"Top",
+		L"Middle",
+		L"Bottom" };
 
 	typedef SimpleSpec<VerticalAlignment> VerticalAlignmentSpec;
 
@@ -72,6 +84,15 @@ namespace v2x {
 		JustifyBoth,
 	};
 
+	std::vector<const Char *> EnumString<FlowAlignment>::m_strings = {
+		L"Left",
+		L"Center",
+		L"Right",
+		L"JustifyLeft",
+		L"JustifyCenter",
+		L"JustifyRight",
+		L"JustifyBoth" };
+
 	typedef SimpleSpec<FlowAlignment> FlowAlignmentSpec;
 
 	/// Horizontal flowing direction of multiple sub-controls
@@ -81,6 +102,12 @@ namespace v2x {
 		BottomLeftToTopRight,
 		BottomRightToTopLeft,
 	};
+
+	std::vector<const Char *> EnumString<FlowDirection>::m_strings = {
+		L"TopLeftToBottomRight",
+		L"TopRightToBottomLeft",
+		L"BottomLeftToTopRight",
+		L"BottomRightToTopLeft" };
 
 	typedef SimpleSpec<FlowDirection> FlowDirectionSpec;
 
@@ -96,12 +123,19 @@ namespace v2x {
 		/// Size strictly specified in mm
 		Millimeter,
 
-		/// Size specified relatively to parent container
+		/// Size specified relatively to parent container in percentage
 		Parent,
 
 		/// Size specified relatively to default specification (e.g. for fonts)
 		Relative,
 	};
+
+	std::vector<const Char *> EnumString<ScalarUnit>::m_strings = {
+		L"Pixel",
+		L"Dot",
+		L"Millimeter",
+		L"Parent",
+		L"Relative" };
 
 	typedef SimpleSpec<ScalarUnit> ScalarUnitSpec;
 
@@ -191,6 +225,13 @@ namespace v2x {
 		/// The object floats in front of all inline contents.
 		FloatFront,
 	};
+
+	std::vector<const Char *> EnumString<PositionMode>::m_strings = {
+		L"Inline",
+		L"FloatSurround",
+		L"FloatRow",
+		L"FloatBack",
+		L"FloatFront" };
 
 	typedef SimpleSpec<PositionMode> PositionModeSpec;
 

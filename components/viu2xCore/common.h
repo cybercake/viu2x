@@ -9,6 +9,7 @@
 #include "Common/Object.h"
 #include "Common/Ownership.hpp"
 #include "Common/Event.h"
+#include "Common/Messaging.h"
 
 #include "Common/Vector2D.hpp"
 #include "Common/Vector3D.hpp"

@@ -7,6 +7,8 @@
 
 namespace v2x {
 
+	// IMPORTANT: This class requires that the enum member starts at 0 and has 
+	// no value gap between each other.
 	template <typename t>
 	class EnumString {
 	public:
@@ -29,6 +31,18 @@ namespace v2x {
 					return static_cast<T>(i);
 
 			throw Exception(L"EnumString::fromString(): \"%s\" is not a valid enum value!", s.c_str());
+		}
+
+		static bool tryParse(const String & s, t & result) {
+
+			int count = (int)m_strings.size();
+			for (int i = 0; i < count; ++i)
+				if (m_strings[i] == s) {
+					result = static_cast<T>(i);
+					return true;
+				}
+
+			return false;
 		}
 
 	private:
