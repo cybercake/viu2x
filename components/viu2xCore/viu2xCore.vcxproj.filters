@@ -22,6 +22,10 @@
     <ClCompile Include="Common\Transformation.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Graphics\Graphics.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Messaging.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -74,6 +78,10 @@
     <ClInclude Include="Common\Transformation.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\Graphics\Graphics.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Messaging.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GUI">

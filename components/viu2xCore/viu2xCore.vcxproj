@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\Messaging.h" />
     <ClInclude Include="Common\Transformation.h" />
     <ClInclude Include="Common\Ownership.hpp" />
     <ClInclude Include="Common\Event.h" />
@@ -28,15 +29,18 @@
     <ClInclude Include="Common\EnumSet.hpp" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="GUI\Displays.h" />
+    <ClInclude Include="GUI\Graphics\Graphics.h" />
     <ClInclude Include="GUI\Graphics\Layout.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\Event.cpp" />
     <ClCompile Include="Common\Exceptions.cpp" />
+    <ClCompile Include="Common\Messaging.cpp" />
     <ClCompile Include="Common\Transformation.cpp" />
     <ClCompile Include="Common\Object.cpp" />
     <ClCompile Include="Common\String.cpp" />
     <ClCompile Include="GUI\Displays.cpp" />
+    <ClCompile Include="GUI\Graphics\Graphics.cpp" />
     <ClCompile Include="GUI\Graphics\Layout.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

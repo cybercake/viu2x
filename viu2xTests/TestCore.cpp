@@ -148,6 +148,7 @@ namespace viu2xTests
 			trigger->OnEvent1 += EVENTHANDLER(handler3, EventHandler2::doOnEvent1);
 			trigger->OnEvent2 += EVENTHANDLER(handler3, EventHandler2::doOnEvent2);
 
+			// Check initial data
 			Assert::AreEqual(0, handler1->m_eventData1);
 			Assert::AreEqual(0, handler1->m_eventData2);
 			Assert::AreEqual(0, handler2->m_eventData1);
@@ -155,8 +156,10 @@ namespace viu2xTests
 			Assert::AreEqual(0, handler3->m_eventData1);
 			Assert::AreEqual(0, handler3->m_eventData2);
 
+			// Trigger the event
 			Assert::AreEqual(true, trigger->triggerEvents());
 
+			// Check received data
 			Assert::AreEqual(12345, handler1->m_eventData1);
 			Assert::AreEqual(54321, handler1->m_eventData2);
 			Assert::AreEqual(12345, handler2->m_eventData1);
@@ -442,6 +445,49 @@ namespace viu2xTests
 			s1 += TestEnum::Value_11;
 			Assert::AreEqual(true, (s1 * s2).contains(TestEnum::Value_11));
 			Assert::AreEqual(false, (s1 * s2).isEmpty());
+		}
+
+		TEST_METHOD(TestMessage) {
+
+			//////////////////
+			// Message Test //
+			//////////////////
+
+			class MessageData1 : public Object {
+			public:
+				DEFINE_POINTERS(MessageData1);
+				MessageData1() {}
+				virtual ~MessageData1() {}
+			};
+
+			class MessageData2 : public MessageData1 {
+			public:
+				DEFINE_POINTERS(MessageData2);
+				MessageData2() {}
+				virtual ~MessageData2() {}
+			};
+
+			class MessageData3 : public Object {
+			public:
+				DEFINE_POINTERS(MessageData3);
+				MessageData3() {}
+				virtual ~MessageData3() {}
+			};
+
+			Assert::AreEqual(0, (int)Message::UNSPECIFIED_MESSAGE_ID);
+
+			const Message::Id MSGID_FOR_TEST = 12345;
+			Message::Shared msg;
+			msg.reset(new Message(MSGID_FOR_TEST, MessageData2::Shared(new MessageData2())));
+
+			Assert::AreEqual(MSGID_FOR_TEST, msg->getId());
+
+			MessageData1::Shared m1 = msg->getDataAs<MessageData1>();
+			Assert::AreEqual(true, m1 != nullptr);
+			MessageData2::Shared m2 = msg->getDataAs<MessageData2>();
+			Assert::AreEqual(true, m2 != nullptr);
+			MessageData3::Shared m3 = msg->getDataAs<MessageData3>();
+			Assert::AreEqual(false, m3 != nullptr);
 		}
 	};
 }
