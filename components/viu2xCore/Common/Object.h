@@ -10,7 +10,9 @@ namespace v2x {
 	typedef std::weak_ptr<class_name> Weak; \
 	typedef std::weak_ptr<const class_name> ConstWeak; \
 	typedef std::shared_ptr<class_name> Shared; \
-	typedef std::shared_ptr<const class_name> ConstShared
+	typedef std::shared_ptr<const class_name> ConstShared; \
+	typedef std::unique_ptr<const class_name> Unique; \
+	typedef std::unique_ptr<const class_name> ConstUnique
 
 	/// Root of all viu2x specific classes.
 	class Object : public std::enable_shared_from_this < Object >

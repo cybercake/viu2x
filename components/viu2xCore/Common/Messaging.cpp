@@ -21,4 +21,8 @@ namespace v2x {
 	Object::Shared Message::getData() const {
 		return m_data;
 	}
+
+	MessageHandler::MessageHandler() {}
+
+	MessageHandler::~MessageHandler() {}
 }
