@@ -42,6 +42,10 @@ namespace v2x {
 		bool processMessage(const Message & message) override;
 	};
 
+	/// This class is the common base for the controls with subsequent controls.
+	///
+	/// It forward the incoming messages to the children controls.
+	///
 	class ControlContainer : public Control {
 
 	public:
@@ -66,15 +70,35 @@ namespace v2x {
 		bool processMessage(const Message & message) override;
 	};
 
-	class Window : public ControlContainer {
+	/// This class is a physical window
+	///
+	/// More details will be exposed by the OS-specific descendant class.
+	///
+	class WindowHost : public Object {
 	public:
+		DEFINE_POINTERS(WindowHost);
+
+		WindowHost();
+
+		virtual ~WindowHost();
+	};
+
+	/// This class is a logical window
+	///
+	/// It communicate with OS through the OS-specific window host object.
+	///
+	class Window : public ControlContainer {
+	
 	public:
 		DEFINE_POINTERS(Window);
 
 		Window();
-
+	
 		virtual ~Window();
 
 		void show() override;
+
+	private:
+		WindowHost::Shared m_host;
 	};
 }

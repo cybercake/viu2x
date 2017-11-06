@@ -29,6 +29,7 @@
     <ClInclude Include="Common\EnumSet.hpp" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="GUI\Controls\App.h" />
+    <ClInclude Include="GUI\Controls\AppWindows.h" />
     <ClInclude Include="GUI\Controls\Controls.h" />
     <ClInclude Include="GUI\Displays.h" />
     <ClInclude Include="GUI\Graphics\Graphics.h" />
@@ -41,7 +42,7 @@
     <ClCompile Include="Common\Transformation.cpp" />
     <ClCompile Include="Common\Object.cpp" />
     <ClCompile Include="Common\String.cpp" />
-    <ClCompile Include="GUI\Controls\App.cpp" />
+    <ClCompile Include="GUI\Controls\AppWindows.cpp" />
     <ClCompile Include="GUI\Controls\Controls.cpp" />
     <ClCompile Include="GUI\Displays.cpp" />
     <ClCompile Include="GUI\Graphics\Graphics.cpp" />

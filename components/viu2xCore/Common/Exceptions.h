@@ -20,7 +20,7 @@ namespace v2x {
 	public:
 		//Exception(const String & message, ...);
 		//Exception(const String & message, va_list params);
-		Exception(const Char * message, ...);
+		explicit Exception(const Char * message, ...);
 		Exception(const Char * message, va_list params);
 		//Exception(const Exception & internalException, const String & message, ...);
 		//Exception(const Exception & internalException, const String & message, va_list params);

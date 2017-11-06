@@ -1,6 +1,13 @@
 /* Copyright (C) Hao Qin. All rights reserved. */
 
 #include "Controls.h"
+#include "App.h"
+
+#ifdef V2X_WINDOWS
+#include "AppWindows.h"
+#else
+#error Not implemented!
+#endif
 
 namespace v2x {
 
@@ -47,7 +54,7 @@ namespace v2x {
 	// Return true if the input message is expected and processed
 	// This function is only accessible within the GUI framework inside.
 	bool ControlContainer::processMessage(const Message & message) {
-		
+
 		bool result = false;
 
 		for (auto i = m_children.begin(); i != m_children.end(); ++i) {
@@ -58,13 +65,35 @@ namespace v2x {
 		return Control::processMessage(message);
 	}
 
+	////////////////
+	// WindowHost //
+	////////////////
+
+	WindowHost::WindowHost() {}
+
+	WindowHost::~WindowHost() {}
+
 	////////////
 	// Window //
 	////////////
 
-	Window::Window() {}
+	Window::Window() {
 
-	Window::~Window() {}
+		// Create the OS-specific top level window and attach to it
+		m_host = App::createWindowHost();
 
-	void Window::show() {}
+		// Do other initializations...
+	}
+
+	Window::~Window() {
+	}
+
+	void Window::show() {
+
+		WindowHostWin::Shared h = std::dynamic_pointer_cast<WindowHostWin>(m_host);
+		if (!h) 
+			throw Exception(L"Window::show(): The internal window host is invalid!");
+
+		h->show();
+	}
 }

@@ -15,11 +15,13 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPTSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
+	// This must be the first line to use viu2x.
 	App app;
-	auto mainWindow = app.createWindow();
+
+	// Create and show a window
+	Window::Shared mainWindow(new Window());
 	mainWindow->show();
 
-	app.run();
-
-	mainWindow.reset();
+	// Block until the window is closed.
+	app.waitUntilTermination();
 }
