@@ -65,7 +65,19 @@ namespace v2x {
 	/// @param member_function	Full function name of the handler method e.g. 
 	///							MyClass::doOnEventX
 #define EVENTHANDLER(shared_instance, member_function) \
-	EventHandler(shared_instance, std::bind(&member_function, shared_instance.get(), std::placeholders::_1))
+	EventHandler((shared_instance), \
+		std::bind(&member_function, shared_instance.get(), std::placeholders::_1))
+
+	/// This macro creates an event handler which can be added to an event slot
+	///
+	/// The specified member function must be a member function of the current 
+	/// class.
+	///
+	/// @param member_function	Full function name of the handler method e.g. 
+	///							MyClass::doOnEventX
+#define EVENTHANDLER_FROM_THIS(member_function) \
+	EventHandler(shared_from_this(), \
+		std::bind(&member_function, this, std::placeholders::_1))
 
 	/// Event slot maintains the links to external event handlers.
 	/// Objects which allows external event handling should expose an instance 
