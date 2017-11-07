@@ -29,6 +29,8 @@ namespace v2x {
 
 		HWND getHandle() const;
 
+		bool processMessage(const Message & message);
+
 	private:
 
 		HWND m_hwnd;

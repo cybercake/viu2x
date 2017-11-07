@@ -53,12 +53,29 @@ namespace v2x {
 				throw Exception(L"%s: The App instance can be freed ONLY in the owner thread!", caller.c_str());
 		}
 
+		void sendMessage(HWND hWnd, const Message & message) {
+
+//#define APPWINDOWS_SAFE_SENDMESSAGE
+#ifdef APPWINDOWS_SAFE_SENDMESSAGE
+			// This is a safe implementation
+			auto w = g_topLevelWindows.find(hWnd);
+			if (w != g_topLevelWindows.end()) {
+				w->second->processMessage(message);
+			}
+#else
+			g_topLevelWindows[hWnd]->processMessage(message);
+#endif
+		}
+
 		// The common WndProc for all WindowHost objects
 		LRESULT CALLBACK Viu2xWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 			switch (message)
 			{
 			case WM_DESTROY:
-				PostQuitMessage(0);
+				sendMessage(hWnd, Message(message, Object::Shared()));
+				g_topLevelWindows.erase(hWnd);
+				if (g_topLevelWindows.empty())
+					PostQuitMessage(0);
 				break;
 			default:
 				return DefWindowProc(hWnd, message, wParam, lParam);
@@ -76,8 +93,6 @@ namespace v2x {
 	}
 
 	WindowHostWin::~WindowHostWin() {
-
-		DestroyWindow(m_hwnd);
 	}
 
 	void WindowHostWin::show() {
@@ -88,11 +103,23 @@ namespace v2x {
 	void WindowHostWin::close() {
 
 		CloseWindow(m_hwnd);
-		g_topLevelWindows.erase(m_hwnd);
 	}
 
 	HWND WindowHostWin::getHandle() const {
 		return m_hwnd;
+	}
+
+	bool WindowHostWin::processMessage(const Message & message) {
+
+		switch (message.getId()) {
+		
+		case WM_DESTROY:
+			OnClose.notifyEvent(Event::Shared(new Event(shared_from_this(), Object::Shared())));
+			break;
+		
+		default:
+			return false;
+		}
 	}
 
 	/////////

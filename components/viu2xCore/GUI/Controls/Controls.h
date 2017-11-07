@@ -81,6 +81,8 @@ namespace v2x {
 		WindowHost();
 
 		virtual ~WindowHost();
+
+		EventSlot OnClose;
 	};
 
 	/// This class is a logical window
@@ -98,7 +100,16 @@ namespace v2x {
 
 		void show() override;
 
+	protected:
+		virtual void doOnHostClose(Event::Shared e);
+
 	private:
+
 		WindowHost::Shared m_host;
+
+		/// This function will be called after the construction.
+		void initializeHost();
+		/// This function is called after the host window is closed.
+		void deinitializeHost();
 	};
 }

@@ -78,22 +78,51 @@ namespace v2x {
 	////////////
 
 	Window::Window() {
-
-		// Create the OS-specific top level window and attach to it
-		m_host = App::createWindowHost();
-
-		// Do other initializations...
 	}
 
 	Window::~Window() {
 	}
 
+	void Window::initializeHost() {
+
+		// Avoid multiple initialization
+		if (m_host)
+			return;
+
+		// Create the OS-specific top level window and attach to it
+		m_host = App::createWindowHost();
+		m_host->OnClose += EVENTHANDLER_FROM_THIS(Window::doOnHostClose);
+
+		// Other initializations
+		// ...
+	}
+
+	void Window::deinitializeHost() {
+
+		// Other deinitialization
+		// ...
+
+		// Release host
+		m_host.reset();
+	}
+
 	void Window::show() {
 
+		initializeHost();
+
+#ifdef V2X_WINDOWS
 		WindowHostWin::Shared h = std::dynamic_pointer_cast<WindowHostWin>(m_host);
 		if (!h) 
 			throw Exception(L"Window::show(): The internal window host is invalid!");
+#else
+#error Not implemented!
+#endif
 
 		h->show();
+	}
+
+	void Window::doOnHostClose(Event::Shared e) {
+
+		deinitializeHost();
 	}
 }
