@@ -30,6 +30,13 @@ namespace v2x {
 		/// invisible. You need to call Window::show() to see it.
 		static WindowHost::Shared createWindowHost();
 
+		/// This function returns a copy of the starting arguments of the 
+		/// current process.
+		///
+		/// The first element in the list is the full path of the executable 
+		/// file of the current process.
+		static std::vector<String> getParameters();
+
 		/// This function starts the main message loop and it returns after the 
 		/// main window is closed.
 		void waitUntilTermination();

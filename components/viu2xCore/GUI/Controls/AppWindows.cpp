@@ -53,9 +53,10 @@ namespace v2x {
 				throw Exception(L"%s: The App instance can be freed ONLY in the owner thread!", caller.c_str());
 		}
 
+		/// This function forwards the message to the target window host
 		void sendMessage(HWND hWnd, const Message & message) {
 
-//#define APPWINDOWS_SAFE_SENDMESSAGE
+			//#define APPWINDOWS_SAFE_SENDMESSAGE
 #ifdef APPWINDOWS_SAFE_SENDMESSAGE
 			// This is a safe implementation
 			auto w = g_topLevelWindows.find(hWnd);
@@ -67,7 +68,7 @@ namespace v2x {
 #endif
 		}
 
-		// The common WndProc for all WindowHost objects
+		/// The common WndProc for all WindowHost objects
 		LRESULT CALLBACK Viu2xWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 			switch (message)
 			{
@@ -77,6 +78,13 @@ namespace v2x {
 				if (g_topLevelWindows.empty())
 					PostQuitMessage(0);
 				break;
+
+				// + Mouse
+				// + Keyboard
+				// + Paint
+				// + Window Resize
+				// + State changes: Maximize/Minimize/Close/Activate/Deactivate
+
 			default:
 				return DefWindowProc(hWnd, message, wParam, lParam);
 			}
@@ -112,11 +120,11 @@ namespace v2x {
 	bool WindowHostWin::processMessage(const Message & message) {
 
 		switch (message.getId()) {
-		
+
 		case WM_DESTROY:
 			OnClose.notifyEvent(Event::Shared(new Event(shared_from_this(), Object::Shared())));
 			break;
-		
+
 		default:
 			return false;
 		}
@@ -175,6 +183,56 @@ namespace v2x {
 		g_topLevelWindows[window->getHandle()] = window;
 
 		return window;
+	}
+
+	std::vector<String> App::getParameters() {
+
+		std::vector<String> result;
+
+		String cmd(GetCommandLine());
+		cmd = cmd + L"\""; // A trick to process the last part of the command line
+
+		bool isQuoted = false;
+		int anchorPos = -1;
+
+		for (int i = 0; i < cmd.length(); ++i) {
+
+			switch (cmd[i]) {
+			case ' ':
+			case '\t':
+				if (!isQuoted && anchorPos >= 0)
+				{
+					String param = cmd.substr(anchorPos, i - anchorPos);
+					result.push_back(param);
+					anchorPos = -1;
+				}
+				break;
+
+			case '"':
+
+				isQuoted = !isQuoted;
+				if (anchorPos >= 0) {
+					if (isQuoted) {
+						String param = cmd.substr(anchorPos, i - anchorPos);
+						result.push_back(param);
+						anchorPos = -1;
+					}
+					else {
+						String param = cmd.substr(anchorPos, i - anchorPos);
+						result.push_back(param);
+						anchorPos = -1;
+					}
+				}
+				break;
+
+			default:
+				if (anchorPos < 0)
+					anchorPos = i;
+				continue;
+			}
+		}
+
+		return result;
 	}
 
 	void App::waitUntilTermination() {
