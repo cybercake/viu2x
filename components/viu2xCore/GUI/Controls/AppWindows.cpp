@@ -54,39 +54,37 @@ namespace v2x {
 		}
 
 		/// This function forwards the message to the target window host
-		void sendMessage(HWND hWnd, const Message & message) {
+		bool sendMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
 			//#define APPWINDOWS_SAFE_SENDMESSAGE
 #ifdef APPWINDOWS_SAFE_SENDMESSAGE
 			// This is a safe implementation
 			auto w = g_topLevelWindows.find(hWnd);
 			if (w != g_topLevelWindows.end()) {
-				w->second->processMessage(message);
+				return w->second->processWindowsMessage(message, wParam, lParam);
 			}
+			return false;
 #else
-			g_topLevelWindows[hWnd]->processMessage(message);
+			return g_topLevelWindows[hWnd]->processWindowsMessage(message, wParam, lParam);
 #endif
 		}
 
 		/// The common WndProc for all WindowHost objects
 		LRESULT CALLBACK Viu2xWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+			bool handled = sendMessage(hWnd, message, wParam, lParam);
+
 			switch (message)
 			{
 			case WM_DESTROY:
-				sendMessage(hWnd, Message(message, Object::Shared()));
 				g_topLevelWindows.erase(hWnd);
 				if (g_topLevelWindows.empty())
 					PostQuitMessage(0);
 				break;
 
-				// + Mouse
-				// + Keyboard
-				// + Paint
-				// + Window Resize
-				// + State changes: Maximize/Minimize/Close/Activate/Deactivate
-
 			default:
-				return DefWindowProc(hWnd, message, wParam, lParam);
+				if (!handled)
+					return DefWindowProc(hWnd, message, wParam, lParam);
 			}
 			return 0;
 		}
@@ -117,13 +115,52 @@ namespace v2x {
 		return m_hwnd;
 	}
 
-	bool WindowHostWin::processMessage(const Message & message) {
+	bool WindowHostWin::processWindowsMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 
-		switch (message.getId()) {
+		switch (message) {
 
-		case WM_DESTROY:
+		case WM_SHOWWINDOW:
+		{
+			RECT rect;
+			memset(&rect, 0, sizeof(rect));
+			GetWindowRect(m_hwnd, &rect);
+			EventDataWindowSize::Shared data(new EventDataWindowSize(WindowState::Normal,
+				Vector2D64F(rect.left, rect.top),
+				Size2D64F(rect.right - rect.left, rect.bottom - rect.top)));
+
+			OnShow.notifyEvent(Event::Shared(new Event(shared_from_this(), data)));
+			return false;
+		}
+
+		case WM_CLOSE:
 			OnClose.notifyEvent(Event::Shared(new Event(shared_from_this(), Object::Shared())));
-			break;
+			return false;
+
+			// + Mouse
+			// + Keyboard
+			// + Paint
+			// + Window Resize
+
+			// + State changes: Maximize/Minimize/Close/Activate/Deactivate
+		case WM_SIZE:
+		{
+			WindowState state;
+			switch (wParam) {
+			case SIZE_MAXIMIZED: state = WindowState::Maximized;
+			case SIZE_MINIMIZED: state = WindowState::Minimized;
+			default: state = WindowState::Normal;
+			}
+
+			RECT rect;
+			memset(&rect, 0, sizeof(rect));
+			GetWindowRect(m_hwnd, &rect);
+			EventDataWindowSize::Shared data(new EventDataWindowSize(state, 
+				Vector2D64F(rect.left, rect.top), 
+				Size2D64F(rect.right - rect.left, rect.bottom - rect.top)));
+
+			OnResize.notifyEvent(Event::Shared(new Event(shared_from_this(), data)));
+			return false;
+		}
 
 		default:
 			return false;

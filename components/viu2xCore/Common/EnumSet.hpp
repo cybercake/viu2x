@@ -10,6 +10,7 @@ namespace v2x {
 	class EnumSet {
 	public:
 		EnumSet() : m_bits(0) { }
+		explicit EnumSet(const t & value) : m_bits(1 << static_cast <unsigned int> (value)) { }
 		EnumSet(const EnumSet<t> & set) { m_bits = set.m_bits; }
 
 		void include(t value) { m_bits |= (1 << static_cast <unsigned int> (value)); }
@@ -32,6 +33,7 @@ namespace v2x {
 		EnumSet<t> operator * (const EnumSet<t> & set) const { EnumSet<t> result(*this); result.intersect(set); return result; }
 
 		bool operator == (const EnumSet<t> & set) const { return m_bits == set.m_bits; }
+		bool operator == (const t & value) const { return m_bits == (1 << static_cast <unsigned int> (value)); }
 		bool operator != (const EnumSet<t> & set) const { return m_bits != set.m_bits; }
 
 		bool isEmpty() const { return m_bits == 0; }

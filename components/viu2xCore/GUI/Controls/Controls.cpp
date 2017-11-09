@@ -65,6 +65,45 @@ namespace v2x {
 		return Control::processMessage(message);
 	}
 
+	///////////////////////////
+	// EventDataWindowSize //
+	///////////////////////////
+
+	EventDataWindowSize::EventDataWindowSize(
+		const WindowState & state, const Vector2D64F & position, const Size2D64F & size) :
+		State(state), Position(position), Size(size) {}
+
+	EventDataWindowSize::~EventDataWindowSize() {}
+
+	////////////////////
+	// EventDataMouse //
+	////////////////////
+
+	EventDataMouse::EventDataMouse(const Vector2D64F position,
+		const EnumSet<MouseButton> & buttons,
+		const EnumSet<KeyModifier> & modifiers) :
+		Position(position), Buttons(buttons), Modifiers(modifiers) {}
+
+	EventDataMouse::EventDataMouse(const Vector2D64F position,
+		const MouseButton & button,
+		const EnumSet<KeyModifier> & modifiers) :
+		Position(position), Buttons(button), Modifiers(modifiers) {}
+
+	EventDataMouse::~EventDataMouse() {}
+
+	///////////////////////
+	// EventDataKeyboard //
+	///////////////////////
+
+	EventDataKeyboard::EventDataKeyboard(const String & key,
+		const EnumSet<KeyModifier> & modifiers) : 
+		Key(key), Modifiers(modifiers) {}
+
+	EventDataKeyboard::EventDataKeyboard(const KeyModifier & modifier) :
+		Key('\0'), Modifiers(modifier) {}
+
+	EventDataKeyboard::~EventDataKeyboard() {}
+
 	////////////////
 	// WindowHost //
 	////////////////
@@ -81,6 +120,7 @@ namespace v2x {
 	}
 
 	Window::~Window() {
+		deinitializeHost();
 	}
 
 	void Window::initializeHost() {
@@ -91,7 +131,9 @@ namespace v2x {
 
 		// Create the OS-specific top level window and attach to it
 		m_host = App::createWindowHost();
+		m_host->OnShow += EVENTHANDLER_FROM_THIS(Window::doOnHostShow);
 		m_host->OnClose += EVENTHANDLER_FROM_THIS(Window::doOnHostClose);
+		m_host->OnResize += EVENTHANDLER_FROM_THIS(Window::doOnHostResize);
 
 		// Other initializations
 		// ...
@@ -112,17 +154,42 @@ namespace v2x {
 
 #ifdef V2X_WINDOWS
 		WindowHostWin::Shared h = std::dynamic_pointer_cast<WindowHostWin>(m_host);
-		if (!h) 
+		if (!h)
 			throw Exception(L"Window::show(): The internal window host is invalid!");
+		h->show();
 #else
 #error Not implemented!
 #endif
+	}
 
-		h->show();
+	void Window::close() {
+#ifdef V2X_WINDOWS
+		WindowHostWin::Shared h = std::dynamic_pointer_cast<WindowHostWin>(m_host);
+		if (!h)
+			throw Exception(L"Window::close(): The internal window host is invalid!");
+		h->close();
+#else
+#error Not implemented!
+#endif
+	}
+
+	void Window::doOnHostShow(Event::Shared e) {
+
+		auto data = e->getDataAs<const EventDataWindowSize>();
+		if (!data)
+			throw Exception(L"Window::doOnHostShow(): The event data type is unexpected!");
+
 	}
 
 	void Window::doOnHostClose(Event::Shared e) {
+	}
 
-		deinitializeHost();
+	void Window::doOnHostResize(Event::Shared e) {
+
+		auto data = e->getDataAs<const EventDataWindowSize>();
+		if (!data)
+			throw Exception(L"Window::doOnHostResize(): The event data type is unexpected!");
+
+
 	}
 }
