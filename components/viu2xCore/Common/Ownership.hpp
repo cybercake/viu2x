@@ -8,7 +8,7 @@ namespace v2x {
 
 	typedef std::function < void(const void * sender, const void * data) > Listener;
 
-#define LISTENER(owner_ptr, method_ptr) std::bind(method_ptr, owner_ptr, std::placeholders::_1, std::placeholders::_2);
+#define LISTENER(owner_ptr, method_ptr) std::bind(&method_ptr, owner_ptr, std::placeholders::_1, std::placeholders::_2)
 
 	template <typename T>
 	class Notifier {
@@ -195,6 +195,7 @@ namespace v2x {
 			m_value = value;
 			m_isSet = true;
 			notifyChange(this, &m_value);
+			return *this;
 		}
 
 		// Assignment
@@ -242,7 +243,7 @@ namespace v2x {
 	public:
 		SimpleSpec(const Listener & listener = nullptr) : //
 			Specification(false),
-			Notifier < SimpleSpec <String> >(listener), m_value(0) {}
+			Notifier < SimpleSpec <String> >(listener), m_value(L"") {}
 		SimpleSpec(const String & value, const Listener & listener = nullptr) : //
 			Specification(false),
 			Notifier < SimpleSpec <String> >(listener), m_value(value) {}

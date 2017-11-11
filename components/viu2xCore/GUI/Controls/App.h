@@ -26,6 +26,8 @@ namespace v2x {
 		/// We always need a virtual destructor.
 		virtual ~App();
 
+		static Size2D64F getDefaultWindowSize();
+
 		/// This function creates a new Window instance. The new window will be 
 		/// invisible. You need to call Window::show() to see it.
 		static WindowHost::Shared createWindowHost();

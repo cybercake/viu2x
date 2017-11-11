@@ -23,9 +23,9 @@ namespace v2x {
 
 		virtual ~WindowHostWin();
 
-		void show();
-
-		void close();
+		void show() override;
+		void close() override;
+		void setPosition(const Rect64F & position) override;
 
 		HWND getHandle() const;
 

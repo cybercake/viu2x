@@ -27,7 +27,11 @@ namespace v2x {
 
 		template <typename T>
 		std::shared_ptr<T> getDataAs() const {
-			return std::dynamic_pointer_cast<T> (Data);
+			std::shared_ptr<T> result = std::dynamic_pointer_cast<T> (Data);
+			if (Data && !result)
+				throw Exception(L"Event::getDataAs(): The actual event data type is unexpected!");
+
+			return result;
 		}
 	};
 

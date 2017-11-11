@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../../common.h"
+#include "../Graphics/Layout.h"
 
 namespace v2x {
 
@@ -19,6 +20,9 @@ namespace v2x {
 
 		virtual void show() = 0;
 		virtual void close() = 0;
+
+		LayoutSpec Layout;
+		FontSpec Font;
 
 		// Mouse events..
 		// MouseMove
@@ -41,6 +45,12 @@ namespace v2x {
 		// Return true if the input message is expected and processed
 		// This function is only accessible within the GUI framework inside.
 		bool processMessage(const Message & message) override;
+
+		virtual void invalidateLayout();
+		virtual void invalidateCanvas();
+
+		virtual void doOnLayoutChange(const void * sender, const void * data);
+		virtual void doOnFontChange(const void * sender, const void * data);
 	};
 
 	/// This class is the common base for the controls with subsequent controls.
@@ -61,6 +71,8 @@ namespace v2x {
 		// Remove a child control
 		void Remove(Control::Shared control);
 
+		ContentLayoutSpec ContentLayout;
+
 	protected:
 
 		typedef std::vector<Control::Shared> SubControls;
@@ -69,6 +81,8 @@ namespace v2x {
 		SubControls m_children;
 
 		bool processMessage(const Message & message) override;
+
+		virtual void doOnContentLayoutChange(const void * sender, const void * data);
 	};
 
 	/// The visual state of a window
@@ -197,6 +211,10 @@ namespace v2x {
 
 		virtual ~WindowHost();
 
+		virtual void show() = 0;
+		virtual void close() = 0;
+		virtual void setPosition(const Rect64F & position) = 0;
+
 		EventSlot OnShow;
 		EventSlot OnClose;
 		EventSlot OnResize;
@@ -228,6 +246,15 @@ namespace v2x {
 		void show() override;
 		void close() override;
 
+		/// Returns the actual window width in device unit [px]
+		double getActualLeft() const;
+		/// Returns the actual window height in device unit [px]
+		double getActualTop() const;
+		/// Returns the actual window left position in device unit [px]
+		double getActualWidth() const;
+		/// Returns the actual window top position in device unit [px]
+		double getActualHeight() const;
+
 	protected:
 		virtual void doOnHostShow(Event::Shared e);
 		virtual void doOnHostClose(Event::Shared e);
@@ -236,6 +263,7 @@ namespace v2x {
 	private:
 
 		WindowHost::Shared m_host;
+		Rect64F m_actualPosition;
 
 		/// This function will be called after the construction.
 		void initializeHost();

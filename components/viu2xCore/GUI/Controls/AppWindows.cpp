@@ -6,6 +6,7 @@
 
 #include "App.h"
 #include "AppWindows.h"
+#include "../Displays.h"
 
 #include <thread>
 #include <mutex>
@@ -90,6 +91,10 @@ namespace v2x {
 		}
 	}
 
+	///////////////////
+	// WindowHostWin //
+	///////////////////
+
 	WindowHostWin::WindowHostWin() {
 
 		m_hwnd = CreateWindowW(g_windowClassName.c_str(), L"", WS_OVERLAPPEDWINDOW,
@@ -103,12 +108,33 @@ namespace v2x {
 
 	void WindowHostWin::show() {
 
+		if (m_hwnd == NULL)
+			throw Exception(L"WindowHostWin::show(): The native window handle is not initialized!");
+
 		ShowWindow(m_hwnd, SW_SHOW);
 	}
 
 	void WindowHostWin::close() {
 
+		if (m_hwnd == NULL)
+			throw Exception(L"WindowHostWin::show(): The native window handle is not initialized!");
+
 		CloseWindow(m_hwnd);
+		m_hwnd = NULL;
+	}
+
+	void WindowHostWin::setPosition(const Rect64F & position) {
+		
+		if (m_hwnd == NULL)
+			throw Exception(L"WindowHostWin::show(): The native window handle is not initialized!");
+
+		Vector2D64F pos(std::floor(position.getLeft()), std::floor(position.getTop()));
+		Rect32I newRect((int)pos.x, (int)pos.y, 
+			(int)std::ceil(position.getWidth() - pos.x), 
+			(int)std::ceil(position.getHeight() - pos.y));
+		SetWindowPos(m_hwnd, HWND_TOP, 
+			newRect.getLeft(), newRect.getTop(), newRect.getWidth(), newRect.getHeight(), 
+			SWP_NOACTIVATE);
 	}
 
 	HWND WindowHostWin::getHandle() const {
@@ -142,6 +168,7 @@ namespace v2x {
 			// + Window Resize
 
 			// + State changes: Maximize/Minimize/Close/Activate/Deactivate
+		case WM_MOVE:
 		case WM_SIZE:
 		{
 			WindowState state;
@@ -161,7 +188,7 @@ namespace v2x {
 			OnResize.notifyEvent(Event::Shared(new Event(shared_from_this(), data)));
 			return false;
 		}
-
+		
 		default:
 			return false;
 		}
@@ -210,6 +237,14 @@ namespace v2x {
 		UnregisterClass(g_windowClassName.c_str(), g_hInstance);
 	}
 
+	Size2D64F App::getDefaultWindowSize() {
+
+		Displays displays;
+		Size2D32I workarea = displays.getPrimaryDisplay()->getWorkAreaInPx().size;
+		Size2D64F result(workarea.width / 3, workarea.height / 3);
+		return result;
+	}
+
 	WindowHost::Shared App::createWindowHost() {
 
 		assertThread(L"App::createWindow()");
@@ -232,7 +267,7 @@ namespace v2x {
 		bool isQuoted = false;
 		int anchorPos = -1;
 
-		for (int i = 0; i < cmd.length(); ++i) {
+		for (size_t i = 0; i < cmd.length(); ++i) {
 
 			switch (cmd[i]) {
 			case ' ':

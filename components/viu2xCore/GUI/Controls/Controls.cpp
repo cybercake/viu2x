@@ -1,5 +1,8 @@
 /* Copyright (C) Hao Qin. All rights reserved. */
 
+#include "../../common.h"
+
+#include "../Displays.h"
 #include "Controls.h"
 #include "App.h"
 
@@ -15,7 +18,9 @@ namespace v2x {
 	// Control //
 	/////////////
 
-	Control::Control() {}
+	Control::Control() :
+		Layout(LISTENER(this, Control::doOnLayoutChange)),
+		Font(LISTENER(this, Control::doOnFontChange)) {}
 
 	Control::~Control() {}
 
@@ -25,11 +30,20 @@ namespace v2x {
 		return false;
 	}
 
+	void Control::invalidateLayout() {}
+
+	void Control::invalidateCanvas() {}
+
+	void Control::doOnLayoutChange(const void * sender, const void * data) {}
+
+	void Control::doOnFontChange(const void * sender, const void * data) {}
+
 	//////////////////////
 	// ControlContainer //
 	//////////////////////
 
-	ControlContainer::ControlContainer() {}
+	ControlContainer::ControlContainer() :
+		ContentLayout(LISTENER(this, ControlContainer::doOnContentLayoutChange)) {}
 
 	ControlContainer::~ControlContainer() {
 
@@ -65,6 +79,11 @@ namespace v2x {
 		return Control::processMessage(message);
 	}
 
+	void ControlContainer::doOnContentLayoutChange(const void * sender, const void * data) {
+		invalidateLayout();
+		invalidateCanvas();
+	}
+
 	///////////////////////////
 	// EventDataWindowSize //
 	///////////////////////////
@@ -96,7 +115,7 @@ namespace v2x {
 	///////////////////////
 
 	EventDataKeyboard::EventDataKeyboard(const String & key,
-		const EnumSet<KeyModifier> & modifiers) : 
+		const EnumSet<KeyModifier> & modifiers) :
 		Key(key), Modifiers(modifiers) {}
 
 	EventDataKeyboard::EventDataKeyboard(const KeyModifier & modifier) :
@@ -117,6 +136,11 @@ namespace v2x {
 	////////////
 
 	Window::Window() {
+
+		// Initialize default window size as 1/3 of the screen size.
+		Displays displays;
+		Layout.Width.Size = displays.getPrimaryDisplay()->getScreenAreaInPx().getWidth() / 3;
+		Layout.Height.Size = displays.getPrimaryDisplay()->getScreenAreaInPx().getHeight() / 3;
 	}
 
 	Window::~Window() {
@@ -136,6 +160,12 @@ namespace v2x {
 		m_host->OnResize += EVENTHANDLER_FROM_THIS(Window::doOnHostResize);
 
 		// Other initializations
+		if (Layout.Width.Size.isSet() || Layout.Height.Size.isSet()) {
+			Size2D64F defaultSize = App::getDefaultWindowSize();
+			double w = Layout.Width.Size.isSet() ? Layout.Width.Size.get() : defaultSize.width;
+			double h = Layout.Height.Size.isSet() ? Layout.Height.Size.get() : defaultSize.height;
+			m_host->setPosition(Rect64F(0, 0, w, h));
+		}
 		// ...
 	}
 
@@ -173,11 +203,14 @@ namespace v2x {
 #endif
 	}
 
+	double Window::getActualLeft() const { return m_actualPosition.getLeft(); }
+	double Window::getActualTop() const { return m_actualPosition.getTop(); }
+	double Window::getActualWidth() const { return m_actualPosition.getWidth(); }
+	double Window::getActualHeight() const { return m_actualPosition.getHeight(); }
+
 	void Window::doOnHostShow(Event::Shared e) {
 
 		auto data = e->getDataAs<const EventDataWindowSize>();
-		if (!data)
-			throw Exception(L"Window::doOnHostShow(): The event data type is unexpected!");
 
 	}
 
@@ -187,9 +220,12 @@ namespace v2x {
 	void Window::doOnHostResize(Event::Shared e) {
 
 		auto data = e->getDataAs<const EventDataWindowSize>();
-		if (!data)
-			throw Exception(L"Window::doOnHostResize(): The event data type is unexpected!");
 
+		Rect64F newRect(data->Position.x, data->Position.y, data->Size.width, data->Size.height);
+		bool sizeChanged = newRect.size != m_actualPosition.size;
+		m_actualPosition = newRect;
 
+		if (sizeChanged)
+			invalidateLayout();
 	}
 }
