@@ -4,8 +4,22 @@
 
 #include "../../common.h"
 #include "../Graphics/Layout.h"
+#include "WindowHost.h"
 
 namespace v2x {
+
+	/// The mouse cursor specification
+	///
+	enum class Cursor {
+		Arrow,
+		Busy
+	};
+	/// The strings for MouseButton
+	std::vector<const Char *> EnumString<Cursor>::m_strings = {
+		L"Arrow",
+		L"Busy"
+	};
+	typedef SimpleSpec<Cursor> CursorSpec;
 
 	// The common class for all visual elements
 	//
@@ -23,6 +37,8 @@ namespace v2x {
 
 		LayoutSpec Layout;
 		FontSpec Font;
+
+		CursorSpec Cursor;
 
 		// Mouse events..
 		// MouseMove
@@ -51,6 +67,7 @@ namespace v2x {
 
 		virtual void doOnLayoutChange(const void * sender, const void * data);
 		virtual void doOnFontChange(const void * sender, const void * data);
+		virtual void doOnCursorChange(const void * sender, const void * data);
 	};
 
 	/// This class is the common base for the controls with subsequent controls.
@@ -195,39 +212,6 @@ namespace v2x {
 
 		String Key;
 		EnumSet<KeyModifier> Modifiers;
-	};
-
-	/// This class is the general interface to a physical window in the actual
-	/// OS. It generalize the following things:
-	/// - Window state changes (showing/closing/resizing/...)
-	/// - User inputs (mouse/keys)
-	/// - Painting
-	///
-	class WindowHost : public Object {
-	public:
-		DEFINE_POINTERS(WindowHost);
-
-		WindowHost();
-
-		virtual ~WindowHost();
-
-		virtual void show() = 0;
-		virtual void close() = 0;
-		virtual void setPosition(const Rect64F & position) = 0;
-
-		EventSlot OnShow;
-		EventSlot OnClose;
-		EventSlot OnResize;
-
-		EventSlot OnMouseMove;
-		EventSlot OnMouseButtonDown;
-		EventSlot OnMouseButtonUp;
-
-		EventSlot OnKeyDown;
-		EventSlot OnKeyUp;
-		EventSlot OnKeyStroke;
-
-		EventSlot OnPaint;
 	};
 
 	/// This class is a logical window

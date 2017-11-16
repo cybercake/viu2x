@@ -27,6 +27,8 @@
     </ClCompile>
     <ClCompile Include="Common\Messaging.cpp" />
     <ClCompile Include="GUI\Controls\Controls.cpp" />
+    <ClCompile Include="GUI\Controls\WindowHostWinGdi.cpp" />
+    <ClCompile Include="GUI\Graphics\Render.cpp" />
     <ClCompile Include="GUI\Controls\AppWindows.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -86,7 +88,9 @@
     <ClInclude Include="Common\Messaging.h" />
     <ClInclude Include="GUI\Controls\Controls.h" />
     <ClInclude Include="GUI\Controls\App.h" />
-    <ClInclude Include="GUI\Controls\AppWindows.h" />
+    <ClInclude Include="GUI\Controls\WindowHostWinGdi.h" />
+    <ClInclude Include="GUI\Controls\WindowHost.h" />
+    <ClInclude Include="GUI\Graphics\Render.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GUI">

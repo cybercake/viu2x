@@ -3,10 +3,8 @@
 #pragma once
 
 #include "../../common.h"
-#include "Controls.h"
-
-#include <thread>
-#include <mutex>
+#include "WindowHost.h"
+#include "../Graphics/Render.h"
 
 namespace v2x {
 
@@ -21,11 +19,12 @@ namespace v2x {
 	public:
 		/// The default constructor.
 		/// It should be called in the WinMain function.
-		App();
+		App(RenderingEngineType renderingEngine);
 
 		/// We always need a virtual destructor.
 		virtual ~App();
 
+		/// This function returns the default window size of the v2x system.
 		static Size2D64F getDefaultWindowSize();
 
 		/// This function creates a new Window instance. The new window will be 
@@ -42,5 +41,11 @@ namespace v2x {
 		/// This function starts the main message loop and it returns after the 
 		/// main window is closed.
 		void waitUntilTermination();
+
+	private:
+
+		/// A flag specifying the redering engine used for v2x GUI.
+		/// It can be set only once.
+		static RenderingEngineType m_renderingEngine;
 	};
 }

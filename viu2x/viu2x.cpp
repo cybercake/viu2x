@@ -16,7 +16,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_ int       nCmdShow)
 {
 	// This must be the first line to use viu2x.
-	App app;
+	App app(RenderingEngineType::Default);
 
 	// Create and show a window
 	Window::Shared mainWindow(new Window());

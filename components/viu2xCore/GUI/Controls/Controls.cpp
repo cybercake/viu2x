@@ -6,12 +6,6 @@
 #include "Controls.h"
 #include "App.h"
 
-#ifdef V2X_WINDOWS
-#include "AppWindows.h"
-#else
-#error Not implemented!
-#endif
-
 namespace v2x {
 
 	/////////////
@@ -20,7 +14,8 @@ namespace v2x {
 
 	Control::Control() :
 		Layout(LISTENER(this, Control::doOnLayoutChange)),
-		Font(LISTENER(this, Control::doOnFontChange)) {}
+		Font(LISTENER(this, Control::doOnFontChange)), 
+		Cursor(LISTENER(this, Control::doOnCursorChange)) {}
 
 	Control::~Control() {}
 
@@ -37,6 +32,8 @@ namespace v2x {
 	void Control::doOnLayoutChange(const void * sender, const void * data) {}
 
 	void Control::doOnFontChange(const void * sender, const void * data) {}
+
+	void Control::doOnCursorChange(const void * sender, const void * data) {}
 
 	//////////////////////
 	// ControlContainer //
@@ -182,25 +179,15 @@ namespace v2x {
 
 		initializeHost();
 
-#ifdef V2X_WINDOWS
-		WindowHostWin::Shared h = std::dynamic_pointer_cast<WindowHostWin>(m_host);
-		if (!h)
-			throw Exception(L"Window::show(): The internal window host is invalid!");
-		h->show();
-#else
-#error Not implemented!
-#endif
+		if (!m_host)
+			throw Exception(L"Window::show(): The internal window host is not initialized!");
+		m_host->show();
 	}
 
 	void Window::close() {
-#ifdef V2X_WINDOWS
-		WindowHostWin::Shared h = std::dynamic_pointer_cast<WindowHostWin>(m_host);
-		if (!h)
-			throw Exception(L"Window::close(): The internal window host is invalid!");
-		h->close();
-#else
-#error Not implemented!
-#endif
+		if (!m_host)
+			throw Exception(L"Window::close(): The internal window host is not initialized!");
+		m_host->close();
 	}
 
 	double Window::getActualLeft() const { return m_actualPosition.getLeft(); }
