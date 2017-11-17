@@ -158,7 +158,7 @@ namespace v2x {
 
 		// Other initializations
 		if (Layout.Width.Size.isSet() || Layout.Height.Size.isSet()) {
-			Size2D64F defaultSize = App::getDefaultWindowSize();
+			Size2D64F defaultSize = m_host->getDefaultWindowSize();
 			double w = Layout.Width.Size.isSet() ? Layout.Width.Size.get() : defaultSize.width;
 			double h = Layout.Height.Size.isSet() ? Layout.Height.Size.get() : defaultSize.height;
 			m_host->setPosition(Rect64F(0, 0, w, h));

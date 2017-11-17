@@ -23,17 +23,23 @@ namespace v2x {
 	public:
 		DEFINE_POINTERS(WindowHostWinGdi);
 
-		// We always need a virtual destructor
-		virtual ~WindowHostWinGdi();
-
-		/// Windows-specific initialization
-		static void registerWindowClass();
-		/// Windows-specific deinitialization
-		static void unregisterWindowClass();
-
 		/// This function creates a new WindowHostWinGdi instance. The new 
 		/// window will be invisible.
 		static WindowHostWinGdi::Shared createNew();
+
+		// We always need a virtual destructor
+		virtual ~WindowHostWinGdi();
+
+		/// Windows-specific initialization. It can be called for multiple 
+		/// times by the owner thread. In case it has been initialzed in that
+		/// thread, it just do nothing. In case it is called in a non-owner 
+		/// thread, an exception will be thrown.
+		static void initialize();
+
+		/// Windows-specific deinitialization. It must be called in the owner 
+		/// thread. Once the system is deinitialized, it can be initialized 
+		/// again by another thread.
+		static void deinitialize();
 
 		/// Process messages in the main loop and block until the last window 
 		/// closes.
@@ -45,10 +51,12 @@ namespace v2x {
 		void close() override;
 		// Change the native window size and trigger the OnResize event
 		void setPosition(const Rect64F & position) override;
+		/// This function returns the default window size of the v2x system.
+		Size2D64F getDefaultWindowSize() override;
 
 	protected:
 		/// The constructor creates a new native window and export the handle 
-		/// in newHandle.
+		/// in newHandle. It should be call ONLY by the createNew() method.
 		WindowHostWinGdi(HWND & newHandle);
 
 	private:
@@ -57,7 +65,7 @@ namespace v2x {
 		static std::recursive_mutex g_ownerThreadIdMutex;
 
 		/// A flag indicating if the owner thread ID has been set.
-		static bool g_ownerThreadIdIsSet;
+		static bool g_initialized;
 
 		/// The owner thread ID of the App instance. It'll be set only once at 
 		/// startup.

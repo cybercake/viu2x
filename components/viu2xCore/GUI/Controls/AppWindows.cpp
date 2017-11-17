@@ -6,11 +6,10 @@
 
 #include "App.h"
 #include "WindowHostWinGdi.h"
-#include "../Displays.h"
 
 namespace v2x {
 
-	RenderingEngineType App::m_renderingEngine = RenderingEngineType::Default;
+	RenderingEngineType App::m_defaultRenderingEngine = RenderingEngineType::Default;
 
 	/////////
 	// App //
@@ -18,48 +17,28 @@ namespace v2x {
 
 	App::App(RenderingEngineType renderingEngine) {
 
-		switch (renderingEngine) {
+		m_defaultRenderingEngine = renderingEngine;
 
-		case RenderingEngineType::Default:
-		case RenderingEngineType::GDI:
-			WindowHostWinGdi::registerWindowClass();
-			m_renderingEngine = renderingEngine;
-			break;
-
-		default:
-			throw Exception(L"App::App(): The rendering engine type (%s) is not supported!", 
-				EnumString<RenderingEngineType>::toString(renderingEngine).c_str());
-		}
+		// Initialize all window hosting systems
+		WindowHostWinGdi::initialize();
+		// ...
 	}
 
 	App::~App() {
 
-		switch (m_renderingEngine) {
-
-		case RenderingEngineType::Default:
-		case RenderingEngineType::GDI:
-			WindowHostWinGdi::unregisterWindowClass();
-			break;
-
-		default:
-			throw Exception(L"App::~App(): The rendering engine type (%s) is not supported!",
-				EnumString<RenderingEngineType>::toString(m_renderingEngine).c_str());
-		}
+		// Deinitialize all window hosting systems
+		WindowHostWinGdi::deinitialize();
+		// ...
 	}
 
-	Size2D64F App::getDefaultWindowSize() {
-
-		Displays displays;
-		Size2D32I workarea = displays.getPrimaryDisplay()->getWorkAreaInPx().size;
-		Size2D64F result(workarea.width / 3, workarea.height / 3);
-		return result;
-	}
-
-	WindowHost::Shared App::createWindowHost() {
+	WindowHost::Shared App::createWindowHost(RenderingEngineType renderingEngine) {
 
 		WindowHost::Shared result;
 
-		switch (m_renderingEngine) {
+		RenderingEngineType engine =
+			renderingEngine == RenderingEngineType::Default ? m_defaultRenderingEngine : renderingEngine;
+
+		switch (engine) {
 
 		case RenderingEngineType::Default:
 		case RenderingEngineType::GDI:
@@ -68,7 +47,7 @@ namespace v2x {
 
 		default:
 			throw Exception(L"App::createWindowHost(): The rendering engine type (%s) is not supported!",
-				EnumString<RenderingEngineType>::toString(m_renderingEngine).c_str());
+				EnumString<RenderingEngineType>::toString(m_defaultRenderingEngine).c_str());
 		}
 
 		return result;

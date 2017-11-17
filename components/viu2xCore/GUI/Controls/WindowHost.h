@@ -23,6 +23,9 @@ namespace v2x {
 		virtual void show() = 0;
 		virtual void close() = 0;
 		virtual void setPosition(const Rect64F & position) = 0;
+		
+		/// This function returns the default window size of the v2x system.
+		virtual Size2D64F getDefaultWindowSize() = 0;
 
 		EventSlot OnShow;
 		EventSlot OnClose;

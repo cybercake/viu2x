@@ -24,12 +24,9 @@ namespace v2x {
 		/// We always need a virtual destructor.
 		virtual ~App();
 
-		/// This function returns the default window size of the v2x system.
-		static Size2D64F getDefaultWindowSize();
-
 		/// This function creates a new Window instance. The new window will be 
 		/// invisible. You need to call Window::show() to see it.
-		static WindowHost::Shared createWindowHost();
+		static WindowHost::Shared createWindowHost(RenderingEngineType renderingEngine = RenderingEngineType::Default);
 
 		/// This function returns a copy of the starting arguments of the 
 		/// current process.
@@ -46,6 +43,6 @@ namespace v2x {
 
 		/// A flag specifying the redering engine used for v2x GUI.
 		/// It can be set only once.
-		static RenderingEngineType m_renderingEngine;
+		static RenderingEngineType m_defaultRenderingEngine;
 	};
 }
