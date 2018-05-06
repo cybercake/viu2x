@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include "Vector2D.hpp"
-#include "Size2D.hpp"
+#include "Matrix.hpp"
 
 namespace v2x {
 
@@ -76,21 +75,6 @@ namespace v2x {
 			size = s;
 		}
 
-		/// The constructor with specified corner positions.
-		///
-		/// @param [in]	p1	The starting point of the rectangle.
-		/// @param [in]	p2	The ending point of the rectangle. The size of the rectangle
-		/// 					is just set using the difference between p1 and p2 (size = p2 - p1).
-		/// 					Note: The point p2 itself is not part of the rectangle (see notes in class documentation).
-		///
-		/// The scaling factor w in the starting position is NOT used in this class. So before accepting any
-		/// 2D vector as starting point, it has to be regularized first!!!
-		Rect_T(Vector2D_T <T> p1, Vector2D_T <T> p2) {
-			position = p1;
-			Vector2D_T <T> d = (p2 - p1);
-			size = Size2D_T <T>(d.x, d.y);
-		}
-
 		/// The constructor copying data from another 2D rect of another type
 		///
 		/// @param[in]	other	The rect from which the data has to be copied.
@@ -119,7 +103,7 @@ namespace v2x {
 		///
 		/// @param [in] 	center	The new center vector of the rect
 		void setCenter(Vector2D_T <T> center) {
-			position = Vector2D_T <T>(center.x - size.width / 2, center.y - size.height / 2);
+			position = Vector2D_T <T>(center.x - size.width() / 2, center.y - size.height() / 2);
 		}
 
 		/// Convenience function to set boundaries of the current rectangle.
@@ -173,8 +157,8 @@ namespace v2x {
 		void dilate(T amount) {
 			position.x -= amount;
 			position.y -= amount;
-			size.width += 2 * amount;
-			size.height += 2 * amount;
+			size.width() += 2 * amount;
+			size.height() += 2 * amount;
 		}
 
 		/// Convenience function to check if a point is in the current rectangle.
@@ -188,79 +172,86 @@ namespace v2x {
 		///
 		/// This method implementation is consistent with definition of rect, in that positions on the right
 		/// and bottom border are considered outside of the rectangle
-		const bool contains(const Vector2D32I& p) const {
-			return p.y >= getTop() && p.x >= getLeft() && p.y < getBottom() && p.x < getRight();
+		template<typename OTHER_TYPE>
+		const bool contains(const Vector2D_T<OTHER_TYPE> & p) const {
+			return p.y() >= getTop() && p.x() >= getLeft() && p.y() < getBottom() && p.x() < getRight();
 		}
 
-		/// Convenience function to check if a point is in the current rectangle.
-		///
-		/// @param [in]	p	A 2D point which should be checked.
-		///
-		/// @return True if the point is inside the rectangle
-		///
-		/// The scaling factor w in the starting position is NOT used in this class. So before comparing any
-		/// 2D vector with the starting point, it has to be regularized first!!!
-		///
-		/// This method implementation is consistent with definition of rect, in that positions on the right
-		/// and bottom border are considered outside of the rectangle
-		const bool contains(const Vector2D64F& p) const {
-			return p.y >= getTop() && p.x >= getLeft() && p.y < getBottom() && p.x < getRight();
-		}
-
-		template <typename U>
-		const bool contains(const U x, const U y) const {
+		template <typename OTHER_TYPE>
+		const bool contains(const OTHER_TYPE x, const OTHER_TYPE y) const {
 			return y >= getTop() && x >= getLeft() && y < getBottom() && x < getRight();
 		}
 
 		/// @return the left-of-all position.
 		T getLeft() const {
-			return size.width > 0 ? position.x : position.x + size.width;
+			return size.width() > 0 ? position.x() : position.x() + size.width();
 		}
 
 		/// @return the top-of-all position.
 		T getTop() const {
-			return size.height > 0 ? position.y : position.y + size.height;
+			return size.height() > 0 ? position.y() : position.y() + size.height();
 		}
 
 		/// @return the bottom-of-all position.
 		/// Note: The bottom edge itself is not part of the rectangle (see notes in class documentation).
 		T getBottom() const {
-			return size.height > 0 ? position.y + size.height : position.y;
+			return size.height() > 0 ? position.y() + size.height() : position.y();
 		}
 
 		/// @return the right-of-all position.
 		/// Note: The right edge itself is not part of the rectangle (see notes in class documentation).
 		T getRight() const {
-			return size.width > 0 ? position.x + size.width : position.x;
+			return size.width() > 0 ? position.x() + size.width() : position.x();
 		}
 
 		/// @return the width of the rectangle. It's always positive.
 		T getWidth() const {
-			return size.width >= 0 ? size.width : -size.width;
+			return size.width() >= 0 ? size.width() : -size.width();
 		}
 
 		/// @return the height of the rectangle. It's always positive.
 		T getHeight() const {
-			return size.height >= 0 ? size.height : -size.height;
+			return size.height() >= 0 ? size.height() : -size.height();
+		}
+
+		/// @return the area of the rectangle. It's always positive.
+		T getArea() const {
+			return getWidth() * getHeight();
+		}
+
+		/// @return the 2D position of the top-left corner
+		Vector2D_T <T> getTopLeft() const {
+			return Vector2D_T <T>(getLeft(), getTop());
+		}
+
+		/// @return the 2D position of the top-right corner
+		Vector2D_T <T> getTopRight() const {
+			return Vector2D_T <T>(getRight(), getTop());
+		}
+
+		/// @return the 2D position of the bottom-left corner
+		Vector2D_T <T> getBottomLeft() const {
+			return Vector2D_T <T>(getLeft(), getBottom());
+		}
+
+		/// @return the 2D position of the bottom-right corner
+		Vector2D_T <T> getBottomRight() const {
+			return Vector2D_T <T>(getRight(), getBottom());
 		}
 
 		/// Get the rectangles center position
 		///
 		/// @return 	The calculated center vector of the rectangle with respect to the underlying type
-		Vector2D_T <T> getCenter() const {
-			return Vector2D_T <T>(position.x + (size.width / (T)2), position.y + (size.height / (T)2));
-		}
-
-		/// Get the rectangles center position in floating point precision
-		///
-		/// @return 	The calculated center vector of the rectangle
-		Vector2D getCenterExact() const {
-			return Vector2D(position.x + (size.width / (real)2), position.y + (size.height / (real)2));
+		template<typename OTHER_TYPE>
+		Vector2D_T <OTHER_TYPE> getCenter() const {
+			return Vector2D_T <OTHER_TYPE>(
+				position.x() + size.width() / static_cast<OTHER_TYPE>(2.0), 
+				position.y() + size.height() / static_cast<OTHER_TYPE>(2.0));
 		}
 
 		/// @return if the rectangle is empty.
 		bool isEmpty() const {
-			return (size.width == 0) && (size.height == 0);
+			return (size.width() == 0) && (size.height() == 0);
 		}
 
 		/// Operator overloaded for assignment.
@@ -354,7 +345,7 @@ namespace v2x {
 	template <typename S>
 	std::wostream& operator<< (std::wostream& out, const Rect_T <S>& rect)  {
 		out << "Rect_T (" << rect.position.x << ", " << rect.position.y << ", "
-			<< rect.size.width << ", " << rect.size.height << ")";
+			<< rect.size.width() << ", " << rect.size.height() << ")";
 		return out;
 	}
 

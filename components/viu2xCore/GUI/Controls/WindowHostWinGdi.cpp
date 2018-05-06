@@ -178,9 +178,9 @@ namespace v2x {
 			throw Exception(L"WindowHostWinGdi::show(): The native window handle is not initialized!");
 
 		Vector2D64F pos(std::floor(position.getLeft()), std::floor(position.getTop()));
-		Rect32I newRect((int)pos.x, (int)pos.y,
-			(int)std::ceil(position.getWidth() - pos.x),
-			(int)std::ceil(position.getHeight() - pos.y));
+		Rect32I newRect((int)pos.x(), (int)pos.y(),
+			(int)std::ceil(position.getWidth() - pos.x()),
+			(int)std::ceil(position.getHeight() - pos.y()));
 		SetWindowPos(m_hwnd, HWND_TOP,
 			newRect.getLeft(), newRect.getTop(), newRect.getWidth(), newRect.getHeight(),
 			SWP_NOACTIVATE);
@@ -190,7 +190,7 @@ namespace v2x {
 
 		Displays displays;
 		Size2D32I workarea = displays.getPrimaryDisplay()->getWorkAreaInPx().size;
-		Size2D64F result(workarea.width / 3, workarea.height / 3);
+		Size2D64F result(workarea.width() / 3, workarea.height() / 3);
 		return result;
 	}
 

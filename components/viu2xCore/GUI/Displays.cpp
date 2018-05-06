@@ -13,7 +13,7 @@ namespace v2x {
 
 	Display::Display(const DisplayId & displayId, //
 		const String & displayName, //
-		const Size & physicalSizeInMm, //
+		const Size2D & physicalSizeInMm, //
 		const Vector2D & resolutionInDpi, //
 		const Rect32I & screenAreaInPx, //
 		const Rect32I & workAreaInPx, //
@@ -41,7 +41,7 @@ namespace v2x {
 	}
 
 	/// Physical size of the screen, given in mm.
-	const Size & Display::getPhysicalSizeInMm() const {
+	const Size2D & Display::getPhysicalSizeInMm() const {
 		return m_physicalSizeInMm;
 	}
 
@@ -52,8 +52,8 @@ namespace v2x {
 
 	/// Specified resolution, not the actual one.
 	Vector2D Display::getActualResolutionInDpi() const {
-		return Vector2D(m_screenAreaInPx.getWidth() * 25.4 / m_physicalSizeInMm.width, //
-			m_screenAreaInPx.getHeight() * 25.4 / m_physicalSizeInMm.height);
+		return Vector2D(m_screenAreaInPx.getWidth() * 25.4 / m_physicalSizeInMm.width(), //
+			m_screenAreaInPx.getHeight() * 25.4 / m_physicalSizeInMm.height());
 	}
 
 	/// The region where the display is mapped to.
@@ -291,7 +291,7 @@ namespace v2x {
 		Display::Shared display(new Display( //
 			(Display::DisplayId)hMonitor, // Id
 			String(info.szDevice), // Name
-			Size(hSize, vSize), // Physical size
+			Size2D(hSize, vSize), // Physical size
 			Vector2D(hPixelsPerInch, vPixelsPerInch), // Resolution in dpi
 			Rect32I(info.rcMonitor.left, info.rcMonitor.top, w1, h1), // Screen area
 			Rect32I(info.rcWork.left, info.rcWork.top, w1, h1), // Work area

@@ -30,6 +30,7 @@
     <ClCompile Include="GUI\Controls\WindowHostWinGdi.cpp" />
     <ClCompile Include="GUI\Graphics\Render.cpp" />
     <ClCompile Include="GUI\Controls\AppWindows.cpp" />
+    <ClCompile Include="GUI\Graphics\GraphicsWinGdi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -52,16 +53,7 @@
     <ClInclude Include="Common\Rect.hpp">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Size2D.hpp">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\String.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Vector2D.hpp">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Vector3D.hpp">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\Ownership.hpp">
@@ -91,6 +83,7 @@
     <ClInclude Include="GUI\Controls\WindowHostWinGdi.h" />
     <ClInclude Include="GUI\Controls\WindowHost.h" />
     <ClInclude Include="GUI\Graphics\Render.h" />
+    <ClInclude Include="GUI\Graphics\GraphicsWinGdi.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GUI">

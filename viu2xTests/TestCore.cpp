@@ -2,7 +2,7 @@
 #include <iostream>
 #include "CppUnitTest.h"
 
-#include <math.h>
+#include <cmath>
 #include <viu2xCore/common.h>
 #include <viu2xCore/gui.h>
 
@@ -199,101 +199,101 @@ namespace viu2xTests
 
 		TEST_METHOD(TestVector2D) {
 
-			///////////////////
+			/////////////////////
 			// Vector2D_T Test //
-			///////////////////
+			/////////////////////
 
 			Vector2D v1(123, 321);
 
-			Assert::AreEqual(123.0, v1.x);
-			Assert::AreEqual(321.0, v1.y);
+			Assert::AreEqual(123.0, v1.x());
+			Assert::AreEqual(321.0, v1.y());
 			Assert::AreEqual(false, v1.isInf());
 			Assert::AreEqual(false, v1.isNaN());
 			Assert::AreEqual(false, v1.isZero());
 
 			Vector2D v2(v1);
-			Assert::AreEqual(123.0, v2.x);
-			Assert::AreEqual(321.0, v2.y);
+			Assert::AreEqual(123.0, v2.x());
+			Assert::AreEqual(321.0, v2.y());
 			Assert::AreEqual(true, v1 == v2);
 
 			Vector2D v3;
-			Assert::AreEqual(0.0, v3.x);
-			Assert::AreEqual(0.0, v3.y);
+			Assert::AreEqual(0.0, v3.x());
+			Assert::AreEqual(0.0, v3.y());
 			Assert::AreEqual(true, v3.isZero());
 
 			v3 = v2 + v1;
-			Assert::AreEqual(246.0, v3.x);
-			Assert::AreEqual(642.0, v3.y);
+			Assert::AreEqual(246.0, v3.x());
+			Assert::AreEqual(642.0, v3.y());
 
 			v3 = v1 * 2;
-			Assert::AreEqual(246.0, v3.x);
-			Assert::AreEqual(642.0, v3.y);
+			Assert::AreEqual(246.0, v3.x());
+			Assert::AreEqual(642.0, v3.y());
 
 			v3 = v3 / 2;
-			Assert::AreEqual(123.0, v3.x);
-			Assert::AreEqual(321.0, v3.y);
+			Assert::AreEqual(123.0, v3.x());
+			Assert::AreEqual(321.0, v3.y());
 
 			Vector2D v4(NAN, 123);
 			Assert::AreEqual(false, v4.isInf());
 			Assert::AreEqual(true, v4.isNaN());
 			Assert::AreEqual(false, v4.isZero());
 			Assert::AreEqual(false, v4 == v4);
-			Assert::AreEqual(false, v4 != v4);
+			Assert::AreEqual(true, v4 != v4);
 
 			Vector2D v5 = v4 + v3;
-			Assert::AreEqual(false, v4.isInf());
-			Assert::AreEqual(true, v4.isNaN());
-			Assert::AreEqual(false, v4.isZero());
+			Assert::AreEqual(false, v5.isInf());
+			Assert::AreEqual(true, v5.isNaN());
+			Assert::AreEqual(false, v5.isZero());
 		}
 
 		TEST_METHOD(TestVector3D) {
 
 			///////////////////
-			// Vector2D_T Test //
+			// Vector3D_T Test //
 			///////////////////
 
 			Vector3D v1(123, 321, 111);
 
-			Assert::AreEqual(123.0, v1.x);
-			Assert::AreEqual(321.0, v1.y);
-			Assert::AreEqual(111.0, v1.z);
+			Assert::AreEqual(123.0, v1.x());
+			Assert::AreEqual(321.0, v1.y());
+			Assert::AreEqual(111.0, v1.z());
 			Assert::AreEqual(false, v1.isInf());
 			Assert::AreEqual(false, v1.isNaN());
 			Assert::AreEqual(false, v1.isZero());
 
 			Vector3D v2(v1);
-			Assert::AreEqual(123.0, v2.x);
-			Assert::AreEqual(321.0, v2.y);
-			Assert::AreEqual(111.0, v2.z);
+			Assert::AreEqual(123.0, v2.x());
+			Assert::AreEqual(321.0, v2.y());
+			Assert::AreEqual(111.0, v2.z());
 			Assert::AreEqual(true, v1 == v2);
 
 			Vector3D v3;
-			Assert::AreEqual(0.0, v3.x);
-			Assert::AreEqual(0.0, v3.y);
-			Assert::AreEqual(0.0, v3.z);
+			Assert::AreEqual(0.0, v3.x());
+			Assert::AreEqual(0.0, v3.y());
+			Assert::AreEqual(0.0, v3.z());
 			Assert::AreEqual(true, v3.isZero());
 
 			v3 = v2 + v1;
-			Assert::AreEqual(246.0, v3.x);
-			Assert::AreEqual(642.0, v3.y);
-			Assert::AreEqual(222.0, v3.z);
+			Assert::AreEqual(246.0, v3.x());
+			Assert::AreEqual(642.0, v3.y());
+			Assert::AreEqual(222.0, v3.z());
 
 			v3 = v1 * 2;
-			Assert::AreEqual(246.0, v3.x);
-			Assert::AreEqual(642.0, v3.y);
-			Assert::AreEqual(222.0, v3.z);
+			Assert::AreEqual(246.0, v3.x());
+			Assert::AreEqual(642.0, v3.y());
+			Assert::AreEqual(222.0, v3.z());
 
 			v3 = v3 / 2;
-			Assert::AreEqual(123.0, v3.x);
-			Assert::AreEqual(321.0, v3.y);
-			Assert::AreEqual(111.0, v3.z);
+			Assert::AreEqual(123.0, v3.x());
+			Assert::AreEqual(321.0, v3.y());
+			Assert::AreEqual(111.0, v3.z());
 
 			Vector3D v4(NAN, NAN, 123);
 			Assert::AreEqual(false, v4.isInf());
 			Assert::AreEqual(true, v4.isNaN());
 			Assert::AreEqual(false, v4.isZero());
 			Assert::AreEqual(false, v4 == v4);
-			Assert::AreEqual(false, v4 != v4);
+			Assert::AreEqual(true, v4 != v4);
 
 			v4 += v3;
 			Assert::AreEqual(false, v4.isInf());
@@ -331,11 +331,11 @@ namespace viu2xTests
 
 				Assert::AreEqual(m[0][0], 1.0);
 				Assert::AreEqual(m[0][1], 0.0);
-				Assert::AreEqual(m[0][2], v.x);
+				Assert::AreEqual(m[0][2], v.x());
 
 				Assert::AreEqual(m[1][0], 0.0);
 				Assert::AreEqual(m[1][1], 1.0);
-				Assert::AreEqual(m[1][2], v.y);
+				Assert::AreEqual(m[1][2], v.y());
 
 				Assert::AreEqual(m[2][0], 0.0);
 				Assert::AreEqual(m[2][1], 0.0);
@@ -348,11 +348,11 @@ namespace viu2xTests
 
 				Assert::AreEqual(m[0][0], 1.0);
 				Assert::AreEqual(m[0][1], 0.0);
-				Assert::AreEqual(m[0][2], v.x);
+				Assert::AreEqual(m[0][2], v.x());
 
 				Assert::AreEqual(m[1][0], 0.0);
 				Assert::AreEqual(m[1][1], 1.0);
-				Assert::AreEqual(m[1][2], v.y);
+				Assert::AreEqual(m[1][2], v.y());
 
 				Assert::AreEqual(m[2][0], 0.0);
 				Assert::AreEqual(m[2][1], 0.0);

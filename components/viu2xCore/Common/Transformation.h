@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Vector2D.hpp"
-#include "Vector3D.hpp"
 #include "Object.h"
 #include "Matrix.hpp"
 
@@ -23,9 +21,11 @@ namespace v2x {
 
 		static Transformation2D fromOffset(const Vector2D & offset);
 
-		Matrix getTransformationMatrix() const;
+		Matrix<3, 3> getTransformationMatrix() const;
 		Vector2D transform(const Vector2D & v) const;
 		Transformation2D multiply(const Transformation2D & t) const;
+
+		bool hasTranslationOnly() const;
 
 	protected:
 
@@ -36,7 +36,7 @@ namespace v2x {
 
 			virtual ~Param();
 
-			virtual Matrix getTransformationMatrix() const = 0;
+			virtual Matrix<3, 3> getTransformationMatrix() const = 0;
 			virtual Vector2D transform(const Vector2D & v) const = 0;
 			virtual Param::Shared mutiply(Param::ConstShared t) const = 0;
 
@@ -53,7 +53,7 @@ namespace v2x {
 			ParamOffset(const Vector2D & offset);
 			virtual ~ParamOffset();
 
-			Matrix getTransformationMatrix() const;
+			Matrix<3, 3> getTransformationMatrix() const;
 			Vector2D transform(const Vector2D & v) const;
 			Param::Shared mutiply(Param::ConstShared t) const;
 
@@ -70,17 +70,17 @@ namespace v2x {
 
 			ParamGeneral();
 			ParamGeneral(const ParamGeneral & param);
-			ParamGeneral(const Matrix & matrix);
+			ParamGeneral(const Matrix<3, 3> & matrix);
 			virtual ~ParamGeneral();
 
-			Matrix getTransformationMatrix() const;
+			Matrix<3, 3> getTransformationMatrix() const;
 			Vector2D transform(const Vector2D & v) const;
 			Param::Shared mutiply(Param::ConstShared t) const;
 
 			Param::Shared clone() const;
 
 		private:
-			Matrix m_matrix;
+			Matrix<3, 3> m_matrix;
 		};
 
 		Transformation2D(Param::ConstShared param);

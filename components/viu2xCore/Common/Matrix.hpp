@@ -8,90 +8,52 @@
 
 namespace v2x {
 
-	/// Class for matrix calculations.
+	/// Class for matrix, vector and their calculations.
 	///
-	/// Its elements can be accessed (r/w) like an 2D array e.g. m1[row][col] = m2[row][col];
+	/// 2D, 3D vectors and 2D Size are consider as aliases of matrix with certain 
+	/// sizes.
 	///
-	/// It supports the operation "=" for assigments between matrices.
-	/// It supports the operation "*=", "/=" for scalar calculations and "*" for matrix multiplication.
+	/// In general its elements can be accessed (r/w) like an 2D array e.g. 
+	/// m[row][col]; This class also provides some member functions specific to a 
+	/// cerntain size:
+	/// -	For 2 x 1 matrix: x(), y(), dot(), width(), height()
+	/// -	For 3 x 1 matrix: x(), y(), z(), dot(), cross()
+	///
+	/// It supports the operator "=" for assigments between matrices.
+	/// It supports the operator "*=", "/=" for scaling and "*" for matrix multiplication.
+	/// It supports the operator "+" and "-" for element-wise addition and subtraction
+	/// It supports the operator "==" and "!=" for comparison.
 	///
 	/// It has an elimination method which can be used by matrix-inversion.
 	///
 	/// The parameter type T can be any signed types which support algebra calculations,
-	/// typically "float" and "double".
+	/// typically "int32_t", "int64_t", "float" and "double".
+	///
+	/// The parameter ROWS and COLS specify the size of the matrix.
 	/// 
-	/// Content of the matrix will be set to zero on construction.
-	template <typename T>
-	class _Matrix {
-	protected:
+	/// Content of the matrix will be set to zero on construction by default.
+	template <typename T, size_t ROWS, size_t COLS>
+	class Matrix_T final {
+	public:
 
-		/// Number of the columns.
-		int m_colCount;
+		using Row = T[COLS];
 
-		/// Number of the rows.
-		int m_rowCount;
+	private:
 
 		/// An 2D array for the matrix storage.
-		/// m_elements[i] returns the i-th row.
-		/// m_elements[i][j] returns the j-th element in the i-th row.
-		T** m_elements;
-
-		/// Allocate a memory space to hold the matrix data.
-		/// If the internal storage is not NULL (i.e. it has been initialized), nothing will be done.
-		/// @throw Exception if the number of columns or rows is zero.
-		virtual void initializeStorage() {
-
-			// Check if the storage has been allocated.
-			if (m_elements == NULL) {
-
-				// Check if the number of columns and rows are valid.
-				if (m_colCount <= 0 || m_rowCount <= 0)
-					throw Exception(
-					L"_Matrix::initializeStorage: The number of rows and columns should not be zero!");
-
-				// Allocates spaces for all row pointers.
-				m_elements = (T**)malloc(m_rowCount * sizeof(T*));
-				// For all rows...
-				for (int i = 0; i < m_rowCount; i++) {
-
-					const size_t ColSize = m_colCount * sizeof(T);
-
-					// Allocate space for each row.
-					m_elements[i] = (T*)malloc(ColSize);
-					memset(m_elements[i], 0, ColSize);
-				}
-			}
-		}
-
-		/// Release an allocated matrix storage and set it to NULL.
-		///
-		/// If the internal storage is NULL (i.e. it has been released), nothing will be done.
-		virtual void finalizeStorage() {
-
-			// Check if the storage has been allocated.
-			if (m_elements != NULL) {
-
-				// For all rows...
-				for (int i = 0; i < m_rowCount; i++)
-					// Rrelease the row data.
-					free(m_elements[i]);
-				// Release the pointer to rows.
-				free(m_elements);
-
-				// Reset storage.
-				m_elements = NULL;
-			}
-		}
+		/// m_elements[j] returns the j-th row.
+		/// m_elements[j][j] returns the i-th element in the j-th row.
+		Row m_elements[ROWS];
 
 		/// Exchange the element values between two rows.
 		///
 		/// @param [in]	row1	The index of the first row.
 		/// @param [in]	row2	The index of the second row.
-		virtual void swapRow(int row1, int row2) {
+		void swapRow(int row1, int row2) {
 			T temp;
 
 			// Do it for all columns...
-			for (int i = 0; i < m_colCount; i++) {
+			for (int i = 0; i < COLS; i++) {
 
 				// Exchange the values in the column.
 				temp = m_elements[row1][i];
@@ -104,11 +66,11 @@ namespace v2x {
 		///
 		/// @param [in]	col1	The index of the first column.
 		/// @param [in]	col2	The index of the second column.
-		virtual void swapCol(int col1, int col2) {
+		void swapCol(int col1, int col2) {
 			T temp;
 
 			// Do it for all rows...
-			for (int i = 0; i < m_rowCount; i++) {
+			for (int i = 0; i < ROWS; i++) {
 
 				// Exchange the values in the row.
 				temp = m_elements[i][col1];
@@ -123,9 +85,9 @@ namespace v2x {
 		/// @param [in]	col 		The column in which the non-zero value should be found.
 		///
 		/// @return A value >= 0 if found or -1 if not found.
-		virtual int findNonZeroElementInCol(int fromRow, int col) {
+		int findNonZeroElementInCol(int fromRow, int col) {
 			// Do it for all rows in the specified range...
-			for (int i = fromRow; i < m_rowCount; i++)
+			for (int i = fromRow; i < ROWS; i++)
 				// Check if element value is not zero
 				if (m_elements[i][col] != 0)
 					// If true, return the current row index.
@@ -141,9 +103,9 @@ namespace v2x {
 		/// @param [in] 	row 		The row in which the non-zero value should be found.
 		///
 		/// @return A value >= 0 if found or -1 if not found.
-		virtual int findNonZeroElementInRow(int row, int fromCol) {
+		int findNonZeroElementInRow(int row, int fromCol) {
 			// Do it for all columns in the specified range.
-			for (int i = fromCol; i < m_colCount; i++)
+			for (int i = fromCol; i < COLS; i++)
 				// Check if the element value is not zero.
 				if (m_elements[row][i] != 0)
 					// If true, return the current column index.
@@ -159,9 +121,9 @@ namespace v2x {
 		/// @param [in]	dstRow	The row whose elements should be changed.
 		/// @param [in]	srcRow	The row whose elements should be scaled and added to the dstRow.
 		/// @param [in]	factor	The factor for the multiplication.
-		virtual void addRowWithFactor(int dstRow, int srcRow, T factor) {
+		void addRowWithFactor(int dstRow, int srcRow, T factor) {
 			// Do it for all columns...
-			for (int i = 0; i < m_colCount; i++)
+			for (int i = 0; i < COLS; i++)
 				// multiply and add.
 				m_elements[dstRow][i] += m_elements[srcRow][i] * factor;
 		}
@@ -170,127 +132,88 @@ namespace v2x {
 		///
 		/// @param [in]	row		The index of the row to be scaled.
 		/// @param [in]	factor	The scaling factor.
-		virtual void scaleRow(int row, T factor) {
+		void scaleRow(int row, T factor) {
 			// Do it for all columns...
-			for (int i = 0; i < m_colCount; i++)
+			for (int i = 0; i < COLS; i++)
 				// Scale the elements in the specified row.
 				m_elements[row][i] *= factor;
 		}
 
 	public:
 
-		/// The default constructor.
-		_Matrix() {
-			m_colCount = 0;
-			m_rowCount = 0;
-			m_elements = NULL;
+		/// The default constructor. All elements are initialized with 0.
+		Matrix_T() {
+
+			// Initialize with zeros
+			fill(0);
 		}
 
-		/// The constructor enabling building a matrix with the specified sizes.
-		/// The value of its elements are UNDEFINED after construction.
-		///
-		/// @param [in]	rows	The number of rows. It has to be an integer greater than 0.
-		/// @param [in]	cols	The number of columns. It has to be an integer greater than 0.
-		///
-		/// @throw @see initializeStorage().
-		_Matrix(int rows, int cols) {
-			m_colCount = cols;
-			m_rowCount = rows;
-			m_elements = NULL;
+		/// The constructor initializing all elements using the specified value
+		Matrix_T(const T & value) {
 
-			// Allocate memory.
-			initializeStorage();
+			// Initialize with zeros
+			fill(value);
 		}
 
 		/// The constructor copying data from another matrix.
 		///
 		/// @param [in]	matrix	An existing matrix from which the data should be copied.
-		///
-		/// @throw @see initializeStorage().
-		_Matrix(_Matrix <T> const & matrix) {
-			m_colCount = matrix.getColCount();
-			m_rowCount = matrix.getRowCount();
-			m_elements = NULL;
-
-			// Allocate memory.
-			initializeStorage();
+		template<typename OTHER_TYPE>
+		explicit Matrix_T(Matrix_T <OTHER_TYPE, ROWS, COLS> const & matrix) {
 
 			// Copy all elements from the source.
-			for (int j = 0; j < m_rowCount; j++)
-				for (int i = 0; i < m_colCount; i++)
-					m_elements[j][i] = matrix[j][i];
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
+					m_elements[j][i] = static_cast<T>(matrix[j][i]);
+		}
+
+		/// The constructor for a 2D vector (2x1 matrix).
+		/// Its available ONLY for 2x1 matrices which cold be used as a 2D size
+		template<typename TX, typename TY,
+			typename TEST = std::enable_if<ROWS == 2 && COLS == 1 && 
+			std::is_convertible<TX, T>::value && 
+			std::is_convertible<TY, T>::value, T>::type>
+		Matrix_T(const TX & x, const TY & y) {
+			m_elements[0][0] = x;
+			m_elements[1][0] = y;
+		}
+
+		/// The constructor for a 2D vector (2x1 matrix).
+		/// Its available ONLY for 3x1 matrices which cold be used as a 2D size
+		template<typename TX, typename TY, typename TZ,
+			typename TEST = std::enable_if<ROWS == 3 && COLS == 1 &&
+			std::is_convertible<TX, T>::value &&
+			std::is_convertible<TY, T>::value &&
+			std::is_convertible<TZ, T>::value, T>::type>
+		Matrix_T(const TX & x, const TY & y, const TZ & z) {
+			m_elements[0][0] = x;
+			m_elements[1][0] = y;
+			m_elements[2][0] = z;
 		}
 
 		/// The destructor.
-		virtual ~_Matrix() {
-			finalizeStorage();
+		~Matrix_T() {
 		}
 
 		/// Fill the whole matrix with the specified value.
 		///
 		/// @param [in]	value	the value to be filled.
-		///
-		/// @throw Exception if the internal storage is not initialized.
-		virtual void fill(T value) {
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::fill: The matrix has not been initialized.");
-
+		void fill(const T & value) {
+			
 			// Apply the value to all elements.
-			for (int j = 0; j < m_rowCount; j++)
-				for (int i = 0; i < m_colCount; i++)
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
 					m_elements[j][i] = value;
 		}
 
 		/// @return The number of columns
-		virtual int getColCount() const {
-			return m_colCount;
+		int getColCount() const {
+			return COLS;
 		}
 
 		/// @return The number of rows
-		virtual int getRowCount() const {
-			return m_rowCount;
-		}
-
-		/// Returns an element of the matrix with storage and range check.
-		///
-		/// @param [in]	row		The row index.
-		/// @param [in]	col		The column index.
-		///
-		/// @return An element on the specified location.
-		///
-		/// @throw Exception if the internal storage is not initialized.
-		/// @throw Exception if any of the given indices is out of range.
-		virtual const T & getElement(int row, int col) const {
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::getElement: The matrix has not been initialized.");
-
-			// Check the index range.
-			if (row < 0 || row >= m_rowCount || col < 0 || col >= m_colCount)
-				throw Exception(L"_Matrix::getElement: _Matrix index out of range!");
-
-			return m_elements[row][col];
-		}
-
-		/// Sets the value of a specified element with storage and range check.
-		///
-		/// @param [in]	row		The row index.
-		/// @param [in]	col		The column index.
-		/// @param [in]	value	The value to be set.
-		///
-		/// @throw Exception if the internal storage is not initialized.
-		/// @throw Exception if any of the given indices is out of range.
-		virtual void setElement(int row, int col, const T & value) {
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::setElement: The matrix has not been initialized.");
-
-			// Check the index range.
-			if (row < 0 || row >= m_rowCount || col < 0 || col >= m_colCount)
-				throw Exception(L"_Matrix::setElement: _Matrix index out of range!");
-
-			m_elements[row][col] = value;
+		int getRowCount() const {
+			return ROWS;
 		}
 
 		/// Operator overloaded for array-like access. You can read/write the elements like:
@@ -305,122 +228,289 @@ namespace v2x {
 		/// @return The pointer to the required row. This pointer can be used like an array.
 		///
 		/// @todo (RT) Would be nice that to send me a email telling if m_elements should be checked?
-		T * operator[] (int row) const {
+		Row & operator[] (int row) {
+
+			// Check the index range.
+			if (row < 0 || row >= ROWS)
+				throw Exception(L"Matrix_T::[]: index out of range!");
+
+			return m_elements[row];
+		}
+
+		/// Operator overloaded for array-like access. You can read/write the elements like:
+		/// matrix[row][col] = xxx; or xxx = matrix[row][col];
+		///
+		/// Ownership NOT transfered. But you can change the content of the returned array pointer.
+		///
+		/// Note: due to consideration for performance, the storage pointer is not checked in this method!
+		///
+		/// @param [in]	row		The row index.
+		///
+		/// @return The pointer to the required row. This pointer can be used like an array.
+		///
+		/// @todo (RT) Would be nice that to send me a email telling if m_elements should be checked?
+		const Row & operator[] (int row) const {
+
+			// Check the index range.
+			if (row < 0 || row >= ROWS)
+				throw Exception(L"Matrix_T::[]: index out of range!");
+
 			return m_elements[row];
 		}
 
 		/// operator overloaded for comparison of equality.
 		///
 		/// @param [in]	op	The matrix to compare to.
-		bool operator == (const _Matrix <T> & op) const {
-
-			if (m_rowCount != op.m_rowCount) {
-				return false;
-			}
-
-			if (m_colCount != op.m_colCount) {
-				return false;
-			}
+		template <typename OTHER_TYPE>
+		bool operator == (const Matrix_T <OTHER_TYPE, ROWS, COLS> & op) const {
 
 			// compare all elements
-			for (int j = 0; j < m_rowCount; j++)
-				for (int i = 0; i < m_colCount; i++)
-					if (m_elements[j][i] != op[j][i]) {
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++) {
+					if (m_elements[j][i] != op[j][i])
 						return false;
-					}
+				}
 
 			return true;
+		}
+
+		/// operator overloaded for comparison of equality.
+		///
+		/// @param [in]	op	The matrix to compare to.
+		template <typename OTHER_TYPE>
+		bool operator != (const Matrix_T <OTHER_TYPE, ROWS, COLS> & op) const {
+
+			// compare all elements
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++) {
+					if (m_elements[j][i] != op[j][i])
+						return true;
+				}
+
+			return false;
 		}
 
 		/// operator overloaded for assignment.
 		///
 		/// @param [in]	op	The matrix from which the data should be copied.
-		///
-		/// @throw @see initializeStorage().
-		_Matrix <T> & operator = (const _Matrix <T> & op) {
-
-			// Clear the old data.
-			finalizeStorage();
-
-			// Reinitialize the matrix
-			m_colCount = op.getColCount();
-			m_rowCount = op.getRowCount();
-			initializeStorage();
+		template<typename OTHER_TYPE, typename TEST = 
+			std::enable_if<std::is_convertible<OTHER_TYPE, T>, T>::type>
+		Matrix_T <T, ROWS, COLS> & operator = (const Matrix_T <OTHER_TYPE, ROWS, COLS> & op) {
 
 			// Copy all elements
-			for (int j = 0; j < m_rowCount; j++)
-				for (int i = 0; i < m_colCount; i++)
-					m_elements[j][i] = op[j][i];
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
+					m_elements[j][i] = static_cast<T>(op[j][i]);
 
 			return *this;
 		}
 
+		/// Operator overloaded for adding two matrices with the same size
+		/// The return type is the type of T + OTHER_TYPE
+		template <typename OTHER_TYPE>
+		auto operator + (
+			const Matrix_T <OTHER_TYPE, ROWS, COLS> & op) const
+			-> Matrix_T <decltype(m_elements[0][0] + op[0][0]), ROWS, COLS> {
+
+			// Define the result and give the matrix size.
+			Matrix_T <decltype(m_elements[0][0] + op[0][0]), ROWS, COLS> result;
+
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					result[row][col] = m_elements[row][col] + op[row][col];
+
+			return result;
+		}
+
+		/// Operator overloaded for subtracting two matrices with the same size
+		/// The return type is the type of T - OTHER_TYPE
+		template <typename OTHER_TYPE>
+		auto operator - (
+			const Matrix_T <OTHER_TYPE, ROWS, COLS> & op) const
+			-> Matrix_T <decltype(m_elements[0][0] - op[0][0]), ROWS, COLS> {
+
+			// Define the result and give the matrix size.
+			Matrix_T <decltype(m_elements[0][0] - op[0][0]), ROWS, COLS> result;
+
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					result[row][col] = m_elements[row][col] + op[row][col];
+
+			return result;
+		}
+
+		/// Operator overloaded for multiplying a matrix with a scalar
+		/// The return type is the type of T * OTHER_TYPE
+		template <typename OTHER_TYPE>
+		auto operator * (const OTHER_TYPE & op) const
+			-> Matrix_T <decltype(m_elements[0][0] * op), ROWS, COLS> {
+
+			// Define the result and give the matrix size.
+			Matrix_T <decltype(m_elements[0][0] * op), ROWS, COLS> result;
+
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					result[row][col] = m_elements[row][col] * op;
+
+			return result;
+		}
+
+		/// Operator overloaded for dividing a matrix by a scalar
+		/// The return type is the type of T / OTHER_TYPE
+		template <typename OTHER_TYPE>
+		auto operator / (const OTHER_TYPE & op) const
+			-> Matrix_T <decltype(m_elements[0][0] / op), ROWS, COLS> {
+
+			// Check the operand.
+			if (op == 0)
+				throw Exception(L"Matrix_T::/: The input operand is zero!");
+
+			// Define the result and give the matrix size.
+			Matrix_T <decltype(m_elements[0][0] / op), ROWS, COLS> result;
+
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					result[row][col] = m_elements[row][col] / op;
+
+			return result;
+		}
+
 		/// Operator overloaded for multiplication.
-		///
-		/// @throw Exception if the internal storage is not initialized.
-		/// @throw Exception if the two matrices cannot be multiplied.
-		_Matrix <T> operator * (const _Matrix <T> & op) const {
+		/// The return type is the type of T * OTHER_TYPE
+		template <typename OTHER_TYPE, size_t OTHER_COLS>
+		auto operator * (
+			const Matrix_T <OTHER_TYPE, COLS, OTHER_COLS> & op) const 
+			-> Matrix_T <decltype(m_elements[0][0] * op[0][0]), ROWS, OTHER_COLS> {
 
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::*: The matrix has not been initialized.");
+			// Define the result and give the matrix size.
+			Matrix_T <decltype(m_elements[0][0] * op[0][0]), ROWS, OTHER_COLS> result;
 
-			// Check if the two matrices can be multiplied!
-			if (m_colCount == op.getRowCount()) {
+			// Perform the multiplication using a unoptimized method.
+			// Note: for 3x3 and 4x4 matrices, a faster multiplication algorithm is used.
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < OTHER_COLS; col++) {
+					T value = 0;
+					for (int i = 0; i < COLS; i++)
+						value += static_cast<T>(m_elements[row][i] * op[i][col]);
+					result[row][col] = value;
+				}
 
-				// Define the result and give the matrix size.
-				_Matrix <T> result(m_rowCount, op.getColCount());
+			return result;
+		}
 
-				// Perform the multiplication using a unoptimized method.
-				// Note: for 3x3 and 4x4 matrices, a faster multiplication algorithm is used.
-				for (int row = 0; row < result.getRowCount(); row++)
-					for (int col = 0; col < result.getColCount(); col++) {
-						T value = 0;
-						for (int i = 0; i < m_colCount; i++)
-							value += m_elements[row][i] * op[i][col];
-						result[row][col] = value;
-					}
-				return result;
-			}
-			else
-				throw Exception(L"_Matrix::*: The size of matrices doesn't match in a multiplication!");
+		/// Operator overloaded for adding a matrix to the current instance
+		template <typename OTHER_TYPE>
+		Matrix_T <T, ROWS, COLS> & operator += (
+			const Matrix_T <OTHER_TYPE, ROWS, COLS> & op) {
+			
+			// Scale all elements.
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					m_elements[row][col] = static_cast<T>(op[row][col] + m_elements[row][col]);
+
+			return *this;
+		}
+
+		/// Operator overloaded for subtracting a matrix from the current instance
+		template <typename OTHER_TYPE>
+		Matrix_T <T, ROWS, COLS> & operator -= (
+			const Matrix_T <OTHER_TYPE, ROWS, COLS> & op) {
+
+			// Scale all elements.
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					m_elements[row][col] = static_cast<T>(op[row][col] - m_elements[row][col]);
+
+			return *this;
 		}
 
 		/// Operator overloaded for scalar multiplication.
-		///
-		/// @throw Exception if the internal storage is not initialized.
-		_Matrix <T> & operator *= (const T & op) {
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::*=: The matrix has not been initialized.");
+		template <typename OTHER_TYPE>
+		Matrix_T <T, ROWS, COLS> & operator *= (const OTHER_TYPE & op) {
 
 			// Scale all elements.
-			for (int row = 0; row < m_rowCount; row++)
-				for (int col = 0; col < m_colCount; col++)
-					m_elements[row][col] *= op;
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					m_elements[row][col] = static_cast<T>(m_elements[row][col] * op);
 
 			return *this;
 		}
 
 		/// Operator overloaded for scalar division.
 		///
-		/// @throw Exception if the internal storage is not initialized.
 		/// @throw Exception if the input operand is zero.
-		_Matrix <T> & operator /= (const T & op) {
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::/=: The matrix has not been initialized.");
-
+		template <typename OTHER_TYPE>
+		Matrix_T <T, ROWS, COLS> & operator /= (const OTHER_TYPE & op) {
+			
 			// Check the operand.
 			if (op == 0)
-				throw Exception(L"_Matrix::/=: The input operand is zero!");
+				throw Exception(L"Matrix_T::/=: The input operand is zero!");
 
 			// Scale all elements.
-			for (int row = 0; row < m_rowCount; row++)
-				for (int col = 0; col < m_colCount; col++)
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
 					m_elements[row][col] /= op;
 
 			return *this;
+		}
+
+		/// Dot product of two vectors
+		template <typename OTHER_TYPE, 
+			typename TEST = std::enable_if<(ROWS == 2 || ROWS == 3) && COLS == 1, T>::type>
+		auto dot (const Matrix_T<OTHER_TYPE, ROWS, COLS> & op) const 
+			-> decltype(m_elements[0][0] * op[0][0]) {
+
+			decltype(m_elements[0][0] * op) result = 0;
+
+			// Scale all elements.
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					result += m_elements[row][col] * op[row][col];
+
+			return result;
+		}
+
+		/// Cross product of two vectors
+		template <typename OTHER_TYPE,
+			typename TEST = std::enable_if<ROWS == 3 && COLS == 1, T>::type>
+			auto cross(const Matrix_T<OTHER_TYPE, 3, 1> & op) const
+			->Matrix_T<decltype(m_elements[0][0] * op[0][0]), 3, 1> {
+
+			Matrix_T<decltype(m_elements[0][0] * op[0][0]), ROWS, COLS> result;
+			result[0][0] = m_elements[1][0] * op[2][0] - m_elements[2][0] * op[1][0];
+			result[1][0] = m_elements[2][0] * op[0][0] - m_elements[0][0] * op[2][0];
+			result[2][0] = m_elements[0][0] * op[1][0] - m_elements[1][0] * op[0][0];
+			return result;
+		}
+
+		/// This function returns the square of the L2 norm of the matrix using the 
+		/// specified type. If you call this on an integer matrix and a floating 
+		/// point result, you would not lose precision.
+		double normSqr() const {
+
+			double sumSqr = 0;
+
+			// Scale all elements.
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					sumSqr += m_elements[row][col] * m_elements[row][col];
+
+			return sumSqr;
+		}
+
+		/// This function returns the L2 norm of the matrix using the specified type.
+		/// If you call this on an integer matrix and a floating point result, you 
+		/// would not lose precision.
+		double norm() const {
+
+			double sumSqr = 0;
+
+			// Scale all elements.
+			for (int row = 0; row < ROWS; row++)
+				for (int col = 0; col < COLS; col++)
+					sumSqr += m_elements[row][col] * m_elements[row][col];
+
+			return std::sqrt(sumSqr);
 		}
 
 		/// Try to eliminate a square sub-matrix of the current matrix object to diagonal matrix.
@@ -436,19 +526,15 @@ namespace v2x {
 		/// @param [in]	toCol		the right side of the sub-matrix.
 		/// @param [in]	toRow		the bottom side of the sub-matrix.
 		///
-		/// @throw Exception if the internal storage is not initialized.
 		/// @throw Exception if the sub-matrix cannot be eliminated.
 		/// @throw Exception if the specified zone is not a square matrix.
 		/// @throw Exception if the specified row-/column-index out of range.
-		virtual void eliminate(int fromCol, int fromRow, int toCol, int toRow) {
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::fill: The matrix has not been initialized.");
+		void eliminate(int fromCol, int fromRow, int toCol, int toRow) {
 
 			// Check if the input column-/row-indices is in a valid range.
-			if (fromCol < 0 || toCol < fromCol || toCol >= m_colCount || //
-				fromRow < 0 || toRow < fromRow || toRow >= m_rowCount)
-				throw Exception(L"_Matrix::eliminate: Column or row index out of range!");
+			if (fromCol < 0 || toCol < fromCol || toCol >= COLS || //
+				fromRow < 0 || toRow < fromRow || toRow >= ROWS)
+				throw Exception(L"Matrix_T::eliminate: Column or row index out of range!");
 
 			// Calculate the size of the zone.
 			int dCol = toCol - fromCol + 1;
@@ -456,7 +542,7 @@ namespace v2x {
 
 			// Check if the zone is a square matrix
 			if (dCol != dRow)
-				throw Exception(L"_Matrix::eliminate: Only square sub-matrix can be eliminated!");
+				throw Exception(L"Matrix_T::eliminate: Only square sub-matrix can be eliminated!");
 
 			// Check if the zone has at more than one column/row.
 			if (dCol > 1) {
@@ -488,7 +574,7 @@ namespace v2x {
 							// Check if the row is found.
 							if (nz < 0)
 								// If not found, it means the matrix cannot be eliminated.
-								throw Exception(L"_Matrix::eliminate: The specified zone cannot be eliminated!");
+								throw Exception(L"Matrix_T::eliminate: The specified zone cannot be eliminated!");
 
 							// Adapt the current row.
 							// After this operation, the current diagonal element should be 1 and all elements (in the sub-matrix and
@@ -527,7 +613,7 @@ namespace v2x {
 					// be true. Just left here for higher security)
 					if (m_elements[current_row][current_col] == 0)
 						// If true, this matrix cannot be eliminated.
-						throw Exception(L"_Matrix::eliminate: The specified zone cannot be eliminated!");
+						throw Exception(L"Matrix_T::eliminate: The specified zone cannot be eliminated!");
 
 					// Do it for all rows (in the same column) above the diagonal element.
 					for (int r = current_row - 1; r >= fromRow; r--) {
@@ -546,13 +632,13 @@ namespace v2x {
 				// Check if the element is zero.
 				if (m_elements[fromRow][fromCol] == 0)
 					// if true, the matrix cannot be eliminated.
-					throw Exception(L"_Matrix::eliminate: The specified zone cannot be eliminated!");
+					throw Exception(L"Matrix_T::eliminate: The specified zone cannot be eliminated!");
 
 				// To avoid divisions, just compute a scale factor first, then only multiplications are used later.
 				T factor = 1 / m_elements[fromRow][fromCol];
 
 				// Scale all elements using multiplication instead of division.
-				for (int i = 0; i < m_colCount; i++)
+				for (int i = 0; i < COLS; i++)
 					m_elements[fromRow][i] *= factor;
 			}
 		}
@@ -564,19 +650,14 @@ namespace v2x {
 		/// | d e f ... | -> | b e ... |
 		/// |    ...    |    | c f ... |
 		/// |    ...    |    |   ...   |
-		///
-		/// @throw Exception if the internal storage is not initialized.
-		_Matrix <T> transpose() const {
-			// Check the storage.
-			if (m_elements == NULL)
-				throw Exception(L"_Matrix::fill: The matrix has not been initialized.");
+		Matrix_T <T, COLS, ROWS> transpose() const {
 
 			// Define the result.
-			_Matrix <T> result(m_colCount, m_rowCount);
+			Matrix_T <T, COLS, ROWS> result;
 
 			// Copy all elements.
-			for (int j = 0; j < m_rowCount; j++)
-				for (int i = 0; i < m_colCount; i++)
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
 					result[i][j] = m_elements[j][i];
 
 			return result;
@@ -595,10 +676,19 @@ namespace v2x {
 		/// @param [in]	numberOfCols	The number of columns to be copied.
 		///
 		/// @throw		Exception if any of the indices is out of range.
-		void copyFrom(const _Matrix <T> source, //
+		template <typename OTHER_TYPE, size_t OTHER_ROWS, size_t OTHER_COLS,
+			typename TEST = std::enable_if<std::is_convertible<T, OTHER_TYPE>, T>::type>
+		void copyFrom(const Matrix_T <OTHER_TYPE, OTHER_ROWS, OTHER_COLS> source, //
 			int fromSrcRow, int fromSrcCol, //
 			int toDstRow, int toDstCol, //
 			int numberOfRows, int numberOfCols) {
+
+			if (fromSrcRow < 0 || (fromSrcRow + numberOfRows) > OTHER_ROWS ||
+				fromSrcCol < 0 || (fromSrcCol + numberOfCols) > OTHER_COLS ||
+				toDstRow < 0 || (toDstRow + numberOfRows) > ROWS || 
+				toDstCol < 0 || (toDstCol + numberOfCols) > COLS || ) {
+				throw Exception(L"Matrix_T::copyFrom: Column or row index out of range!");
+			}
 
 			int dst_r = toDstRow;
 			for (int src_r = fromSrcRow; src_r < fromSrcRow + numberOfRows; src_r++) {
@@ -611,26 +701,183 @@ namespace v2x {
 			}
 		}
 
-		/// Returns a string representation of the matrix.
+		/// This function copies a sub-block of the current matrix to a new matrix.
+		template <typename OTHER_TYPE, size_t OTHER_ROWS, size_t OTHER_COLS,
+			typename TEST = std::enable_if<std::is_convertible<T, OTHER_TYPE>, T>::type>
+		Matrix_T <OTHER_TYPE, OTHER_ROWS, OTHER_COLS> subMatrix(int fromRow, int fromCol) {
+
+			if (fromRow < 0 || (fromRow + OTHER_ROWS) >  ROWS ||
+				fromCol < 0 || (fromCol + OTHER_COLS) >  COLS) {
+				throw Exception(L"Matrix_T::copyFrom: Column or row index out of range!");
+			}
+
+			Matrix_T <OTHER_TYPE, OTHER_ROWS, OTHER_COLS> result;
+
+			int dst_r = 0;
+			for (int src_r = fromRow; src_r < fromRow + OTHER_ROWS; src_r++) {
+				int dst_c = 0;
+				for (int src_c = fromCol; src_c < fromCol + OTHER_COLS; src_c++) {
+					result[dst_r][dst_c] = m_elements[src_r][src_c];
+					dst_c++;
+				}
+				dst_r++;
+			}
+
+			return result;
+		}
+
+		/// Returns a string representation of the matrix in C++ syntax.
 		String toString() const {
 			std::wostringstream ss;
 			ss.precision(32);
-			for (int i = 0; i < m_rowCount; i++) {
-				ss << "(";
-				for (int j = 0; j < m_colCount; j++) {
+			ss << "{";
+			for (int i = 0; i < ROWS; i++) {
+				ss << "{";
+				for (int j = 0; j < COLS; j++) {
 					ss << m_elements[i][j];
-					if (j < m_colCount - 1)
+					if (j < COLS - 1)
 						ss << ", ";
 				}
-				ss << ")\n";
+				ss << "}";
+				if (j < ROWS - 1)
+					ss << ", ";
 			}
+			ss << "}";
 
 			return ss.str();
 		}
+
+		/// Return true if all elements are normal numbers.
+		bool isNormal() const {
+
+			// Check all elements
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
+					if (!std::isnormal(m_elements[j][i])) return false;
+
+			return true;
+		}
+
+		/// Return true if at least one element is INFINITY
+		bool isInf() const {
+		
+			// Check all elements
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
+					if (std::isinf(m_elements[j][i])) return true;
+
+			return false;
+		}
+
+		/// Return true if at least one element is NAN
+		bool isNaN() const {
+
+			// Check all elements
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
+					if (std::isnan(m_elements[j][i])) return true;
+
+			return false;
+		}
+
+		/// Return true if all elements are zero
+		bool isZero() const {
+
+			// Check all elements
+			for (int j = 0; j < ROWS; j++)
+				for (int i = 0; i < COLS; i++)
+					if (!(m_elements[j][i] == 0)) return false;
+
+			return true;
+		}
+
+		/// Returns a readonly reference to the ELEMENT[0][0]
+		/// Its available ONLY for 2x1 or 3x1 matrices which cold be used as a 2D vector
+		template<typename T2 = std::enable_if<(ROWS == 2 || ROWS == 3) && COLS == 1, T>::type>
+		const T2 & x() const { return m_elements[0][0]; }
+
+		/// Returns a writebale reference to the ELEMENT[0][0]
+		/// Its available ONLY for 2x1 or 3x1 matrices which cold be used as a 2D vector
+		template<typename T2 = std::enable_if<(ROWS == 2 || ROWS == 3) && COLS == 1, T>::type>
+		T2 & x() { return m_elements[0][0]; }
+
+		/// Returns a readonly reference to the ELEMENT[1][0]
+		/// Its available ONLY for 2x1 or 3x1 matrices which cold be used as a 2D vector
+		template<typename T2 = std::enable_if<(ROWS == 2 || ROWS == 3) && COLS == 1, T>::type>
+		const T2 & y() const { return m_elements[1][0]; }
+
+		/// Returns a writebale reference to the ELEMENT[1][0]
+		/// Its available ONLY for 2x1 or 3x1 matrices which cold be used as a 2D vector
+		template<typename T2 = std::enable_if<(ROWS == 2 || ROWS == 3) && COLS == 1, T>::type>
+		T2 & y() { return m_elements[1][0]; }
+
+		/// Returns a readonly reference to the ELEMENT[2][0]
+		/// Its available ONLY for 3x1 matrices which cold be used as a 2D vector
+		template<typename T2 = std::enable_if<ROWS == 3 && COLS == 1, T>::type>
+		const T2 & z() const { return m_elements[2][0]; }
+
+		/// Returns a writebale reference to the ELEMENT[3][0]
+		/// Its available ONLY for 3x1 matrices which cold be used as a 2D vector
+		template<typename T2 = std::enable_if<ROWS == 3 && COLS == 1, T>::type>
+		T2 & z() { return m_elements[2][0]; }
+		
+		/// Returns a readonly reference to the ELEMENT[0][0]
+		/// Its available ONLY for 2x1 matrices which cold be used as a 2D size
+		template<typename T2 = std::enable_if<ROWS == 2 && COLS == 1, T>::type>
+		const T2 & width() const { return m_elements[0][0]; }
+
+		/// Returns a writeable reference to the ELEMENT[0][0]
+		/// Its available ONLY for 2x1 matrices which cold be used as a 2D size
+		template<typename T2 = std::enable_if<ROWS == 2 && COLS == 1, T>::type>
+		T2 & width() { return m_elements[0][0]; }
+
+		/// Returns a readonly reference to the ELEMENT[1][0]
+		/// Its available ONLY for 2x1 matrices which cold be used as a 2D size
+		template<typename T2 = std::enable_if<ROWS == 2 && COLS == 1, T>::type>
+		const T2 & height() const { return m_elements[1][0]; }
+
+		/// Returns a writebale reference to the ELEMENT[1][0]
+		/// Its available ONLY for 2x1 matrices which cold be used as a 2D size
+		template<typename T2 = std::enable_if<ROWS == 2 && COLS == 1, T>::type>
+		T2 & height() { return m_elements[1][0]; }
 	};
 
-	typedef _Matrix <float> Matrix32F;
-	typedef _Matrix <double> Matrix64F;
-	typedef _Matrix <Real> MatrixR;
-	typedef _Matrix <double> Matrix;
+	template<typename T>
+	using Vector2D_T = Matrix_T<T, 2, 1>;
+	using Vector2D32I = Vector2D_T<int32_t>;
+	using Vector2D64I = Vector2D_T<int64_t>;
+	using Vector2D32F = Vector2D_T<float>;
+	using Vector2D64F = Vector2D_T<double>;
+	using Vector2D = Vector2D_T<double>;
+	
+	template<typename T>
+	using Vector3D_T = Matrix_T<T, 3, 1>;
+	using Vector3D32I = Vector3D_T<int32_t>;
+	using Vector3D64I = Vector3D_T<int64_t>;
+	using Vector3D32F = Vector3D_T<float>;
+	using Vector3D64F = Vector3D_T<double>;
+	using Vector3D = Vector3D_T<double>;
+
+	template<typename T>
+	using Size2D_T = Matrix_T<T, 2, 1>;
+	using Size2D32I = Size2D_T<int32_t>;
+	using Size2D64I = Size2D_T<int64_t>;
+	using Size2D32F = Size2D_T<float>;
+	using Size2D64F = Size2D_T<double>;
+	using Size2D = Size2D_T<double>;
+
+	template<size_t ROWS, size_t COLS>
+	using Matrix32I = Matrix_T<int32_t, ROWS, COLS>;
+
+	template<size_t ROWS, size_t COLS>
+	using Matrix64I = Matrix_T<int64_t, ROWS, COLS>;
+
+	template<size_t ROWS, size_t COLS>
+	using Matrix64F = Matrix_T<double, ROWS, COLS>;
+
+	template<size_t ROWS, size_t COLS>
+	using Matrix32F = Matrix_T<float, ROWS, COLS>;
+
+	template<size_t ROWS, size_t COLS>
+	using Matrix = Matrix_T<double, ROWS, COLS>;
 }

@@ -11,9 +11,6 @@
 #include "Common/Event.h"
 #include "Common/Messaging.h"
 
-#include "Common/Vector2D.hpp"
-#include "Common/Vector3D.hpp"
-#include "Common/Size2D.hpp"
 #include "Common/Rect.hpp"
 #include "Common/Matrix.hpp"
 #include "Common/Transformation.h"

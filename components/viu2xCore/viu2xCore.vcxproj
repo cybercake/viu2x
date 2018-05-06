@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GUI\Graphics\GraphicsWinGdi.h" />
     <ClInclude Include="Common\Messaging.h" />
     <ClInclude Include="Common\Transformation.h" />
     <ClInclude Include="Common\Ownership.hpp" />
@@ -21,11 +22,8 @@
     <ClInclude Include="Common\Matrix.hpp" />
     <ClInclude Include="Common\Object.h" />
     <ClInclude Include="Common\Rect.hpp" />
-    <ClInclude Include="Common\Size2D.hpp" />
     <ClInclude Include="Common\String.h" />
     <ClInclude Include="common.h" />
-    <ClInclude Include="Common\Vector2D.hpp" />
-    <ClInclude Include="Common\Vector3D.hpp" />
     <ClInclude Include="Common\EnumSet.hpp" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="GUI\Controls\App.h" />
@@ -38,6 +36,7 @@
     <ClInclude Include="GUI\Graphics\Render.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GUI\Graphics\GraphicsWinGdi.cpp" />
     <ClCompile Include="Common\Event.cpp" />
     <ClCompile Include="Common\Exceptions.cpp" />
     <ClCompile Include="Common\Messaging.cpp" />
@@ -61,13 +60,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

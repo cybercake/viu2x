@@ -159,8 +159,8 @@ namespace v2x {
 		// Other initializations
 		if (Layout.Width.Size.isSet() || Layout.Height.Size.isSet()) {
 			Size2D64F defaultSize = m_host->getDefaultWindowSize();
-			double w = Layout.Width.Size.isSet() ? Layout.Width.Size.get() : defaultSize.width;
-			double h = Layout.Height.Size.isSet() ? Layout.Height.Size.get() : defaultSize.height;
+			double w = Layout.Width.Size.isSet() ? Layout.Width.Size.get() : defaultSize.width();
+			double h = Layout.Height.Size.isSet() ? Layout.Height.Size.get() : defaultSize.height();
 			m_host->setPosition(Rect64F(0, 0, w, h));
 		}
 		// ...
@@ -208,7 +208,7 @@ namespace v2x {
 
 		auto data = e->getDataAs<const EventDataWindowSize>();
 
-		Rect64F newRect(data->Position.x, data->Position.y, data->Size.width, data->Size.height);
+		Rect64F newRect(data->Position.x(), data->Position.y(), data->Size.width(), data->Size.height());
 		bool sizeChanged = newRect.size != m_actualPosition.size;
 		m_actualPosition = newRect;
 
